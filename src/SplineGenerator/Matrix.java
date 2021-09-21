@@ -45,16 +45,16 @@ public class Matrix {
              if (gaussianArrange(row, column)) {
                 solve(row, column);
             } else {
-//                throw new IllegalArgumentException();
-                solve(row + 1, column + 1);
+                throw new IllegalArgumentException("Failed to Solve Matrix");
+//                solve(row + 1, column + 1);
             }
         }
     }
 
     public void correctFloats() {
         for (int r = 0; r < matrix.length; r++) {
-            for (int c = 0; c < matrix[0].length - 1; c++) {
-                if (1 - matrix[r][c] < floatThresh) {
+            for (int c = 0; c < matrix[0].length; c++) {
+                if (Math.abs(1 - matrix[r][c]) < floatThresh) {
                     matrix[r][c] = 1;
                 } else if (Math.abs(matrix[r][c]) < floatThresh) {
                     matrix[r][c] = 0;

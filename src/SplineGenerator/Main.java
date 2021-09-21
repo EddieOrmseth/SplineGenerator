@@ -24,20 +24,20 @@ public class Main {
 ////        spline.addControlPoint(new ControlPoint(-16.9, -30));
 //        spline2.addControlPoint(new ControlPoint(-5, 7, (7 * Math.PI) / 4));
 //        spline2.addControlPoint(new ControlPoint(1, 1, Math.PI / 4));
-//        spline2.generate2();
+//        spline2.generate3();
 //        System.out.println(spline2);
 //        System.out.println(spline2.getDesmosEquations());
 
         Spline spline = new Spline();
-        spline.addControlPoint(new ControlPoint(1, 1, Math.PI / 4));
-        spline.addControlPoint(new ControlPoint(10, 3));
-//        spline.addControlPoint(new ControlPoint(14, 8));
-        spline.addControlPoint(new ControlPoint(9, 10, (7 * Math.PI) / 4));
-        spline.addControlPoint(new ControlPoint(-16.9, -30));
-        spline.addControlPoint(new ControlPoint(1, 1, Math.PI / 4));
-        spline.addControlPoint(new ControlPoint(-5, 7, (7 * Math.PI) / 4));
-//        spline.addControlPoint(new ControlPoint(1, 1, Math.PI / 4));
-//        spline.closed = true;
+
+        spline.addControlPoint(new ControlPoint(3, 0, Math.PI / 4));
+        spline.addControlPoint(new ControlPoint(0, 3,  (3 * Math.PI) / 4));
+        spline.addControlPoint(new ControlPoint(-3, 0, Math.PI));
+        spline.addControlPoint(new ControlPoint(0, -3, Math.PI / 3));
+
+        spline.closed = true;
+        spline.interpolationMethod = Spline.InterpolationMethod.CatmulRom;
+
         spline.generate3();
         System.out.println(spline);
         System.out.println(spline.getDesmosEquations());

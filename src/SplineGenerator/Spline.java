@@ -27,7 +27,7 @@ public class Spline {
     private int splineLength;
     private int equationLength;
     private int numEquations;
-    private int numVariables;
+    private int numTotalTerms;
 
     public Spline() {
         controlPoints = new ArrayList<>();
@@ -83,11 +83,11 @@ public class Spline {
         } else {
             splineLength = 6;
         }
-        numVariables = splineLength * numEquations;
-        equationLength = numVariables + 1;
+        numTotalTerms = splineLength * numEquations;
+        equationLength = numTotalTerms + 1;
 
-        xMatrix = new Matrix(numVariables, equationLength);
-        yMatrix = new Matrix(numVariables, equationLength);
+        xMatrix = new Matrix(numTotalTerms, equationLength);
+        yMatrix = new Matrix(numTotalTerms, equationLength);
     }
 
     public void generate3() {
@@ -99,17 +99,24 @@ public class Spline {
         switch (interpolationMethod) {
             case Natural:
                 if (closed) {
-                    equation = matchAllSlopes(equation);
-                    equation = matchAllCurvatures(equation);
+                    equation = matchAllNatural(equation);
                 } else {
                     equation = matchGivenInitialSlopes(equation);
-                    equation = matchMiddlingSlopes(equation);
-                    equation = matchMiddlingCurvatures(equation);
+                    equation = matchMiddlingNatural(equation);
                 }
                 break;
+            case CatmulRom:
+                setCatmulRomSlopes();
+            case Hermite:
+                equation = matchGivenAllSlopes(equation);
+                break;
+            case Cardinal:
             default:
                 throw new IllegalArgumentException("That Interpolation Method Is Not Currently Supported");
         }
+
+        System.out.println(xMatrix);
+        System.out.println(yMatrix);
 
         xMatrix.solve();
         yMatrix.solve();
@@ -144,6 +151,44 @@ public class Spline {
         return equation;
     }
 
+    public int matchAllNatural(int equation) {
+        equation = matchInitialNatural(equation);
+        equation = matchMiddlingNatural(equation);
+        return equation;
+    }
+
+    public int matchInitialNatural(int equation) {
+
+        for (int d = 1; d < splineLength - 1; d++) {
+            insertEquation(equation, 0, getNegativeEquation(d, 0), xMatrix.matrix);
+            insertEquation(equation, 0, getNegativeEquation(d, 0), yMatrix.matrix);
+
+            insertEquation(equation, numEquations - 1, getEquation(d, 1), 0, xMatrix.matrix);
+            insertEquation(equation, numEquations - 1, getEquation(d, 1), 0, yMatrix.matrix);
+
+            equation++;
+        }
+
+        return equation;
+    }
+
+    public int matchMiddlingNatural(int equation) {
+
+        for (int e = 0; e < numEquations - 1; e++) {
+            for (int d = 1; d < splineLength - 1; d++) {
+                insertEquation(equation, e, getNegativeEquation(d, 1), xMatrix.matrix);
+                insertEquation(equation, e, getNegativeEquation(d, 1), yMatrix.matrix);
+
+                insertEquation(equation, e + 1, getEquation(d, 0), 0, xMatrix.matrix);
+                insertEquation(equation, e + 1, getEquation(d, 0), 0, yMatrix.matrix);
+
+                equation++;
+            }
+        }
+
+        return equation;
+    }
+
     public int matchGivenAllSlopes(int equation) {
         equation = matchGivenInitialSlopes(equation);
         equation = matchGivenMiddlingSlopes(equation);
@@ -157,8 +202,8 @@ public class Spline {
 
         equation++;
 
-        insertEquation(equation, controlPoints.size() - 2, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).heading.x, xMatrix.matrix);
-        insertEquation(equation, controlPoints.size() - 2, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).heading.y, yMatrix.matrix);
+        insertEquation(equation, numEquations - 1, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).heading.x, xMatrix.matrix);
+        insertEquation(equation, numEquations - 1, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).heading.y, yMatrix.matrix);
 
         equation++;
 
@@ -166,78 +211,59 @@ public class Spline {
     }
 
     public int matchGivenMiddlingSlopes(int equation) {
+        int i;
+        for (i = 1; i < controlPoints.size() - 1; i++) {
 
-        return equation;
-    }
-
-    public int matchAllSlopes(int equation) {
-        equation = matchInitialSlopes(equation);
-        equation = matchMiddlingSlopes(equation);
-        return equation;
-    }
-
-    public int matchInitialSlopes(int equation) {
-
-        insertEquation(equation, 0, getEquation(1, 0), xMatrix.matrix);
-        insertEquation(equation, 0, getEquation(1, 0), yMatrix.matrix);
-
-        insertEquation(equation, numEquations - 1, getNegativeEquation(1, 1), 0, xMatrix.matrix);
-        insertEquation(equation, numEquations - 1, getNegativeEquation(1, 1), 0, yMatrix.matrix);
-
-        equation++;
-
-        return equation;
-    }
-
-    public int matchMiddlingSlopes(int equation) {
-
-        for (int i = 0; i < numEquations - 1; i++) {
-
-            insertEquation(equation, i, getNegativeEquation(1, 1), xMatrix.matrix);
-            insertEquation(equation, i, getNegativeEquation(1, 1), yMatrix.matrix);
-
-            insertEquation(equation, i + 1, getEquation(1, 0), 0, xMatrix.matrix);
-            insertEquation(equation, i + 1, getEquation(1, 0), 0, yMatrix.matrix);
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.x, xMatrix.matrix);
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.y, yMatrix.matrix);
 
             equation++;
+
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.x, xMatrix.matrix);
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.y, yMatrix.matrix);
+
+            equation++;
+
+        }
+
+        if (closed) {
+
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.x, xMatrix.matrix);
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.y, yMatrix.matrix);
+
+            equation++;
+
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.x, xMatrix.matrix);
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.y, yMatrix.matrix);
+
+            equation++;
+
         }
 
         return equation;
     }
 
-    public int matchAllCurvatures(int equation) {
-        equation = matchInitialCurvatures(equation);
-        equation = matchMiddlingCurvatures(equation);
-        return equation;
-    }
+    public void setCatmulRomSlopes() {
+        double xDiff;
+        double yDiff;
+        for (int i = 1; i < controlPoints.size() - 1; i++) {
+            xDiff = controlPoints.get(i + 1).x - controlPoints.get(i - 1).x;
+            yDiff = controlPoints.get(i + 1).y - controlPoints.get(i - 1).y;
 
-    public int matchInitialCurvatures(int equation) {
-
-        insertEquation(equation, 0, getEquation(2, 0), xMatrix.matrix);
-        insertEquation(equation, 0, getEquation(2, 0), yMatrix.matrix);
-
-        insertEquation(equation, numEquations - 1, getNegativeEquation(2, 1), controlPoints.get(0).heading.x, xMatrix.matrix);
-        insertEquation(equation, numEquations - 1, getNegativeEquation(2, 1), controlPoints.get(0).heading.y, yMatrix.matrix);
-
-        equation++;
-
-        return equation;
-    }
-
-    public int matchMiddlingCurvatures(int equation) {
-
-        for (int i = 0; i < numEquations - 1; i++) {
-
-            insertEquation(equation, i, getNegativeEquation(2, 1), xMatrix.matrix);
-            insertEquation(equation, i, getNegativeEquation(2, 1), yMatrix.matrix);
-
-            insertEquation(equation, i + 1, getEquation(2, 0), 0, xMatrix.matrix);
-            insertEquation(equation, i + 1, getEquation(2, 0), 0, yMatrix.matrix);
-
-            equation++;
+            controlPoints.get(i).heading = new Direction(xDiff, yDiff);
         }
 
-        return equation;
+        if (closed) {
+            xDiff = controlPoints.get(1).x - controlPoints.get(controlPoints.size() - 1).x;
+            yDiff = controlPoints.get(1).y - controlPoints.get(controlPoints.size() - 1).y;
+
+            controlPoints.get(0).heading = new Direction(xDiff, yDiff);
+
+            xDiff = controlPoints.get(0).x - controlPoints.get(controlPoints.size() - 2).x;
+            yDiff = controlPoints.get(0).y - controlPoints.get(controlPoints.size() - 2).y;
+
+            controlPoints.get(controlPoints.size() - 1).heading = new Direction(xDiff, yDiff);
+        }
     }
 
     public void insertEquation(int row, int equationNum, double[] equation, double finalValue, double[][] matrix) {

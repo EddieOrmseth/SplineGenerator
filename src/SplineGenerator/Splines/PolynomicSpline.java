@@ -94,6 +94,7 @@ public class PolynomicSpline extends Spline {
                     }
                     break;
                 case Hermite:
+                    row = setAllValues(row, 1);
                     break;
                 case None:
                 default:
@@ -165,12 +166,46 @@ public class PolynomicSpline extends Spline {
             linkValues(row, 0, pieces - 1, derivative, 0, 1, xMatrix.matrix);
             linkValues(row, 0, pieces - 1, derivative, 0, 1, yMatrix.matrix);
             row++;
-            linkValues(row, pieces - 1, pieces - 2, derivative, 0, 1, xMatrix.matrix);
-            linkValues(row, pieces - 1, pieces - 2, derivative, 0, 1, yMatrix.matrix);
+            linkValues(row, pieces - 2, pieces - 1, derivative, 1, 0, xMatrix.matrix);
+            linkValues(row, pieces - 2, pieces - 1, derivative, 1, 0, yMatrix.matrix);
             row++;
         }
 
         return row;
+    }
+
+    public int setAllValues(int row, int derivative) {
+
+        // The first ControlPoint
+        setValue(row,0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
+        setValue(row,0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
+        row++;
+
+        // ControlPoints with pieces on each side
+        for (int i = 1; i < controlPoints.size() - 1; i++) {
+            setValue(row,i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
+            setValue(row,i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
+            row++;
+            setValue(row,i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
+            setValue(row,i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
+            row++;
+        }
+
+        // The last ControlPoint
+        setValue(row,controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
+        setValue(row,controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
+        row++;
+
+        if (isClosed()) {
+            setValue(row, pieces - 1, derivative, 0, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
+            setValue(row, pieces - 1, derivative, 0, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
+            row++;
+            setValue(row, pieces - 1, derivative, 1, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
+            setValue(row, pieces - 1, derivative, 1, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
+            row++;
+        }
+
+        return row++;
     }
 
     /**

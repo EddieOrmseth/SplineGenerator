@@ -69,47 +69,85 @@ public class PolynomicSpline extends Spline {
     @Override
     public void generate() {
         initializeMatrices();
-        int equation = 0;
+        int row = 0;
 
-        equation = matchPositions(equation);
+        row = matchPositions(row);
 
         for (int i = 0; i < interpolationTypes.size(); i++) {
-
+            switch (interpolationTypes.get(i)) {
+                case Linked:
+                    row = linkAllValues(row, i + 1, xMatrix.matrix);
+                    row = linkAllValues(row, i + 1, yMatrix.matrix);
+                    break;
+                case Hermite:
+                    break;
+                case None:
+                default:
+                    continue;
+            }
         }
     }
 
     /**
      * A method for insuring the splines go through their control points
-     * @param equation The number of the row / equation to start filling
-     * @return The number of rows / equations used by this function
+     * @param row The number of the row to start filling
+     * @return The number of rows used by this function
      */
-    public int matchPositions(int equation) {
-        int p;
-        for (p = 0; p < controlPoints.size() - 1; p++) {
-            insertEquation(equation, p, getEquation(0, 0), controlPoints.get(p).x, xMatrix.matrix);
-            insertEquation(equation, p, getEquation(0, 0), controlPoints.get(p).y, yMatrix.matrix);
+    public int matchPositions(int row) {
 
-            equation++;
+        // The first ControlPoint
+        setValue(row, 0, 0, 0, controlPoints.get(0).x, xMatrix.matrix);
+        setValue(row, 0, 0, 0, controlPoints.get(0).y, yMatrix.matrix);
+        row++;
 
-            insertEquation(equation, p, getEquation(0, 1), controlPoints.get(p + 1).x, xMatrix.matrix);
-            insertEquation(equation, p, getEquation(0, 1), controlPoints.get(p + 1).y, yMatrix.matrix);
+        // ControlPoints with pieces on both sides
+        for (int i = 1; i < controlPoints.size() - 1; i++) {
+            setValue(row, i - 1, 0, 1, controlPoints.get(i).x, xMatrix.matrix);
+            setValue(row, i - 1, 0, 1, controlPoints.get(i).y, yMatrix.matrix);
+            row++;
+            setValue(row, i, 0, 0, controlPoints.get(i).x, xMatrix.matrix);
+            setValue(row, i, 0, 0, controlPoints.get(i).y, yMatrix.matrix);
+            row++;
+        }
 
-            equation++;
+        // The last ControlPoint
+        setValue(row, controlPoints.size() - 1, 0, 1, controlPoints.get(controlPoints.size() - 1).x, xMatrix.matrix);
+        setValue(row, controlPoints.size() - 1, 0, 1, controlPoints.get(controlPoints.size() - 1).y, yMatrix.matrix);
+        row++;
+
+        if (isClosed()) { // Match the positions of the piece connecting the beginning and end
+            setValue(row, pieces - 1, 0, 0, controlPoints.get(controlPoints.size() - 1).x, xMatrix.matrix);
+            setValue(row, pieces - 1, 0, 0, controlPoints.get(controlPoints.size() - 1).y, yMatrix.matrix);
+            row++;
+            setValue(row, pieces - 1, 0, 1, controlPoints.get(0).x, xMatrix.matrix);
+            setValue(row, pieces - 1, 0, 1, controlPoints.get(0).y, yMatrix.matrix);
+            row++;
+        }
+
+        return row;
+    }
+
+    /**
+     * A method for linking all the derivatives of the spline
+     * @param row The row to start filling in
+     * @param derivative The number of times to differentiate
+     * @param matrix The matrix to put the equation into
+     * @return The next row that is available for use
+     */
+    public int linkAllValues(int row, int derivative, double[][] matrix) {
+
+        // ControlPoints with pieces on both sides
+        for (int i = 1; i < controlPoints.size() - 1; i++) {
+            linkValues(row, i - 1, i, derivative, 1, 0, matrix);
+            row++;
         }
 
         if (isClosed()) {
-            insertEquation(equation, p, getEquation(0, 0), controlPoints.get(p).x, xMatrix.matrix);
-            insertEquation(equation, p, getEquation(0, 0), controlPoints.get(p).y, yMatrix.matrix);
-
-            equation++;
-
-            insertEquation(equation, p, getEquation(0, 1), controlPoints.get(0).x, xMatrix.matrix);
-            insertEquation(equation, p, getEquation(0, 1), controlPoints.get(0).y, yMatrix.matrix);
-
-            equation++;
+            linkValues(row, 0, pieces - 1, derivative, 0, 1, matrix);
+            row++;
         }
 
-        return equation;
+        return row;
     }
 
     /**
@@ -118,7 +156,7 @@ public class PolynomicSpline extends Spline {
      * @param value The value to evaluate the function at
      * @return An array of the coefficients for the function multiplied by -1
      */
-    public double[] getNegativeEquation(int derivative, int value) {
+    public double[] getNegativeEquation(int derivative, double value) {
         double[] equation = getEquation(derivative, value);
 
         for (int i = 0; i < equation.length; i++) {
@@ -134,7 +172,7 @@ public class PolynomicSpline extends Spline {
      * @param value The value to evaluate the function at
      * @return An array of the coefficients for the function
      */
-    public double[] getEquation(int derivative, int value) {
+    public double[] getEquation(int derivative, double value) {
         double[] equation;
 
 
@@ -152,6 +190,44 @@ public class PolynomicSpline extends Spline {
         }
 
         return equation;
+    }
+
+    /**
+     * A method for linking values / forcing values to be the same
+     * @param row The row of the matrix to be used
+     * @param equation1 The first equation to be linked
+     * @param equation2 The second equation to be linked
+     * @param derivative The number of times to differentiate
+     * @param value1 The value to evaluate the first function at
+     * @param value2 The value to evaluate the second function at
+     * @param matrix The matrix in which to put the equation
+     * @return The number of the next row to use
+     */
+    public int linkValues(int row, int equation1, int equation2, int derivative, double value1, double value2, double[][] matrix) {
+
+        insertEquation(row, equation1, getNegativeEquation(derivative, value1), matrix);
+        insertEquation(row, equation2, getEquation(derivative, value2), 0, matrix);
+        row++;
+
+        return row;
+    }
+
+    /**
+     * A method for setting the value of an equation
+     * @param row The row of the matrix to be used
+     * @param equation The equation of the value to be set
+     * @param derivative The number of times to differentiate
+     * @param value The value to evaluate the function at
+     * @param finalValue The value to be inserted at the end the line, the value to which the equation equals
+     * @param matrix The matrix in which to put the equation
+     * @return The number of the next row to use
+     */
+    public int setValue(int row, int equation, int derivative, double value, double finalValue, double[][] matrix) {
+
+        insertEquation(equation, equation, getEquation(derivative, value), finalValue, matrix);
+        row++;
+
+        return row;
     }
 
 }

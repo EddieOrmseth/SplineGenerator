@@ -21,6 +21,7 @@ public class ControlPoint {
     public ControlPoint(double x, double y, double radians) {
         this(x, y);
         firstDer = new Direction(radians);
+        headings.add(firstDer);
     }
 
 }

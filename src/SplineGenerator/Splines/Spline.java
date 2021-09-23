@@ -1,6 +1,7 @@
 package SplineGenerator.Splines;
 
 import SplineGenerator.Util.ControlPoint;
+import SplineGenerator.Util.InterpolationInfo;
 import SplineGenerator.Util.Matrix;
 
 import java.util.ArrayList;
@@ -56,6 +57,24 @@ public abstract class Spline {
     }
 
     /**
+     * An enumeration for specifying what to do at the end of the spline with regard to InterpolationType
+     */
+    public enum EndBehavior {
+        /**
+         * Get the value from the user
+         */
+        Hermite,
+        /**
+         * Use the vector between the nth derivative at the only adjacent point
+         */
+        CatmulRom,
+        /**
+         * There is no specified end behavior method
+         */
+        None
+    }
+
+    /**
      * An ArrayList<ControlPoint> for holding the ControlPoints the spline will be generated for
      */
     public ArrayList<ControlPoint> controlPoints;
@@ -63,7 +82,7 @@ public abstract class Spline {
     /**
      * An ArrayList<InterpolationType> for holding the type of interpolation where the index is the (n + 1)th derivative
      */
-    public ArrayList<InterpolationType> interpolationTypes;
+    public ArrayList<InterpolationInfo> interpolationTypes;
 
     /**
      * A Matrix for holding the parametric-x equations
@@ -78,7 +97,7 @@ public abstract class Spline {
     /**
      * A boolean to note whether or not to close the spline, this has effects on interpolation methods;
      */
-    private boolean closed = false;
+    public boolean closed = false;
 
     /**
      * The number of pieces the spline is composed of
@@ -112,6 +131,7 @@ public abstract class Spline {
     public Spline(SplineType splineType) {
         this.splineType = splineType;
         controlPoints = new ArrayList<>();
+        interpolationTypes = new ArrayList<>();
     }
 
     /**
@@ -245,6 +265,32 @@ public abstract class Spline {
         for (int i = 0; i < equation.length; i++) {
             matrix[row][piece * equation.length + i] = equation[i];
         }
+    }
+
+    /**
+     * A method for getting the string representation of the spline
+     * @return The string representation of the spline
+     */
+    @Override
+    public String toString() {
+        return "X Matrix:\n" + xMatrix + "\nY Matrix:\n" + yMatrix;
+    }
+
+    /**
+     * A method for getting the parametric equations to put into desmos
+     * @return the parametric equations to put into desmos
+     */
+    public String getDesmosEquations() {
+        StringBuilder builder = new StringBuilder();
+        int lastSpot = xMatrix.getWidth() - 1;
+
+        for (int i = 0; i < pieces; i++) {
+            builder.append("For ").append(i).append("<t<").append(i + 1).append("\n");
+            builder.append("(").append(xMatrix.get((i * 4) + 0, lastSpot)).append("t^3 + ").append(xMatrix.get((i * 4) + 1, lastSpot)).append("t^2 + ").append(xMatrix.get((i * 4) + 2, lastSpot)).append("t + ").append(xMatrix.get((i * 4) + 3, lastSpot));
+            builder.append(", ").append(yMatrix.get((i * 4) + 0, lastSpot)).append("t^3 + ").append(yMatrix.get((i * 4) + 1, lastSpot)).append("t^2 + ").append(yMatrix.get((i * 4) + 2, lastSpot)).append("t + ").append(yMatrix.get((i * 4) + 3, lastSpot)).append(")\n");
+        }
+
+        return builder.toString();
     }
 
 }

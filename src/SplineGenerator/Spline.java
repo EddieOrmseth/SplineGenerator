@@ -1,12 +1,19 @@
 package SplineGenerator;
 
+import SplineGenerator.Util.ControlPoint;
+import SplineGenerator.Util.Direction;
+import SplineGenerator.Util.Matrix;
+
 import java.util.ArrayList;
 
 public class Spline {
 
     public enum SplineType {
         Cubic,
-        Quintic
+        Quartic,
+        Quintic,
+        Trigonometric,
+        Hyperbolic
     }
 
     public enum InterpolationMethod {
@@ -197,13 +204,13 @@ public class Spline {
 
     public int matchGivenInitialSlopes(int equation) {
 
-        insertEquation(equation, 0, getEquation(1, 0), controlPoints.get(0).heading.x, xMatrix.matrix);
-        insertEquation(equation, 0, getEquation(1, 0), controlPoints.get(0).heading.y, yMatrix.matrix);
+        insertEquation(equation, 0, getEquation(1, 0), controlPoints.get(0).firstDer.x, xMatrix.matrix);
+        insertEquation(equation, 0, getEquation(1, 0), controlPoints.get(0).firstDer.y, yMatrix.matrix);
 
         equation++;
 
-        insertEquation(equation, numEquations - 1, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).heading.x, xMatrix.matrix);
-        insertEquation(equation, numEquations - 1, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).heading.y, yMatrix.matrix);
+        insertEquation(equation, numEquations - 1, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).firstDer.x, xMatrix.matrix);
+        insertEquation(equation, numEquations - 1, getEquation(1, 1), controlPoints.get(controlPoints.size() - 1).firstDer.y, yMatrix.matrix);
 
         equation++;
 
@@ -214,13 +221,13 @@ public class Spline {
         int i;
         for (i = 1; i < controlPoints.size() - 1; i++) {
 
-            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.x, xMatrix.matrix);
-            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.y, yMatrix.matrix);
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).firstDer.x, xMatrix.matrix);
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).firstDer.y, yMatrix.matrix);
 
             equation++;
 
-            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.x, xMatrix.matrix);
-            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.y, yMatrix.matrix);
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).firstDer.x, xMatrix.matrix);
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).firstDer.y, yMatrix.matrix);
 
             equation++;
 
@@ -228,13 +235,13 @@ public class Spline {
 
         if (closed) {
 
-            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.x, xMatrix.matrix);
-            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).heading.y, yMatrix.matrix);
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).firstDer.x, xMatrix.matrix);
+            insertEquation(equation, i - 1, getEquation(1, 1), controlPoints.get(i).firstDer.y, yMatrix.matrix);
 
             equation++;
 
-            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.x, xMatrix.matrix);
-            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).heading.y, yMatrix.matrix);
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).firstDer.x, xMatrix.matrix);
+            insertEquation(equation, i, getEquation(1, 0), controlPoints.get(i).firstDer.y, yMatrix.matrix);
 
             equation++;
 
@@ -250,19 +257,19 @@ public class Spline {
             xDiff = controlPoints.get(i + 1).x - controlPoints.get(i - 1).x;
             yDiff = controlPoints.get(i + 1).y - controlPoints.get(i - 1).y;
 
-            controlPoints.get(i).heading = new Direction(xDiff, yDiff);
+            controlPoints.get(i).firstDer = new Direction(xDiff, yDiff);
         }
 
         if (closed) {
             xDiff = controlPoints.get(1).x - controlPoints.get(controlPoints.size() - 1).x;
             yDiff = controlPoints.get(1).y - controlPoints.get(controlPoints.size() - 1).y;
 
-            controlPoints.get(0).heading = new Direction(xDiff, yDiff);
+            controlPoints.get(0).firstDer = new Direction(xDiff, yDiff);
 
             xDiff = controlPoints.get(0).x - controlPoints.get(controlPoints.size() - 2).x;
             yDiff = controlPoints.get(0).y - controlPoints.get(controlPoints.size() - 2).y;
 
-            controlPoints.get(controlPoints.size() - 1).heading = new Direction(xDiff, yDiff);
+            controlPoints.get(controlPoints.size() - 1).firstDer = new Direction(xDiff, yDiff);
         }
     }
 

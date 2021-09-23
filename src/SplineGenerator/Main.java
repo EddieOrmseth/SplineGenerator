@@ -1,5 +1,7 @@
 package SplineGenerator;
 
+import SplineGenerator.Util.ControlPoint;
+
 public class Main {
 
     public static void main(String[] args) {

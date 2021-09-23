@@ -1,4 +1,4 @@
-package SplineGenerator;
+package SplineGenerator.Util;
 
 public class Direction {
 

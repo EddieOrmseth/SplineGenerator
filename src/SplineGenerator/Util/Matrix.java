@@ -1,4 +1,4 @@
-package SplineGenerator;
+package SplineGenerator.Util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,28 +43,18 @@ public class Matrix {
             solve(row + 1, column + 1);
         } else {
              if (gaussianArrange(row, column)) {
+//                 System.out.println(this);
                 solve(row, column);
             } else {
+                 System.out.println("Failed At This Point In Solving Matrix: \n" + this);
                 throw new IllegalArgumentException("Failed to Solve Matrix");
 //                solve(row + 1, column + 1);
             }
         }
     }
 
-    public void correctFloats() {
-        for (int r = 0; r < matrix.length; r++) {
-            for (int c = 0; c < matrix[0].length; c++) {
-                if (Math.abs(1 - matrix[r][c]) < floatThresh) {
-                    matrix[r][c] = 1;
-                } else if (Math.abs(matrix[r][c]) < floatThresh) {
-                    matrix[r][c] = 0;
-                }
-            }
-        }
-    }
-
     public boolean gaussianArrange(int row, int column) {
-        System.out.println("Rearrange");
+        System.out.println("Gaussian Arrange");
         if (matrix[row][column] == 0) {
             for (int r = row; r < matrix.length; r++) {
                 if (matrix[r][column] != 0) {
@@ -79,10 +69,18 @@ public class Matrix {
         return false;
     }
 
-    /**
-     *
-     * @return
-     */
+    public void correctFloats() {
+        for (int r = 0; r < matrix.length; r++) {
+            for (int c = 0; c < matrix[0].length; c++) {
+                if (Math.abs(1 - matrix[r][c]) < floatThresh) {
+                    matrix[r][c] = 1;
+                } else if (Math.abs(matrix[r][c]) < floatThresh) {
+                    matrix[r][c] = 0;
+                }
+            }
+        }
+    }
+
     public boolean isSolved() {
         for (int r = 0; r < matrix.length; r++) {
             for (int c = 0; c < matrix[0].length - 1; c++) {

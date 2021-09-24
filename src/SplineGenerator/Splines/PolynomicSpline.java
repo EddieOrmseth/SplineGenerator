@@ -32,6 +32,7 @@ public class PolynomicSpline extends Spline {
 
     /**
      * A method for setting the PolynomicType
+     *
      * @param polynomicType The PolynomicType to be set to
      */
     public void setPolynomicType(PolynomicType polynomicType) {

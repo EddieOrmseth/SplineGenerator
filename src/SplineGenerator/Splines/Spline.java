@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 /**
  * An abstract class to hold methods and fields that may be used by one or more subclasses / subtypes of splines.
+ *
  * @author Eddie Ormseth
  */
 public abstract class Spline {
@@ -136,6 +137,7 @@ public abstract class Spline {
 
     /**
      * Default and only constructor for the spline super-class, all fields in this class will be initialized here if necessary
+     *
      * @param splineType The type of spline to be generated, this will be always determined by the subclass's constructor
      */
     public Spline(SplineType splineType) {
@@ -155,6 +157,7 @@ public abstract class Spline {
 
     /**
      * A method for getting the number of equations that the matrix can hold
+     *
      * @return the number of equations that the matrix can hold
      */
     public int getNumEquations() {
@@ -166,6 +169,7 @@ public abstract class Spline {
 
     /**
      * A method to tell if the spline is registered as closed or not
+     *
      * @return Whether or not the spline is closed
      */
     public boolean isClosed() {
@@ -174,6 +178,7 @@ public abstract class Spline {
 
     /**
      * A method for getting the number of pieces the spline is composed of
+     *
      * @return The number of pieces the spline is composed of
      */
     public int getNumPieces() {
@@ -182,6 +187,7 @@ public abstract class Spline {
 
     /**
      * A method for adding a ControlPoint to the spline, this method appends the ControlPoint to the end of the list
+     *
      * @param controlPoint The ControlPoint object to be added
      */
     public void addControlPoint(ControlPoint controlPoint) {
@@ -191,6 +197,7 @@ public abstract class Spline {
 
     /**
      * A method for removing a ControlPoint from the spline
+     *
      * @param controlPoint The ControlPoint object to be removed
      */
     public void removeControlPoint(ControlPoint controlPoint) {
@@ -228,6 +235,7 @@ public abstract class Spline {
 
     /**
      * A method for getting the next ControlPoint in the sequence
+     *
      * @return The ControlPoint that is marked as the being the first in the sequence
      */
     public ControlPoint getFirst() {
@@ -253,11 +261,12 @@ public abstract class Spline {
 
     /**
      * A method to insert an equation into the matrix
-     * @param row The row to insert the equation into
-     * @param piece The piece that the equation is a part of
-     * @param equation The equation to be inserted
+     *
+     * @param row        The row to insert the equation into
+     * @param piece      The piece that the equation is a part of
+     * @param equation   The equation to be inserted
      * @param finalValue The value to be placed on the final line of the matrix
-     * @param matrix The matrix in which to insert the equation
+     * @param matrix     The matrix in which to insert the equation
      */
     public void insertEquation(int row, int piece, double[] equation, double finalValue, double[][] matrix) {
         for (int i = 0; i < equation.length; i++) {
@@ -268,10 +277,11 @@ public abstract class Spline {
 
     /**
      * A method to insert an equation into the matrix
-     * @param row The row to insert the equation into
-     * @param piece The piece that the equation is a part of
+     *
+     * @param row      The row to insert the equation into
+     * @param piece    The piece that the equation is a part of
      * @param equation The equation to be inserted
-     * @param matrix The matrix in which to insert the equation
+     * @param matrix   The matrix in which to insert the equation
      */
     public void insertEquation(int row, int piece, double[] equation, double[][] matrix) {
         for (int i = 0; i < equation.length; i++) {
@@ -281,6 +291,7 @@ public abstract class Spline {
 
     /**
      * A method for getting the string representation of the spline
+     *
      * @return The string representation of the spline
      */
     @Override
@@ -290,6 +301,7 @@ public abstract class Spline {
 
     /**
      * A method for getting the parametric equations to put into desmos
+     *
      * @return The parametric equations to put into desmos
      */
     public String getDesmosEquations() {

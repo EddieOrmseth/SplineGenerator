@@ -94,12 +94,33 @@ public class PolynomicSpline extends Spline {
                     }
                     break;
                 case Hermite:
-                    row = setAllValues(row, 1);
+                    row = setAllValues(row, i + 1);
                     break;
                 case None:
+                    if (!isClosed()) {
+                        switch (interpolationTypes.get(i).endBehavior) {
+                            case Hermite:
+                                setValue(row, 0, i + 1, 0, controlPoints.get(0).headings.get(i).x, xMatrix.matrix);
+                                setValue(row, 0, i + 1, 0, controlPoints.get(0).headings.get(i).y, yMatrix.matrix);
+                                row++;
+                                setValue(row, pieces - 1, i + 1, 1, controlPoints.get(controlPoints.size() - 1).headings.get(i).x, xMatrix.matrix);
+                                setValue(row, pieces - 1, i + 1, 1, controlPoints.get(controlPoints.size() - 1).headings.get(i).y, yMatrix.matrix);
+                                row++;
+                                break;
+                            case None:
+                            default:
+                                break;
+                        }
+                    }
                 default:
                     continue;
             }
+        }
+
+        for (int i = 0; i < addedRowsX.size(); i++) {
+            insertEquation(row, 0, addedRowsX.get(i), xMatrix.matrix);
+            insertEquation(row, 0, addedRowsY.get(i), yMatrix.matrix);
+            row++;
         }
 
         System.out.println(this);
@@ -110,6 +131,7 @@ public class PolynomicSpline extends Spline {
 
     /**
      * A method for insuring the splines go through their control points
+     *
      * @param row The number of the row to start filling
      * @return The number of rows used by this function
      */
@@ -149,7 +171,8 @@ public class PolynomicSpline extends Spline {
 
     /**
      * A method for linking all the derivatives of the spline
-     * @param row The row to start filling in
+     *
+     * @param row        The row to start filling in
      * @param derivative The number of times to differentiate
      * @return The next row that is available for use
      */
@@ -174,26 +197,33 @@ public class PolynomicSpline extends Spline {
         return row;
     }
 
+    /**
+     * A method for setting all the values to the given value for a certain derivative
+     *
+     * @param row        The number of the row to start filling with equations
+     * @param derivative The number of times to differentiate
+     * @return The index of the next row to start filling with equations
+     */
     public int setAllValues(int row, int derivative) {
 
         // The first ControlPoint
-        setValue(row,0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
-        setValue(row,0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
+        setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
+        setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
         row++;
 
         // ControlPoints with pieces on each side
         for (int i = 1; i < controlPoints.size() - 1; i++) {
-            setValue(row,i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
-            setValue(row,i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
+            setValue(row, i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
+            setValue(row, i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
             row++;
-            setValue(row,i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
-            setValue(row,i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
+            setValue(row, i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
+            setValue(row, i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
             row++;
         }
 
         // The last ControlPoint
-        setValue(row,controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
-        setValue(row,controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
+        setValue(row, controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
+        setValue(row, controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
         row++;
 
         if (isClosed()) {
@@ -210,8 +240,9 @@ public class PolynomicSpline extends Spline {
 
     /**
      * A method for getting an equation multiplied by -1
+     *
      * @param derivative The number of times to differentiate
-     * @param value The value to evaluate the function at
+     * @param value      The value to evaluate the function at
      * @return An array of the coefficients for the function multiplied by -1
      */
     public double[] getNegativeEquation(int derivative, double value) {
@@ -226,8 +257,9 @@ public class PolynomicSpline extends Spline {
 
     /**
      * A method that gets the list of coefficients for the nth derivative at a certain value
+     *
      * @param derivative The number of times to differentiate
-     * @param value The value to evaluate the function at
+     * @param value      The value to evaluate the function at
      * @return An array of the coefficients for the function
      */
     public double[] getEquation(int derivative, double value) {
@@ -244,7 +276,7 @@ public class PolynomicSpline extends Spline {
             } else {
                 pow = 0;
             }
-            equation[i] =  derivCo * pow;
+            equation[i] = derivCo * pow;
         }
 
         return equation;
@@ -252,13 +284,14 @@ public class PolynomicSpline extends Spline {
 
     /**
      * A method for linking values / forcing values to be the same
-     * @param row The row of the matrix to be used
-     * @param equation1 The first equation to be linked
-     * @param equation2 The second equation to be linked
+     *
+     * @param row        The row of the matrix to be used
+     * @param equation1  The first equation to be linked
+     * @param equation2  The second equation to be linked
      * @param derivative The number of times to differentiate
-     * @param value1 The value to evaluate the first function at
-     * @param value2 The value to evaluate the second function at
-     * @param matrix The matrix in which to put the equation
+     * @param value1     The value to evaluate the first function at
+     * @param value2     The value to evaluate the second function at
+     * @param matrix     The matrix in which to put the equation
      * @return The number of the next row to use
      */
     public int linkValues(int row, int equation1, int equation2, int derivative, double value1, double value2, double[][] matrix) {
@@ -272,12 +305,13 @@ public class PolynomicSpline extends Spline {
 
     /**
      * A method for setting the value of an equation
-     * @param row The row of the matrix to be used
-     * @param piece The equation of the value to be set
+     *
+     * @param row        The row of the matrix to be used
+     * @param piece      The equation of the value to be set
      * @param derivative The number of times to differentiate
-     * @param value The value to evaluate the function at
+     * @param value      The value to evaluate the function at
      * @param finalValue The value to be inserted at the end the line, the value to which the equation equals
-     * @param matrix The matrix in which to put the equation
+     * @param matrix     The matrix in which to put the equation
      * @return The number of the next row to use
      */
     public int setValue(int row, int piece, int derivative, double value, double finalValue, double[][] matrix) {
@@ -286,6 +320,42 @@ public class PolynomicSpline extends Spline {
         row++;
 
         return row;
+    }
+
+    /**
+     * A method for getting the parametric equations to put into desmos
+     *
+     * @return The parametric equations to put into desmos
+     */
+    @Override
+    public String getDesmosEquations() {
+        StringBuilder builder = new StringBuilder();
+        int lastSpot = xMatrix.getWidth() - 1;
+
+        for (int p = 0; p < pieces; p++) {
+            builder.append("For ").append(p).append("<t<").append(p + 1).append("\n");
+            builder.append("(");
+            for (int t = 0; t < termsPerPiece; t++) {
+//                builder.append("(").append(xMatrix.get((i * termsPerPiece) + 0, lastSpot)).append("t^3 + ").append(xMatrix.get((i * termsPerPiece) + 1, lastSpot)).append("t^2 + ").append(xMatrix.get((i * termsPerPiece) + 2, lastSpot)).append("t + ").append(xMatrix.get((i * termsPerPiece) + 3, lastSpot));
+//                builder.append(", ").append(yMatrix.get((i * termsPerPiece) + 0, lastSpot)).append("t^3 + ").append(yMatrix.get((i * termsPerPiece) + 1, lastSpot)).append("t^2 + ").append(yMatrix.get((i * termsPerPiece) + 2, lastSpot)).append("t + ").append(yMatrix.get((i * termsPerPiece) + 3, lastSpot)).append(")\n");
+                builder.append(xMatrix.matrix[(p * termsPerPiece) + t][lastSpot]).append("t^").append(termsPerPiece - (t + 1));
+                if (t < termsPerPiece - 1) {
+                    builder.append(" + ");
+                }
+            }
+            builder.append(", ");
+            for (int t = 0; t < termsPerPiece; t++) {
+//                builder.append("(").append(xMatrix.get((i * termsPerPiece) + 0, lastSpot)).append("t^3 + ").append(xMatrix.get((i * termsPerPiece) + 1, lastSpot)).append("t^2 + ").append(xMatrix.get((i * termsPerPiece) + 2, lastSpot)).append("t + ").append(xMatrix.get((i * termsPerPiece) + 3, lastSpot));
+//                builder.append(", ").append(yMatrix.get((i * termsPerPiece) + 0, lastSpot)).append("t^3 + ").append(yMatrix.get((i * termsPerPiece) + 1, lastSpot)).append("t^2 + ").append(yMatrix.get((i * termsPerPiece) + 2, lastSpot)).append("t + ").append(yMatrix.get((i * termsPerPiece) + 3, lastSpot)).append(")\n");
+                builder.append(yMatrix.matrix[(p * termsPerPiece) + t][lastSpot]).append("t^").append(termsPerPiece - (t + 1));
+                if (t < termsPerPiece - 1) {
+                    builder.append(" + ");
+                }
+            }
+            builder.append(")\n");
+        }
+
+        return builder.toString();
     }
 
 }

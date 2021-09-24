@@ -85,6 +85,16 @@ public abstract class Spline {
     public ArrayList<InterpolationInfo> interpolationTypes;
 
     /**
+     * An ArrayList<double[]> for holding extra equations that must be added to the xMatrix but are not covered by the InterpolationTypes
+     */
+    public ArrayList<double[]> addedRowsX;
+
+    /**
+     * An ArrayList<double[]> for holding extra equations that must be added to the yMatrix but are not covered by the InterpolationTypes
+     */
+    public ArrayList<double[]> addedRowsY;
+
+    /**
      * A Matrix for holding the parametric-x equations
      */
     public Matrix xMatrix;
@@ -132,6 +142,8 @@ public abstract class Spline {
         this.splineType = splineType;
         controlPoints = new ArrayList<>();
         interpolationTypes = new ArrayList<>();
+        addedRowsX = new ArrayList<>();
+        addedRowsY = new ArrayList<>();
     }
 
     /**
@@ -278,7 +290,7 @@ public abstract class Spline {
 
     /**
      * A method for getting the parametric equations to put into desmos
-     * @return the parametric equations to put into desmos
+     * @return The parametric equations to put into desmos
      */
     public String getDesmosEquations() {
         StringBuilder builder = new StringBuilder();

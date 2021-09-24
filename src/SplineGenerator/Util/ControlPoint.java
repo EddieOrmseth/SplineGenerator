@@ -18,10 +18,19 @@ public class ControlPoint {
         headings = new ArrayList<>();
     }
 
-    public ControlPoint(double x, double y, double radians) {
+    /**
+     * A constructor that sets all the necessary values of the ControlPoint
+     * @param x The x position of the point
+     * @param y The y position of the point
+     * @param headings Direction of the nth derivative, in radians
+     */
+    public ControlPoint(double x, double y, double... headings) {
         this(x, y);
-        firstDer = new Direction(radians);
-        headings.add(firstDer);
+//        firstDer = new Direction(radians);
+//        headings.add(firstDer);
+        for (int i = 0; i < headings.length; i++) {
+            this.headings.add(new Direction(headings[i]));
+        }
     }
 
 }

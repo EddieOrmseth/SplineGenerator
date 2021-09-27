@@ -143,7 +143,7 @@ public class PolynomicSpline extends Spline {
      * A method for insuring the splines go through their control points
      *
      * @param row The number of the row to start filling
-     * @return The number of rows used by this function
+     * @return The number of the next row available for use
      */
     public int matchPositions(int row) {
 

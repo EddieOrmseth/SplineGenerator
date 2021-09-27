@@ -37,9 +37,10 @@ public class Main {
         spline.addControlPoint(new ControlPoint(0, 6));
         spline.addControlPoint(new ControlPoint(-2, 0));
         spline.addControlPoint(new ControlPoint(0, 2, Math.PI / 2));
-        spline.addControlPoint(new ControlPoint(1, 1, Math.PI / 2));
+        spline.addControlPoint(new ControlPoint(-5, 5, Math.PI / 2));
 
         spline.setPolynomicType(PolynomicSpline.PolynomicType.Quartic);
+//        spline.closed = true;
 
         InterpolationInfo c1 = new InterpolationInfo();
         c1.interpolationType = Spline.InterpolationType.Linked;
@@ -55,7 +56,7 @@ public class Main {
         c3.interpolationType = Spline.InterpolationType.Linked;
         c3.endBehavior = Spline.EndBehavior.None;
         spline.interpolationTypes.add(c3);
-
+//
         double[][] added = new double[4][10];
         spline.insertEquation(0, 0, spline.getEquation(2, 0), 0, added);
         spline.insertEquation(1, 0, spline.getEquation(2, 0), 0, added);

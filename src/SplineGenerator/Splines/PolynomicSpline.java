@@ -12,8 +12,17 @@ public class PolynomicSpline extends Spline {
      * An enumeration for the different types of polynomic splines
      */
     public enum PolynomicType {
+        /**
+         * The spline is of the 3rd order (4 terms)
+         */
         Cubic,
+        /**
+         * The spline is of the 4th order (5 terms)
+         */
         Quartic,
+        /**
+         * The spline is of the 5th order (6 terms)
+         */
         Quintic
     }
 

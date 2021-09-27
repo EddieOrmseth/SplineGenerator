@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 /**
  * An abstract class to hold methods and fields that may be used by one or more subclasses / subtypes of splines.
- *
- * @author Eddie Ormseth
  */
 public abstract class Spline {
 

@@ -30,7 +30,7 @@ public class Direction {
     /**
      * A constructor that uses an amount of radians to create the vector
      *
-     * @param radians
+     * @param radians The angle of the direction in radians
      */
     public Direction(double radians) {
         x = Math.cos(radians);

@@ -1,77 +1,16 @@
 package SplineGenerator.Splines;
 
 import SplineGenerator.Util.ControlPoint;
+import SplineGenerator.Util.Direction;
 import SplineGenerator.Util.InterpolationInfo;
 import SplineGenerator.Util.Matrix;
 
 import java.util.ArrayList;
 
 /**
- * An abstract class to hold methods and fields that may be used by one or more subclasses / subtypes of splines.
+ * An abstract class to hold methods and fields that may be used by one or more subclasses / subtypes of splines
  */
 public abstract class Spline {
-
-    /**
-     * An enumeration for the type of spline to be created
-     */
-    public enum SplineType {
-        /**
-         * A spline composed of polynomials
-         */
-        Polynomic,
-        /**
-         * A spline composed of trigonometric functions
-         */
-        Trigonometric,
-        /**
-         * A spline composed of hyperbolic functions
-         */
-        Hyperbolic
-    }
-
-    /**
-     * An enumeration for the type of interpolation that decides the nth derivative at each ControlPoint
-     */
-    public enum InterpolationType {
-        /**
-         * The only requirement is that the nth derivatives be the same for each segment at that point
-         */
-        Linked,
-        /**
-         * The nth derivative at each point must be equal to the user-given value
-         */
-        Hermite,
-        /**
-         * The nth derivative between the two points on either side decides the slope at the point
-         */
-        CatmulRom,
-        /**
-         * The nth derivative is decided by a parameter k, used to generalize CatmulRom splines
-         */
-        Cardinal,
-        /**
-         * There is no specified interpolation method
-         */
-        None
-    }
-
-    /**
-     * An enumeration for specifying what to do at the end of the spline with regard to InterpolationType
-     */
-    public enum EndBehavior {
-        /**
-         * Get the value from the user
-         */
-        Hermite,
-        /**
-         * Use the vector between the nth derivative at the only adjacent point
-         */
-        CatmulRom,
-        /**
-         * There is no specified end behavior method
-         */
-        None
-    }
 
     /**
      * An ArrayList<ControlPoint> for holding the ControlPoints the spline will be generated for
@@ -288,6 +227,19 @@ public abstract class Spline {
     }
 
     /**
+     * A method for setting the given slopes as the Catmul-Rom type / the slope between the surrounding points
+     */
+    public void setMiddleCatmulRomSlopes(int heading) {
+        for (int i = 1; i < controlPoints.size() - 1; i++) {
+            controlPoints.get(i).headings.set(heading, new Direction(controlPoints.get(i + 1).x - controlPoints.get(i - 1).x, controlPoints.get(i + 1).y - controlPoints.get(i - 1).y));
+        }
+
+        if (isClosed()) {
+            controlPoints.get(0).headings.set(heading, new Direction(controlPoints.get(controlPoints.size() - 1).x - controlPoints.get(1).x, controlPoints.get(controlPoints.size() - 1).y - controlPoints.get(1).y));
+            controlPoints.get(controlPoints.size() - 1).headings.set(heading, new Direction(controlPoints.get(controlPoints.size() - 2).x - controlPoints.get(0).x, controlPoints.get(controlPoints.size() - 2).y - controlPoints.get(0).y));
+        }
+    }
+    /**
      * A method for getting the string representation of the spline
      *
      * @return The string representation of the spline
@@ -313,6 +265,86 @@ public abstract class Spline {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * An enumeration for the type of spline to be created
+     */
+    public enum SplineType {
+        /**
+         * A spline composed of polynomials
+         */
+        Polynomic,
+        /**
+         * A spline composed of trigonometric functions
+         */
+        Trigonometric,
+        /**
+         * A spline composed of hyperbolic functions
+         */
+        Hyperbolic
+    }
+
+    /**
+     * An enumeration for the type of interpolation that decides the nth derivative at each ControlPoint
+     */
+    public enum InterpolationType {
+        /**
+         * The only requirement is that the nth derivatives be the same for each segment at that point
+         */
+        Linked,
+        /**
+         * The nth derivative at each point must be equal to the user-given value
+         */
+        Hermite,
+        /**
+         * The nth derivative between the two points on either side decides the slope at the point
+         */
+        CatmulRom,
+        /**
+         * The nth derivative is decided by a parameter k, used to generalize CatmulRom splines
+         */
+        Cardinal,
+        /**
+         * There is no specified interpolation method
+         */
+        None
+    }
+
+    /**
+     * An enumeration for specifying what to do at the end of the spline with regard to InterpolationType
+     */
+    public enum EndBehavior {
+        /**
+         * Get the value from the user
+         */
+        Hermite,
+        /**
+         * Use the vector between the nth derivative at the only adjacent point
+         */
+        CatmulRom,
+        /**
+         * There is no specified end behavior method
+         */
+        None
+    }
+
+    /**
+     * An enumeration detailing where the constraints of the EndBehavior should be put into effect, primarily used for making sure the number of equations is correct
+     */
+    public enum EndBehaviorEffect {
+        /**
+         * The EndBehavior should be applied at both ends of the spline
+         */
+        Both,
+        /**
+         * The EndBehavior should be applied only at the beginning of the spline
+         */
+        Beginning,
+        /**
+         * The EndBehavior should be applied only at the end of the spline
+         */
+        Ending
     }
 
 }

@@ -1,5 +1,6 @@
 package SplineGenerator;
 
+import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.ControlPoint;
@@ -57,21 +58,13 @@ public class Main {
 //        c3.interpolationType = Spline.InterpolationType.Linked;
 //        c3.endBehavior = Spline.EndBehavior.None;
 //        spline.interpolationTypes.add(c3);
-//
-//        double[][] added = new double[4][10];
-//        spline.insertEquation(0, 0, spline.getEquation(2, 0), 0, added);
-//        spline.insertEquation(1, 0, spline.getEquation(2, 0), 0, added);
-//        spline.insertEquation(2, 1, spline.getEquation(2, 1), 0, added);
-//        spline.insertEquation(3, 1, spline.getEquation(2, 1), 0, added);
-//
-//        spline.addedRowsX.add(added[0]);
-//        spline.addedRowsY.add(added[1]);
-//        spline.addedRowsX.add(added[2]);
-//        spline.addedRowsY.add(added[3]);
 
         spline.generate();
         System.out.println(spline);
         System.out.println(spline.getDesmosEquations());
+
+        SplineDisplay display = new SplineDisplay(spline);
+        display.create();
     }
 
 }

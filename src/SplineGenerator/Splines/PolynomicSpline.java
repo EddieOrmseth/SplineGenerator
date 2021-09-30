@@ -1,8 +1,11 @@
 package SplineGenerator.Splines;
 
+import SplineGenerator.Util.BetterPoint;
 import SplineGenerator.Util.InterpolationInfo;
 import SplineGenerator.Util.Matrix;
 import SplineGenerator.Util.SplineMath;
+
+import java.awt.*;
 
 /**
  * A class for creating polynomic splines
@@ -40,6 +43,28 @@ public class PolynomicSpline extends Spline {
                 termsPerPiece = 6;
                 break;
         }
+    }
+
+    /**
+     * The polynomic specific implementation of get
+     *
+     * @param t The value to evaluate the spline at
+     * @return The value of the function at t
+     */
+    @Override
+    public BetterPoint get(double t) {
+        BetterPoint point = new BetterPoint();
+
+        int row = ((int) t) * termsPerPiece;
+        int lastSpot = xMatrix.matrix[0].length - 1;
+        double tValue = t - ((int) t);
+
+        for (int i = 0; i < termsPerPiece; i++) {
+            point.x += xMatrix.matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1));
+            point.y += yMatrix.matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1));
+        }
+
+        return point;
     }
 
     /**

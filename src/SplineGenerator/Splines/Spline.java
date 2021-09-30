@@ -1,10 +1,8 @@
 package SplineGenerator.Splines;
 
-import SplineGenerator.Util.ControlPoint;
-import SplineGenerator.Util.Direction;
-import SplineGenerator.Util.InterpolationInfo;
-import SplineGenerator.Util.Matrix;
+import SplineGenerator.Util.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -187,6 +185,14 @@ public abstract class Spline {
     }
 
     /**
+     * A method for getting the value at a specified t-value
+     *
+     * @param t The position to get the value at
+     * @return The position of the function evaluated at t
+     */
+    public abstract BetterPoint get(double t);
+
+    /**
      * A method for initializing the matrices to the correct size
      */
     public abstract void initializeMatrices();
@@ -239,6 +245,7 @@ public abstract class Spline {
             controlPoints.get(controlPoints.size() - 1).headings.set(heading, new Direction(controlPoints.get(controlPoints.size() - 2).x - controlPoints.get(0).x, controlPoints.get(controlPoints.size() - 2).y - controlPoints.get(0).y));
         }
     }
+
     /**
      * A method for getting the string representation of the spline
      *

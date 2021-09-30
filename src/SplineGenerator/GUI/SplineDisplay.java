@@ -76,6 +76,7 @@ public class SplineDisplay extends JFrame {
     public SplineDisplay(Spline spline) {
         this.spline = spline;
         image = new BufferedImage(800, 500, 1);
+        setTitle("Spline Display");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 

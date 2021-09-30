@@ -45,13 +45,13 @@ public class Main {
 
         InterpolationInfo c1 = new InterpolationInfo();
         c1.interpolationType = Spline.InterpolationType.Linked;
-        c1.endBehavior = Spline.EndBehavior.None;
+        c1.endBehavior = Spline.EndBehavior.Hermite;
         spline.interpolationTypes.add(c1);
 
         InterpolationInfo c2 = new InterpolationInfo();
         c2.interpolationType = Spline.InterpolationType.Linked;
-        c2.endBehavior = Spline.EndBehavior.Hermite;
-//        c2.endEffect = Spline.EndBehaviorEffect.Beginning;
+        c2.endBehavior = Spline.EndBehavior.None;
+        c2.endEffect = Spline.EndBehaviorEffect.Beginning;
         spline.interpolationTypes.add(c2);
 
 //        InterpolationInfo c3 = new InterpolationInfo();
@@ -64,7 +64,7 @@ public class Main {
         System.out.println(spline.getDesmosEquations());
 
         SplineDisplay display = new SplineDisplay(spline);
-        display.create();
+        display.display();
     }
 
 }

@@ -26,32 +26,47 @@ public class SplineDisplay extends JFrame {
     /**
      * The image object that is painted on to screen
      */
-    BufferedImage image;
+    private BufferedImage image;
 
     /**
      * A BoundingBox that the spline resides in
      */
-    BoundingBox boundingBox;
+    private BoundingBox boundingBox;
 
     /**
      * The x offset to position the spline and related objects
      */
-    int xOffset;
+    private int xOffset;
 
     /**
      * The y offset to position the spline and related objects
      */
-    int yOffset;
+    private int yOffset;
 
     /**
      * The scalar that is used to scale the spline to the preferred size
      */
-    double scalar;
+    private double scalar;
 
     /**
      * The percent of the image to leave as border
      */
-    double percentBorder = .1;
+    private double percentBorder = .1;
+
+    /**
+     * The color to color the splines when (int) t % 3 == 0
+     */
+    private Color c1 = new Color(255, 0, 0);
+
+    /**
+     * The color to color the splines when (int) t % 3 == 1
+     */
+    private Color c2 = new Color(0, 0, 255);
+
+    /**
+     * The color to color the splines when (int) t % 3 == 2
+     */
+    private Color c3 = new Color(0, 255, 0);
 
     /**
      * A constructor for the SplineDisplay
@@ -67,7 +82,7 @@ public class SplineDisplay extends JFrame {
     /**
      * A method for creating the window and displaying the spline
      */
-    public void create() {
+    public void display() {
         setBounds(100, 100, 800 + 16, 500 + 39);
         setLayout(null);
         setVisible(true);
@@ -76,8 +91,20 @@ public class SplineDisplay extends JFrame {
     @Override
     public void paint(Graphics graphics) {
         setTranslationValues();
+        drawAxis();
         drawSpline();
         graphics.drawImage(image, 8, 39, this);
+    }
+
+    /**
+     * A method for drawing the x and y axis on the graph
+     */
+    public void drawAxis() {
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.setColor(new Color(255, 255, 255));
+        graphics.setStroke(new BasicStroke(1));
+        graphics.drawLine(xOffset, 0, xOffset, image.getHeight());
+        graphics.drawLine(0, image.getHeight() - yOffset, image.getWidth(), image.getHeight() - yOffset);
     }
 
     /**
@@ -86,11 +113,20 @@ public class SplineDisplay extends JFrame {
     public void drawSpline() {
         Graphics2D graphics = (Graphics2D) image.getGraphics();
         graphics.setStroke(new BasicStroke(2));
-        graphics.setColor(new Color(255, 255, 255));
         boolean setP2 = true;
         BetterPoint p1 = translate(spline.get(0)), p2 = spline.get(0);
+        int tVal;
 
         for (double t = step; t < spline.pieces; t += step) {
+            tVal = (int) t % 3;
+            if (tVal == 0) {
+                graphics.setColor(c1);
+            } else if (tVal == 1) {
+                graphics.setColor(c2);
+            } else {
+                graphics.setColor(c3);
+            }
+
             if (setP2) {
                 p2 = translate(spline.get(t));
                 graphics.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
@@ -131,18 +167,18 @@ public class SplineDisplay extends JFrame {
 
         for (double t = step; t < spline.pieces; t += step) {
             point = spline.get(t);
-            point.y = image.getHeight() - point.y;
+//            point.y = image.getHeight() - point.y;
 
             if (point.x < box.x1) {
-                box.x1 = (int) point.x;
+                box.x1 = point.x;
             } else if (point.x > box.x2) {
-                box.x2 = (int) point.x;
+                box.x2 = point.x;
             }
 
             if (point.y < box.y1) {
-                box.y1 = (int) point.y;
+                box.y1 = point.y;
             } else if (point.y > box.y2) {
-                box.y2 = (int) point.y;
+                box.y2 = point.y;
             }
         }
 
@@ -157,13 +193,13 @@ public class SplineDisplay extends JFrame {
      * @return The new translated point
      */
     public BetterPoint translate(BetterPoint point) {
-        point.y = image.getHeight() - point.y;
-
         point.x *= scalar;
         point.y *= scalar;
 
         point.x += xOffset;
         point.y += yOffset;
+
+        point.y = image.getHeight() - point.y;
 
         return point;
     }

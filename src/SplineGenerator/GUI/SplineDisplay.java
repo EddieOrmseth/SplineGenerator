@@ -1,6 +1,7 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Splines.Spline;
+import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.Point;
 import SplineGenerator.Util.BoundingBox;
 
@@ -17,6 +18,16 @@ public class SplineDisplay extends JFrame {
      * The spline to be displayed
      */
     private Spline spline;
+
+    /**
+     * The index of the dimension of the spline to be displayed on the x-axis
+     */
+    private int x;
+
+    /**
+     * The index of the dimension of the spline to be displayed on the y-axis
+     */
+    private int y;
 
     /**
      * The amount to step by when creating the spline out of tons of line segments
@@ -73,7 +84,7 @@ public class SplineDisplay extends JFrame {
      *
      * @param spline The spline to be displayed
      */
-    public SplineDisplay(Spline spline) {
+    public SplineDisplay(Spline spline, int x, int y) {
         this.spline = spline;
         image = new BufferedImage(800, 500, 1);
         setTitle("Spline Display");
@@ -115,7 +126,7 @@ public class SplineDisplay extends JFrame {
         Graphics2D graphics = (Graphics2D) image.getGraphics();
         graphics.setStroke(new BasicStroke(2));
         boolean setP2 = true;
-        Point p1 = translate(spline.get(0)), p2 = spline.get(0);
+        DPoint p1 = translate(spline.get(0)), p2 = spline.get(0);
         int tVal;
 
         for (double t = step; t < spline.pieces; t += step) {
@@ -130,10 +141,10 @@ public class SplineDisplay extends JFrame {
 
             if (setP2) {
                 p2 = translate(spline.get(t));
-                graphics.drawLine((int) p1.x, (int) p1.y, (int) p2.x, (int) p2.y);
+                graphics.drawLine((int) p1.get(x), (int) p1.get(y), (int) p2.get(x), (int) p2.get(y));
             } else {
                 p1 = translate(spline.get(t));
-                graphics.drawLine((int) p2.x, (int) p2.y, (int) p1.x, (int) p1.y);
+                graphics.drawLine((int) p2.get(x), (int) p2.get(y), (int) p1.get(x), (int) p1.get(y));
             }
 
             setP2 = !setP2;
@@ -164,22 +175,21 @@ public class SplineDisplay extends JFrame {
      */
     public BoundingBox etBoundingBox() {
         BoundingBox box = new BoundingBox();
-        Point point;
+        DPoint point;
 
-        for (double t = step; t < spline.pieces; t += step) {
+        for (double t = 0; t < spline.pieces; t += step) {
             point = spline.get(t);
-//            point.y = image.getHeight() - point.y;
 
-            if (point.x < box.x1) {
-                box.x1 = point.x;
-            } else if (point.x > box.x2) {
-                box.x2 = point.x;
+            if (point.get(x) < box.x1) {
+                box.x1 = point.get(x);
+            } else if (point.get(x) > box.x2) {
+                box.x2 = point.get(x);
             }
 
-            if (point.y < box.y1) {
-                box.y1 = point.y;
-            } else if (point.y > box.y2) {
-                box.y2 = point.y;
+            if (point.get(y) < box.y1) {
+                box.y1 = point.get(y);
+            } else if (point.get(y) > box.y2) {
+                box.y2 = point.get(y);
             }
         }
 
@@ -193,14 +203,14 @@ public class SplineDisplay extends JFrame {
      * @param point The point to be translated
      * @return The new translated point
      */
-    public Point translate(Point point) {
-        point.x *= scalar;
-        point.y *= scalar;
+    public DPoint translate(DPoint point) {
+        point.multiply(x, scalar);
+        point.multiply(y, scalar);
 
-        point.x += xOffset;
-        point.y += yOffset;
+        point.add(x, xOffset);
+        point.add(y, yOffset);
 
-        point.y = image.getHeight() - point.y;
+        point.set(y, image.getHeight() - point.get(y));
 
         return point;
     }

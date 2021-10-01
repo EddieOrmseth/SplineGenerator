@@ -1,11 +1,9 @@
 package SplineGenerator.Splines;
 
-import SplineGenerator.Util.BetterPoint;
+import SplineGenerator.Util.Point;
 import SplineGenerator.Util.InterpolationInfo;
 import SplineGenerator.Util.Matrix;
 import SplineGenerator.Util.SplineMath;
-
-import java.awt.*;
 
 /**
  * A class for creating polynomic splines
@@ -52,8 +50,8 @@ public class PolynomicSpline extends Spline {
      * @return The value of the function at t
      */
     @Override
-    public BetterPoint get(double t) {
-        BetterPoint point = new BetterPoint();
+    public Point get(double t) {
+        Point point = new Point();
 
         int row = ((int) t) * termsPerPiece;
         int lastSpot = xMatrix.matrix[0].length - 1;
@@ -121,6 +119,14 @@ public class PolynomicSpline extends Spline {
         yMatrix.solve();
     }
 
+    /**
+     * A method for setting the ending equations for the given criteria
+     *
+     * @param row The row to start filling
+     * @param info The object containing the necessary information
+     * @param derivative The level of continuity that we are setting / modifying
+     * @return The number of the next row to be used
+     */
     public int setEndingEquations(int row, InterpolationInfo info, int derivative) {
         switch (info.endBehavior) {
             case Hermite:

@@ -1,8 +1,8 @@
 package SplineGenerator.Splines;
 
 import SplineGenerator.Util.*;
+import SplineGenerator.Util.Point;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -190,7 +190,7 @@ public abstract class Spline {
      * @param t The position to get the value at
      * @return The position of the function evaluated at t
      */
-    public abstract BetterPoint get(double t);
+    public abstract Point get(double t);
 
     /**
      * A method for initializing the matrices to the correct size

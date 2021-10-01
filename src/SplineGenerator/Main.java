@@ -23,8 +23,8 @@ public class Main {
         spline.addControlPoint(new ControlPoint(-7, 9, Math.PI / 2, 0));
         spline.addControlPoint(new ControlPoint(-8, -11, Math.PI / 2, 0));
 
-        spline.setPolynomicType(PolynomicSpline.PolynomicType.Quartic);
-//        spline.closed = true;
+        spline.setPolynomicType(PolynomicSpline.PolynomicType.Quintic);
+        spline.closed = true;
 
         InterpolationInfo c1 = new InterpolationInfo();
         c1.interpolationType = Spline.InterpolationType.Linked;
@@ -34,7 +34,7 @@ public class Main {
         InterpolationInfo c2 = new InterpolationInfo();
         c2.interpolationType = Spline.InterpolationType.Linked;
         c2.endBehavior = Spline.EndBehavior.Hermite;
-        c2.endEffect = Spline.EndBehaviorEffect.Beginning;
+        c2.endEffect = Spline.EndBehaviorEffect.Both;
         spline.interpolationTypes.add(c2);
 
         InterpolationInfo c3 = new InterpolationInfo();
@@ -42,7 +42,17 @@ public class Main {
         c3.endBehavior = Spline.EndBehavior.None;
         spline.interpolationTypes.add(c3);
 
+        InterpolationInfo c4 = new InterpolationInfo();
+        c4.interpolationType = Spline.InterpolationType.Linked;
+        c4.endBehavior = Spline.EndBehavior.None;
+        spline.interpolationTypes.add(c4);
+
+        long startTime = System.currentTimeMillis();
         spline.generate();
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Time to Generate: " + (endTime - startTime) + " milliseconds");
+
         System.out.println(spline);
         System.out.println(spline.getDesmosEquations());
 

@@ -1,7 +1,7 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.BetterPoint;
+import SplineGenerator.Util.Point;
 import SplineGenerator.Util.BoundingBox;
 
 import javax.swing.*;
@@ -115,7 +115,7 @@ public class SplineDisplay extends JFrame {
         Graphics2D graphics = (Graphics2D) image.getGraphics();
         graphics.setStroke(new BasicStroke(2));
         boolean setP2 = true;
-        BetterPoint p1 = translate(spline.get(0)), p2 = spline.get(0);
+        Point p1 = translate(spline.get(0)), p2 = spline.get(0);
         int tVal;
 
         for (double t = step; t < spline.pieces; t += step) {
@@ -164,7 +164,7 @@ public class SplineDisplay extends JFrame {
      */
     public BoundingBox etBoundingBox() {
         BoundingBox box = new BoundingBox();
-        BetterPoint point;
+        Point point;
 
         for (double t = step; t < spline.pieces; t += step) {
             point = spline.get(t);
@@ -193,7 +193,7 @@ public class SplineDisplay extends JFrame {
      * @param point The point to be translated
      * @return The new translated point
      */
-    public BetterPoint translate(BetterPoint point) {
+    public Point translate(Point point) {
         point.x *= scalar;
         point.y *= scalar;
 

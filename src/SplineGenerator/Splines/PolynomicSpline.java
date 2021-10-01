@@ -8,36 +8,39 @@ import SplineGenerator.Util.*;
 public class PolynomicSpline extends Spline {
 
     /**
-     * The field that stores the subtype of PolynomicSpline to be created
+     * The order of each polynomial constructed
      */
-    private PolynomicType polynomicType;
+    private int polynomicOrder;
 
     /**
      * A nice and easy default constructor for PolynomicSplines
+     *
+     * @param dimensions The number of dimensions the spline is in
      */
     public PolynomicSpline(int dimensions) {
         super(SplineType.Polynomic, dimensions);
-        setPolynomicType(PolynomicType.Cubic);
+        setPolynomicOrder(3);
+    }
+
+    /**
+     * A nice and easy default constructor for PolynomicSplines
+     *
+     * @param dimensions The number of dimensions the spline is in
+     * @param order The order of each polynomial constructed
+     */
+    public PolynomicSpline(int dimensions, int order) {
+        super(SplineType.Polynomic, dimensions);
+        setPolynomicOrder(order);
     }
 
     /**
      * A method for setting the PolynomicType
      *
-     * @param polynomicType The PolynomicType to be set to
+     * @param polynomicOrder The PolynomicType to be set to
      */
-    public void setPolynomicType(PolynomicType polynomicType) {
-        this.polynomicType = polynomicType;
-        switch (polynomicType) {
-            case Cubic:
-                termsPerPiece = 4;
-                break;
-            case Quartic:
-                termsPerPiece = 5;
-                break;
-            case Quintic:
-                termsPerPiece = 6;
-                break;
-        }
+    public void setPolynomicOrder(int polynomicOrder) {
+        this.polynomicOrder = polynomicOrder;
+        termsPerPiece = polynomicOrder + 1;
     }
 
     /**
@@ -466,24 +469,6 @@ public class PolynomicSpline extends Spline {
         }
 
         return builder.toString();
-    }
-
-    /**
-     * An enumeration for the different types of polynomic splines
-     */
-    public enum PolynomicType {
-        /**
-         * The spline is of the 3rd order (4 terms)
-         */
-        Cubic,
-        /**
-         * The spline is of the 4th order (5 terms)
-         */
-        Quartic,
-        /**
-         * The spline is of the 5th order (6 terms)
-         */
-        Quintic
     }
 
 }

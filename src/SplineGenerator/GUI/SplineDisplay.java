@@ -1,9 +1,8 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.Point;
 import SplineGenerator.Util.BoundingBox;
+import SplineGenerator.Util.DPoint;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,6 +85,8 @@ public class SplineDisplay extends JFrame {
      */
     public SplineDisplay(Spline spline, int x, int y) {
         this.spline = spline;
+        this.x = x;
+        this.y = y;
         image = new BufferedImage(800, 500, 1);
         setTitle("Spline Display");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

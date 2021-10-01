@@ -22,7 +22,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-7, 9)));
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
 
-        spline.setPolynomicType(PolynomicSpline.PolynomicType.Quintic);
+        spline.setPolynomicOrder(5);
         spline.closed = true;
 
         InterpolationInfo c1 = new InterpolationInfo();
@@ -33,7 +33,6 @@ public class Main {
         InterpolationInfo c2 = new InterpolationInfo();
         c2.interpolationType = Spline.InterpolationType.Linked;
         c2.endBehavior = Spline.EndBehavior.Hermite;
-        c2.endEffect = Spline.EndBehaviorEffect.Both;
         spline.interpolationTypes.add(c2);
 
         InterpolationInfo c3 = new InterpolationInfo();

@@ -1,5 +1,6 @@
 package SplineGenerator.Splines;
 
+import SplineGenerator.Util.Point;
 import SplineGenerator.Util.InterpolationInfo;
 import SplineGenerator.Util.Matrix;
 import SplineGenerator.Util.SplineMath;
@@ -40,6 +41,28 @@ public class PolynomicSpline extends Spline {
                 termsPerPiece = 6;
                 break;
         }
+    }
+
+    /**
+     * The polynomic specific implementation of get
+     *
+     * @param t The value to evaluate the spline at
+     * @return The value of the function at t
+     */
+    @Override
+    public Point get(double t) {
+        Point point = new Point();
+
+        int row = ((int) t) * termsPerPiece;
+        int lastSpot = xMatrix.matrix[0].length - 1;
+        double tValue = t - ((int) t);
+
+        for (int i = 0; i < termsPerPiece; i++) {
+            point.x += xMatrix.matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1));
+            point.y += yMatrix.matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1));
+        }
+
+        return point;
     }
 
     /**
@@ -96,6 +119,14 @@ public class PolynomicSpline extends Spline {
         yMatrix.solve();
     }
 
+    /**
+     * A method for setting the ending equations for the given criteria
+     *
+     * @param row The row to start filling
+     * @param info The object containing the necessary information
+     * @param derivative The level of continuity that we are setting / modifying
+     * @return The number of the next row to be used
+     */
     public int setEndingEquations(int row, InterpolationInfo info, int derivative) {
         switch (info.endBehavior) {
             case Hermite:

@@ -1,5 +1,6 @@
 package SplineGenerator;
 
+import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.ControlPoint;
@@ -8,26 +9,6 @@ import SplineGenerator.Util.InterpolationInfo;
 public class Main {
 
     public static void main(String[] args) {
-
-//        PolynomicSpline spline = new PolynomicSpline();
-//        spline.addControlPoint(new ControlPoint(1, 1, 0 * Math.PI / 4));
-//        spline.addControlPoint(new ControlPoint(5, 3, Math.PI));
-//        spline.addControlPoint(new ControlPoint(3, 3, 1 * Math.PI / 4));
-//
-//        spline.setPolynomicType(PolynomicSpline.PolynomicType.Cubic);
-//
-//        InterpolationInfo c1 = new InterpolationInfo();
-//        c1.interpolationType = Spline.InterpolationType.Linked;
-//        c1.endBehavior = Spline.EndBehavior.Hermite;
-//        spline.interpolationTypes.add(c1);
-//
-//        InterpolationInfo c2 = new InterpolationInfo();
-//        c2.interpolationType = Spline.InterpolationType.Linked;
-//        spline.interpolationTypes.add(c2);
-//
-//        spline.generate();
-//        System.out.println(spline);
-//        System.out.println(spline.getDesmosEquations());
 
         PolynomicSpline spline = new PolynomicSpline();
         spline.addControlPoint(new ControlPoint(1, 1, 0 * Math.PI / 4, 0, 0));
@@ -38,40 +19,45 @@ public class Main {
         spline.addControlPoint(new ControlPoint(-2, 0, 0));
         spline.addControlPoint(new ControlPoint(0, 2, 0 * Math.PI / 2));
         spline.addControlPoint(new ControlPoint(-5, 5, Math.PI / 2, 0));
+        spline.addControlPoint(new ControlPoint(-10, 5, Math.PI / 2, 0));
+        spline.addControlPoint(new ControlPoint(-7, 9, Math.PI / 2, 0));
+        spline.addControlPoint(new ControlPoint(-8, -11, Math.PI / 2, 0));
 
-        spline.setPolynomicType(PolynomicSpline.PolynomicType.Cubic);
-//        spline.closed = true;
+        spline.setPolynomicType(PolynomicSpline.PolynomicType.Quintic);
+        spline.closed = true;
 
         InterpolationInfo c1 = new InterpolationInfo();
         c1.interpolationType = Spline.InterpolationType.Linked;
-        c1.endBehavior = Spline.EndBehavior.None;
+        c1.endBehavior = Spline.EndBehavior.Hermite;
         spline.interpolationTypes.add(c1);
 
         InterpolationInfo c2 = new InterpolationInfo();
         c2.interpolationType = Spline.InterpolationType.Linked;
         c2.endBehavior = Spline.EndBehavior.Hermite;
-//        c2.endEffect = Spline.EndBehaviorEffect.Beginning;
+        c2.endEffect = Spline.EndBehaviorEffect.Both;
         spline.interpolationTypes.add(c2);
 
-//        InterpolationInfo c3 = new InterpolationInfo();
-//        c3.interpolationType = Spline.InterpolationType.Linked;
-//        c3.endBehavior = Spline.EndBehavior.None;
-//        spline.interpolationTypes.add(c3);
-//
-//        double[][] added = new double[4][10];
-//        spline.insertEquation(0, 0, spline.getEquation(2, 0), 0, added);
-//        spline.insertEquation(1, 0, spline.getEquation(2, 0), 0, added);
-//        spline.insertEquation(2, 1, spline.getEquation(2, 1), 0, added);
-//        spline.insertEquation(3, 1, spline.getEquation(2, 1), 0, added);
-//
-//        spline.addedRowsX.add(added[0]);
-//        spline.addedRowsY.add(added[1]);
-//        spline.addedRowsX.add(added[2]);
-//        spline.addedRowsY.add(added[3]);
+        InterpolationInfo c3 = new InterpolationInfo();
+        c3.interpolationType = Spline.InterpolationType.Linked;
+        c3.endBehavior = Spline.EndBehavior.None;
+        spline.interpolationTypes.add(c3);
 
+        InterpolationInfo c4 = new InterpolationInfo();
+        c4.interpolationType = Spline.InterpolationType.Linked;
+        c4.endBehavior = Spline.EndBehavior.None;
+        spline.interpolationTypes.add(c4);
+
+        long startTime = System.currentTimeMillis();
         spline.generate();
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Time to Generate: " + (endTime - startTime) + " milliseconds");
+
         System.out.println(spline);
         System.out.println(spline.getDesmosEquations());
+
+        SplineDisplay display = new SplineDisplay(spline);
+        display.display();
     }
 
 }

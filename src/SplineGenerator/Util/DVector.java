@@ -22,7 +22,7 @@ public class DVector {
     /**
      * A constructor for the Vector that includes values
      *
-     * @param values     The values to assign to each dimension
+     * @param values The values to assign to each dimension
      */
     public DVector(double... values) {
         this.values = new double[values.length];
@@ -77,7 +77,7 @@ public class DVector {
     /**
      * A method for setting a value of the Direction
      *
-     * @param n The number that corresponds to the dimension to be changed
+     * @param n     The number that corresponds to the dimension to be changed
      * @param value The new value that is set
      */
     public void set(int n, double value) {

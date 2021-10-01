@@ -22,7 +22,7 @@ public class DDirection extends DVector {
     /**
      * A constructor for the Point that includes values
      *
-     * @param values     The values to assign to each dimension
+     * @param values The values to assign to each dimension
      */
     public DDirection(double... values) {
         super(values);
@@ -49,7 +49,7 @@ public class DDirection extends DVector {
     /**
      * A method for setting a value of the Direction
      *
-     * @param n The number that corresponds to the dimension to be changed
+     * @param n     The number that corresponds to the dimension to be changed
      * @param value The new value that is set
      */
     @Override

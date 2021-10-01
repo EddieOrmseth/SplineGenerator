@@ -54,7 +54,7 @@ public class DPoint {
     /**
      * A method for setting a value of the Point
      *
-     * @param n The number that corresponds to the dimension to be changed
+     * @param n     The number that corresponds to the dimension to be changed
      * @param value The new value that is set
      */
     public void set(int n, double value) {
@@ -64,7 +64,7 @@ public class DPoint {
     /**
      * A method for adding value to the specified index
      *
-     * @param n The dimension to modify
+     * @param n     The dimension to modify
      * @param value The value to be added
      */
     public void add(int n, double value) {
@@ -74,7 +74,7 @@ public class DPoint {
     /**
      * A method for multiplying the specified index by a value
      *
-     * @param n The dimension to modify
+     * @param n      The dimension to modify
      * @param scalar The value to be multiplied by
      */
     public void multiply(int n, double scalar) {

@@ -1,7 +1,6 @@
 package SplineGenerator.Splines;
 
 import SplineGenerator.Util.*;
-import SplineGenerator.Util.Point;
 
 import java.util.ArrayList;
 

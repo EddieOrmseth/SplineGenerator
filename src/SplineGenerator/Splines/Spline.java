@@ -13,32 +13,37 @@ public abstract class Spline {
     /**
      * An ArrayList<ControlPoint> for holding the ControlPoints the spline will be generated for
      */
-    public ArrayList<ControlPoint> controlPoints;
+    public ArrayList<DControlPoint> controlPoints;
 
     /**
      * An ArrayList<InterpolationType> for holding the type of interpolation where the index is the (n + 1)th derivative
      */
     public ArrayList<InterpolationInfo> interpolationTypes;
 
-    /**
-     * An ArrayList<double[]> for holding extra equations that must be added to the xMatrix but are not covered by the InterpolationTypes
-     */
-    public ArrayList<double[]> addedRowsX;
+//    /**
+//     * An ArrayList<double[]> for holding extra equations that must be added to the xMatrix but are not covered by the InterpolationTypes
+//     */
+//    public ArrayList<double[]> addedRowsX;
+//
+//    /**
+//     * An ArrayList<double[]> for holding extra equations that must be added to the yMatrix but are not covered by the InterpolationTypes
+//     */
+//    public ArrayList<double[]> addedRowsY;
+//
+//    /**
+//     * A Matrix for holding the parametric-x equations
+//     */
+//    public Matrix xMatrix;
+//
+//    /**
+//     * A Matrix for holding the parametric-y equations
+//     */
+//    public Matrix yMatrix;
 
     /**
-     * An ArrayList<double[]> for holding extra equations that must be added to the yMatrix but are not covered by the InterpolationTypes
+     * The matrices for holding the parametric equations
      */
-    public ArrayList<double[]> addedRowsY;
-
-    /**
-     * A Matrix for holding the parametric-x equations
-     */
-    public Matrix xMatrix;
-
-    /**
-     * A Matrix for holding the parametric-y equations
-     */
-    public Matrix yMatrix;
+    public Matrix[] matrices;
 
     /**
      * A boolean to note whether or not to close the spline, this has effects on interpolation methods;
@@ -75,12 +80,13 @@ public abstract class Spline {
      *
      * @param splineType The type of spline to be generated, this will be always determined by the subclass's constructor
      */
-    public Spline(SplineType splineType) {
+    public Spline(SplineType splineType, int dimensions) {
         this.splineType = splineType;
         controlPoints = new ArrayList<>();
         interpolationTypes = new ArrayList<>();
-        addedRowsX = new ArrayList<>();
-        addedRowsY = new ArrayList<>();
+        matrices = new Matrix[dimensions];
+//        addedRowsX = new ArrayList<>();
+//        addedRowsY = new ArrayList<>();
     }
 
     /**
@@ -96,10 +102,7 @@ public abstract class Spline {
      * @return the number of equations that the matrix can hold
      */
     public int getNumEquations() {
-        if (xMatrix.getHeight() != yMatrix.getHeight()) {
-            System.out.println("X and Y matrices are not the same size");
-        }
-        return xMatrix.getHeight();
+        return matrices[0].getHeight();
     }
 
     /**
@@ -125,7 +128,7 @@ public abstract class Spline {
      *
      * @param controlPoint The ControlPoint object to be added
      */
-    public void addControlPoint(ControlPoint controlPoint) {
+    public void addControlPoint(DControlPoint controlPoint) {
         controlPoint.t = controlPoints.size();
         controlPoints.add(controlPoint);
     }
@@ -135,7 +138,7 @@ public abstract class Spline {
      *
      * @param controlPoint The ControlPoint object to be removed
      */
-    public void removeControlPoint(ControlPoint controlPoint) {
+    public void removeControlPoint(DControlPoint controlPoint) {
         int index = controlPoints.indexOf(controlPoint);
         controlPoints.remove(controlPoint);
         for (int i = index; i < controlPoints.size(); i++) {
@@ -156,8 +159,8 @@ public abstract class Spline {
      * A method for putting the ControlPoints in the correct order with respect to the t field.
      */
     public void reorder() {
-        ArrayList<ControlPoint> newOrder = new ArrayList<>();
-        ControlPoint controlPoint;
+        ArrayList<DControlPoint> newOrder = new ArrayList<>();
+        DControlPoint controlPoint;
 
         for (int i = controlPoints.size() - 1; i >= 0; i--) {
             controlPoint = getFirst();
@@ -173,7 +176,7 @@ public abstract class Spline {
      *
      * @return The ControlPoint that is marked as the being the first in the sequence
      */
-    public ControlPoint getFirst() {
+    public DControlPoint getFirst() {
         int index = 0;
         for (int i = 1; i < controlPoints.size(); i++) {
             if (controlPoints.get(i).t < controlPoints.get(index).t) {
@@ -190,7 +193,7 @@ public abstract class Spline {
      * @param t The position to get the value at
      * @return The position of the function evaluated at t
      */
-    public abstract Point get(double t);
+    public abstract DPoint get(double t);
 
     /**
      * A method for initializing the matrices to the correct size
@@ -234,15 +237,17 @@ public abstract class Spline {
 
     /**
      * A method for setting the given slopes as the Catmul-Rom type / the slope between the surrounding points
+     *
+     * @param heading The value to set the slopes at
      */
     public void setMiddleCatmulRomSlopes(int heading) {
         for (int i = 1; i < controlPoints.size() - 1; i++) {
-            controlPoints.get(i).headings.set(heading, new Direction(controlPoints.get(i + 1).x - controlPoints.get(i - 1).x, controlPoints.get(i + 1).y - controlPoints.get(i - 1).y));
+//            controlPoints.get(i).values.set(heading, new Direction(controlPoints.get(i + 1).x - controlPoints.get(i - 1).x, controlPoints.get(i + 1).y - controlPoints.get(i - 1).y));
         }
 
         if (isClosed()) {
-            controlPoints.get(0).headings.set(heading, new Direction(controlPoints.get(controlPoints.size() - 1).x - controlPoints.get(1).x, controlPoints.get(controlPoints.size() - 1).y - controlPoints.get(1).y));
-            controlPoints.get(controlPoints.size() - 1).headings.set(heading, new Direction(controlPoints.get(controlPoints.size() - 2).x - controlPoints.get(0).x, controlPoints.get(controlPoints.size() - 2).y - controlPoints.get(0).y));
+//            controlPoints.get(0).values.set(heading, new Direction(controlPoints.get(controlPoints.size() - 1).x - controlPoints.get(1).x, controlPoints.get(controlPoints.size() - 1).y - controlPoints.get(1).y));
+//            controlPoints.get(controlPoints.size() - 1).values.set(heading, new Direction(controlPoints.get(controlPoints.size() - 2).x - controlPoints.get(0).x, controlPoints.get(controlPoints.size() - 2).y - controlPoints.get(0).y));
         }
     }
 
@@ -253,7 +258,13 @@ public abstract class Spline {
      */
     @Override
     public String toString() {
-        return "X Matrix:\n" + xMatrix + "\nY Matrix:\n" + yMatrix;
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < matrices.length; i++) {
+            builder.append("Matrix[").append(i).append("]:\n").append(matrices[i]);
+        }
+
+        return builder.toString();
     }
 
     /**
@@ -262,16 +273,7 @@ public abstract class Spline {
      * @return The parametric equations to put into desmos
      */
     public String getDesmosEquations() {
-        StringBuilder builder = new StringBuilder();
-        int lastSpot = xMatrix.getWidth() - 1;
-
-        for (int i = 0; i < pieces; i++) {
-            builder.append("For ").append(i).append("<t<").append(i + 1).append("\n");
-            builder.append("(").append(xMatrix.get((i * 4) + 0, lastSpot)).append("t^3 + ").append(xMatrix.get((i * 4) + 1, lastSpot)).append("t^2 + ").append(xMatrix.get((i * 4) + 2, lastSpot)).append("t + ").append(xMatrix.get((i * 4) + 3, lastSpot));
-            builder.append(", ").append(yMatrix.get((i * 4) + 0, lastSpot)).append("t^3 + ").append(yMatrix.get((i * 4) + 1, lastSpot)).append("t^2 + ").append(yMatrix.get((i * 4) + 2, lastSpot)).append("t + ").append(yMatrix.get((i * 4) + 3, lastSpot)).append(")\n");
-        }
-
-        return builder.toString();
+        return "";
     }
 
     /**

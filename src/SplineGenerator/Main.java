@@ -3,27 +3,26 @@ package SplineGenerator;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.ControlPoint;
-import SplineGenerator.Util.InterpolationInfo;
+import SplineGenerator.Util.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        PolynomicSpline spline = new PolynomicSpline();
-        spline.addControlPoint(new ControlPoint(1, 1, 0 * Math.PI / 4, 0, 0));
-        spline.addControlPoint(new ControlPoint(5, 3, 0));
-        spline.addControlPoint(new ControlPoint(3, 3, 0 * Math.PI / 4));
-        spline.addControlPoint(new ControlPoint(2, 4, 0));
-        spline.addControlPoint(new ControlPoint(0, 6, 0));
-        spline.addControlPoint(new ControlPoint(-2, 0, 0));
-        spline.addControlPoint(new ControlPoint(0, 2, 0 * Math.PI / 2));
-        spline.addControlPoint(new ControlPoint(-5, 5, Math.PI / 2, 0));
-        spline.addControlPoint(new ControlPoint(-10, 5, Math.PI / 2, 0));
-        spline.addControlPoint(new ControlPoint(-7, 9, Math.PI / 2, 0));
-        spline.addControlPoint(new ControlPoint(-8, -11, Math.PI / 2, 0));
+        PolynomicSpline spline = new PolynomicSpline(2);
+        spline.addControlPoint(new DControlPoint(new DVector(1, 1), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0), new DDirection(0, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(5, 3)));
+        spline.addControlPoint(new DControlPoint(new DVector(3, 3)));
+        spline.addControlPoint(new DControlPoint(new DVector(2, 4)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 6)));
+        spline.addControlPoint(new DControlPoint(new DVector(-2, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 2)));
+        spline.addControlPoint(new DControlPoint(new DVector(-5, 5)));
+        spline.addControlPoint(new DControlPoint(new DVector(-10, 5)));
+        spline.addControlPoint(new DControlPoint(new DVector(-7, 9)));
+        spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
 
-        spline.setPolynomicType(PolynomicSpline.PolynomicType.Quintic);
+        spline.setPolynomicOrder(5);
         spline.closed = true;
 
         InterpolationInfo c1 = new InterpolationInfo();
@@ -34,7 +33,6 @@ public class Main {
         InterpolationInfo c2 = new InterpolationInfo();
         c2.interpolationType = Spline.InterpolationType.Linked;
         c2.endBehavior = Spline.EndBehavior.Hermite;
-        c2.endEffect = Spline.EndBehaviorEffect.Both;
         spline.interpolationTypes.add(c2);
 
         InterpolationInfo c3 = new InterpolationInfo();
@@ -56,7 +54,7 @@ public class Main {
         System.out.println(spline);
         System.out.println(spline.getDesmosEquations());
 
-        SplineDisplay display = new SplineDisplay(spline);
+        SplineDisplay display = new SplineDisplay(spline, 0, 1);
         display.display();
     }
 

@@ -268,56 +268,6 @@ public abstract class Spline {
     }
 
     /**
-     * A method for getting a String representation of the spline
-     *
-     * @return The String representation of the spline
-     */
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-
-        for (int n = 0; n < spline.length; n++) {
-            builder.append("\nDimension: ").append(n);
-            for (int s = 0; s < spline[n].length; s++) {
-                builder.append("\n\tPiece: ").append(s).append("\n\t\t");
-                for (int t = 0; t < spline[n][s].length; t++) {
-                    builder.append(spline[n][s][t]).append("t^").append(t);
-                    if (t != spline[n][s].length - 1) {
-                        builder.append(" + ");
-                    }
-                }
-            }
-        }
-
-        return builder.toString();
-    }
-
-    /**
-     * A method for getting the String representation of the given ed array
-     *
-     * @param spline The array to be printed, must be in the format [dimension][piece][term]
-     * @return The String representation of the spline
-     */
-    public String printAsSpline(double[][][] spline) {
-        StringBuilder builder = new StringBuilder();
-
-        for (int n = 0; n < spline.length; n++) {
-            builder.append("\nDimension: ").append(n);
-            for (int s = 0; s < spline[n].length; s++) {
-                builder.append("\n\tPiece: ").append(s).append("\n\t\t");
-                for (int t = 0; t < spline[n][s].length; t++) {
-                    builder.append(spline[n][s][t]).append("t^").append(t);
-                    if (t != spline[n][s].length - 1) {
-                        builder.append(" + ");
-                    }
-                }
-            }
-        }
-
-        return builder.toString();
-    }
-
-    /**
      * A method for getting the string representation of the matrices
      *
      * @return The string representation of the spline

@@ -56,7 +56,9 @@ public class Main {
         System.out.println(spline);
 
         spline.takeNextDerivative();
+        spline.takeNextDerivative();
         System.out.println(spline.printAsSpline(spline.derivatives.get(0)));
+        System.out.println(spline.printAsSpline(spline.derivatives.get(1)));
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1);
         display.display();

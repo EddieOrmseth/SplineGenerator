@@ -11,14 +11,14 @@ public class Main {
 
         PolynomicSpline spline = new PolynomicSpline(2);
         spline.addControlPoint(new DControlPoint(new DVector(1, 1), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0), new DDirection(0, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(5, 3)));
-        spline.addControlPoint(new DControlPoint(new DVector(3, 3)));
+//        spline.addControlPoint(new DControlPoint(new DVector(5, 3)));
+//        spline.addControlPoint(new DControlPoint(new DVector(3, 3)));
         spline.addControlPoint(new DControlPoint(new DVector(2, 4)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 6)));
-        spline.addControlPoint(new DControlPoint(new DVector(-2, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 2)));
+//        spline.addControlPoint(new DControlPoint(new DVector(0, 6)));
+//        spline.addControlPoint(new DControlPoint(new DVector(-2, 0)));
+//        spline.addControlPoint(new DControlPoint(new DVector(0, 2)));
         spline.addControlPoint(new DControlPoint(new DVector(-5, 5)));
-        spline.addControlPoint(new DControlPoint(new DVector(-10, 5)));
+//        spline.addControlPoint(new DControlPoint(new DVector(-10, 5)));
         spline.addControlPoint(new DControlPoint(new DVector(-7, 9)));
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
 
@@ -55,10 +55,14 @@ public class Main {
         System.out.println(spline.getDesmosEquations());
         System.out.println(spline);
 
-        spline.takeNextDerivative();
-        spline.takeNextDerivative();
-        System.out.println(spline.printAsSpline(spline.derivatives.get(0)));
-        System.out.println(spline.printAsSpline(spline.derivatives.get(1)));
+//        spline.takeNextDerivative();
+//        spline.takeNextDerivative();
+//        System.out.println(spline.printAsSpline(spline.derivatives.get(1)));
+//        System.out.println(spline.printAsSpline(spline.derivatives.get(2)));
+
+        DPoint myPoint = new DPoint(0, 0);
+        DPoint point = spline.findClosestPointOnSegment(myPoint, 1, .001);
+        System.out.println(point);
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1);
         display.display();

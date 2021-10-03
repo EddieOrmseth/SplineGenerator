@@ -8,7 +8,7 @@ public class DPoint {
     /**
      * The values the point represents
      */
-    private double[] values;
+    protected double[] values;
 
     /**
      * A simple constructor for the Point
@@ -22,12 +22,11 @@ public class DPoint {
     /**
      * A constructor for the Point that includes values
      *
-     * @param dimensions The number of dimensions the Point has
      * @param values     The values to assign to each dimension
      */
-    public DPoint(int dimensions, double... values) {
-        this.values = new double[dimensions];
-        for (int i = 0; i < dimensions && i < values.length; i++) {
+    public DPoint(double... values) {
+        this.values = new double[values.length];
+        for (int i = 0; i < values.length; i++) {
             this.values[i] = values[i];
         }
     }
@@ -49,6 +48,15 @@ public class DPoint {
      */
     public double get(int n) {
         return values[n];
+    }
+
+    /**
+     * A method for getting all the values of the point
+     *
+     * @return The values of the point
+     */
+    public double[] getValues() {
+        return values;
     }
 
     /**
@@ -81,6 +89,42 @@ public class DPoint {
      */
     public void multiply(int n, double scalar) {
         values[n] *= scalar;
+    }
+
+    /**
+     * A method for getting the distance between the two points
+     *
+     * @param point The point to find to distance to
+     * @return The distance between the points
+     */
+    public double getDistance(DPoint point) {
+        double total = 0;
+        for (int n = 0; n < values.length && n < point.getDimensions(); n++) {
+            total += (values[n] - point.get(n)) * (values[n] - point.get(n));
+        }
+
+        return Math.sqrt(total);
+    }
+
+    /**
+     * A method for getting the String representation of the point
+     *
+     * @return A String representation of the point
+     */
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("(");
+        for (int n = 0; n < values.length; n++) {
+            builder.append(values[n]);
+            if (n != values.length - 1) {
+                builder.append(", ");
+            }
+        }
+        builder.append(")");
+
+        return builder.toString();
     }
 
 }

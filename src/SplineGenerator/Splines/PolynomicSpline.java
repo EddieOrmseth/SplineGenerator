@@ -1,9 +1,6 @@
 package SplineGenerator.Splines;
 
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.InterpolationInfo;
-import SplineGenerator.Util.Matrix;
-import SplineGenerator.Util.SplineMath;
+import SplineGenerator.Util.*;
 
 import java.util.ArrayList;
 
@@ -58,21 +55,36 @@ public class PolynomicSpline extends Spline {
     public DPoint get(double t) {
         DPoint point = new DPoint(matrices.length);
 
-        int row = ((int) t) * termsPerPiece;
-        int lastSpot = matrices[0].matrix[0].length - 1;
         double tValue = t - ((int) t);
 
         int s = (int) t;
 
-//        for (int i = 0; i < termsPerPiece; i++) {
-//            for (int n = 0; n < matrices.length; n++) {
-//                point.add(n, matrices[n].matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1)));
-//            }
-//        }
-
         for (int n = 0; n < spline.length; n++) {
             for (int p = 0; p < spline[n][s].length; p++) {
                 point.add(n, spline[n][s][p] * Math.pow(tValue, p));
+            }
+        }
+
+        return point;
+    }
+
+    /**
+     * A method for getting the value of the gradient at a specific t-value
+     *
+     * @param t The t-value to evaluate the derivative at
+     * @param derivative The derivative to evaluate
+     * @return The DVector of the derivative at t
+     */
+    public DVector evaluateGradient(double t, int derivative) {
+        DVector point = new DVector(matrices.length);
+        double[][][] function = derivatives.get(derivative);
+
+        double tValue = t - ((int) t);
+        int s = (int) t;
+
+        for (int n = 0; n < function.length; n++) {
+            for (int p = 0; p < function[n][s].length; p++) {
+                point.add(n, function[n][s][p] * Math.pow(tValue, p));
             }
         }
 
@@ -132,6 +144,7 @@ public class PolynomicSpline extends Spline {
         }
 
         setSpline();
+        derivatives.add(spline);
     }
 
     /**
@@ -352,7 +365,7 @@ public class PolynomicSpline extends Spline {
 
 
     public double[] getDimensionalValues(int controlPoint, int derivative) {
-        return controlPoints.get(controlPoint).values.get(derivative).getAll();
+        return controlPoints.get(controlPoint).values.get(derivative).getValues();
     }
 
     /**

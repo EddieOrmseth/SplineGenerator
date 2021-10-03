@@ -249,7 +249,7 @@ public abstract class Spline {
     }
 
     /**
-     * A method for adding the derivatives from 1 to n
+     * A method for adding the next derivative
      */
     public void takeNextDerivative() {
         double[][][] function = derivatives.size() == 0 ? spline : derivatives.get(derivatives.size() - 1);
@@ -265,6 +265,61 @@ public abstract class Spline {
         }
 
         derivatives.add(derivative);
+    }
+
+    /**
+     * A method for finding the closest t-value / point on the spline to the given point
+     *
+     * @param point The Point o find the nearest point to
+     * @param step How much to step by when searching for the nearest point
+     * @return The point on the spline nearest to the given point, the dimension of the DPoint is 1 more than that of the point parameter, in this lies the t-value
+     */
+    public DPoint findClosestPointOnSpline(DPoint point, double step) {
+        DPoint nearestPoint = new DPoint(point.getDimensions() + 1);
+        double distance = Double.MAX_VALUE;
+
+        DPoint newPoint;
+        double newDistance;
+
+        for (double t = 0; t < pieces; t += step) {
+            newPoint = get(t);
+            newDistance = point.getDistance(newPoint);
+            if (newDistance  < distance) {
+                distance = newDistance;
+                nearestPoint.set(0, newPoint.getValues());
+                nearestPoint.set(nearestPoint.getDimensions() - 1, t);
+            }
+        }
+
+        return nearestPoint;
+    }
+
+    /**
+     * A method for finding the closest t-value / point on the spline to the given point
+     *
+     * @param point The Point to find the nearest point tocx
+     * @param segment The segment of the spline to check
+     * @param step How much to step by when searching for the nearest point
+     * @return The point on the spline nearest to the given point, the dimension of the DPoint is 1 more than that of the point parameter, in this lies the t-value
+     */
+    public DPoint findClosestPointOnSegment(DPoint point, int segment, double step) {
+        DPoint nearestPoint = new DPoint(point.getDimensions() + 1);
+        double distance = Double.MAX_VALUE;
+
+        DPoint newPoint;
+        double newDistance;
+
+        for (double t = 0; t < 1; t += step) {
+            newPoint = get(t + segment);
+            newDistance = point.getDistance(newPoint);
+            if (newDistance  < distance) {
+                distance = newDistance;
+                nearestPoint.set(0, newPoint.getValues());
+                nearestPoint.set(nearestPoint.getDimensions() - 1, t + segment);
+            }
+        }
+
+        return nearestPoint;
     }
 
     /**

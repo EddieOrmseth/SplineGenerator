@@ -49,16 +49,16 @@ public class DDirection extends DVector {
     /**
      * A method for setting a value of the Direction
      *
-     * @param n     The number that corresponds to the dimension to be changed
-     * @param value The new value that is set
+     * @param n      The number that corresponds to the dimension to be changed
+     * @param values The new value that is set
      */
     @Override
-    public void set(int n, double value) {
+    public void set(int n, double... values) {
         for (int i = 0; i < this.values.length; i++) {
             this.values[i] *= initialMagnitude;
         }
 
-        values[n] = value;
+        super.set(n, values);
 
         initialMagnitude = super.getMagnitude();
         for (int i = 0; i < this.values.length; i++) {

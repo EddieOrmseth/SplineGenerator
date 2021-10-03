@@ -1,6 +1,9 @@
 package SplineGenerator.Splines;
 
-import SplineGenerator.Util.*;
+import SplineGenerator.Util.DControlPoint;
+import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.InterpolationInfo;
+import SplineGenerator.Util.Matrix;
 
 import java.util.ArrayList;
 
@@ -19,30 +22,20 @@ public abstract class Spline {
      */
     public ArrayList<InterpolationInfo> interpolationTypes;
 
-//    /**
-//     * An ArrayList<double[]> for holding extra equations that must be added to the xMatrix but are not covered by the InterpolationTypes
-//     */
-//    public ArrayList<double[]> addedRowsX;
-//
-//    /**
-//     * An ArrayList<double[]> for holding extra equations that must be added to the yMatrix but are not covered by the InterpolationTypes
-//     */
-//    public ArrayList<double[]> addedRowsY;
-//
-//    /**
-//     * A Matrix for holding the parametric-x equations
-//     */
-//    public Matrix xMatrix;
-//
-//    /**
-//     * A Matrix for holding the parametric-y equations
-//     */
-//    public Matrix yMatrix;
-
     /**
      * The matrices for holding the parametric equations
      */
     public Matrix[] matrices;
+
+    /**
+     * An array for holding the spline, [dimension][piece][term]
+     */
+    public double[][][] spline;
+
+    /**
+     * An ArrayList<double[][][]> for holding the derivatives of the spline
+     */
+    public ArrayList<double[][][]> derivatives;
 
     /**
      * A boolean to note whether or not to close the spline, this has effects on interpolation methods;
@@ -84,8 +77,6 @@ public abstract class Spline {
         controlPoints = new ArrayList<>();
         interpolationTypes = new ArrayList<>();
         matrices = new Matrix[dimensions];
-//        addedRowsX = new ArrayList<>();
-//        addedRowsY = new ArrayList<>();
     }
 
     /**
@@ -237,26 +228,101 @@ public abstract class Spline {
     /**
      * A method for setting the given slopes as the Catmul-Rom type / the slope between the surrounding points
      *
-     * @param heading The value to set the slopes at
+     * @param derivative The derivative to set
      */
-    public void setMiddleCatmulRomSlopes(int heading) {
+    public void setMiddleCatmulRomSlopes(int derivative) {
         for (int i = 1; i < controlPoints.size() - 1; i++) {
 //            controlPoints.get(i).values.set(heading, new Direction(controlPoints.get(i + 1).x - controlPoints.get(i - 1).x, controlPoints.get(i + 1).y - controlPoints.get(i - 1).y));
+            for (int n = 0; n < matrices.length; n++) {
+                controlPoints.get(i).values.get(derivative).set(n, controlPoints.get(i + 1).values.get(derivative - 1).get(n) - controlPoints.get(i - 1).values.get(derivative - 1).get(n));
+            }
         }
 
         if (isClosed()) {
 //            controlPoints.get(0).values.set(heading, new Direction(controlPoints.get(controlPoints.size() - 1).x - controlPoints.get(1).x, controlPoints.get(controlPoints.size() - 1).y - controlPoints.get(1).y));
 //            controlPoints.get(controlPoints.size() - 1).values.set(heading, new Direction(controlPoints.get(controlPoints.size() - 2).x - controlPoints.get(0).x, controlPoints.get(controlPoints.size() - 2).y - controlPoints.get(0).y));
+            for (int n = 0; n < matrices.length; n++) {
+                controlPoints.get(0).values.get(derivative).set(n, controlPoints.get(controlPoints.size() - 1).values.get(derivative - 1).get(n) - controlPoints.get(1).values.get(derivative - 1).get(n));
+                controlPoints.get(controlPoints.size() - 1).values.get(derivative).set(n, controlPoints.get(controlPoints.size() - 2).values.get(derivative - 1).get(n) - controlPoints.get(0).values.get(derivative - 1).get(n));
+            }
         }
     }
 
     /**
-     * A method for getting the string representation of the spline
+     * A method for adding the derivatives from 1 to n
+     */
+    public void takeNextDerivative() {
+        double[][][] function = derivatives.size() == 0 ? spline : derivatives.get(derivatives.size() - 1);
+
+        double[][][] derivative = new double[function.length][function[0].length][function[0][0].length - 1];
+
+        for (int n = 0; n < derivative.length; n++) {
+            for (int p = 0; p < derivative[n].length; p++) {
+                for (int t = 0; t < derivative[n][p].length; t++) {
+                    derivative[n][p][t] = (t + 1) * function[n][p][t + 1];
+                }
+            }
+        }
+
+        derivatives.add(derivative);
+    }
+
+    /**
+     * A method for getting a String representation of the spline
      *
-     * @return The string representation of the spline
+     * @return The String representation of the spline
      */
     @Override
     public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        for (int n = 0; n < spline.length; n++) {
+            builder.append("\nDimension: ").append(n);
+            for (int s = 0; s < spline[n].length; s++) {
+                builder.append("\n\tPiece: ").append(s).append("\n\t\t");
+                for (int t = 0; t < spline[n][s].length; t++) {
+                    builder.append(spline[n][s][t]).append("t^").append(t);
+                    if (t != spline[n][s].length - 1) {
+                        builder.append(" + ");
+                    }
+                }
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * A method for getting the String representation of the given ed array
+     *
+     * @param spline The array to be printed, must be in the format [dimension][piece][term]
+     * @return The String representation of the spline
+     */
+    public String printAsSpline(double[][][] spline) {
+        StringBuilder builder = new StringBuilder();
+
+        for (int n = 0; n < spline.length; n++) {
+            builder.append("\nDimension: ").append(n);
+            for (int s = 0; s < spline[n].length; s++) {
+                builder.append("\n\tPiece: ").append(s).append("\n\t\t");
+                for (int t = 0; t < spline[n][s].length; t++) {
+                    builder.append(spline[n][s][t]).append("t^").append(t);
+                    if (t != spline[n][s].length - 1) {
+                        builder.append(" + ");
+                    }
+                }
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * A method for getting the string representation of the matrices
+     *
+     * @return The string representation of the spline
+     */
+    public String printMatrices() {
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < matrices.length; i++) {

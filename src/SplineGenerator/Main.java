@@ -51,8 +51,12 @@ public class Main {
 
         System.out.println("Time to Generate: " + (endTime - startTime) + " milliseconds");
 
-        System.out.println(spline);
+        System.out.println(spline.printMatrices());
         System.out.println(spline.getDesmosEquations());
+        System.out.println(spline);
+
+        spline.takeNextDerivative();
+        System.out.println(spline.printAsSpline(spline.derivatives.get(0)));
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1);
         display.display();

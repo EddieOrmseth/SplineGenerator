@@ -1,6 +1,11 @@
 package SplineGenerator.Splines;
 
-import SplineGenerator.Util.*;
+import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.InterpolationInfo;
+import SplineGenerator.Util.Matrix;
+import SplineGenerator.Util.SplineMath;
+
+import java.util.ArrayList;
 
 /**
  * A class for creating polynomic splines
@@ -26,7 +31,7 @@ public class PolynomicSpline extends Spline {
      * A nice and easy default constructor for PolynomicSplines
      *
      * @param dimensions The number of dimensions the spline is in
-     * @param order The order of each polynomial constructed
+     * @param order      The order of each polynomial constructed
      */
     public PolynomicSpline(int dimensions, int order) {
         super(SplineType.Polynomic, dimensions);
@@ -57,12 +62,18 @@ public class PolynomicSpline extends Spline {
         int lastSpot = matrices[0].matrix[0].length - 1;
         double tValue = t - ((int) t);
 
-        for (int i = 0; i < termsPerPiece; i++) {
-            for (int n = 0; n < matrices.length; n++) {
-                point.add(n, matrices[n].matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1)));
+        int s = (int) t;
+
+//        for (int i = 0; i < termsPerPiece; i++) {
+//            for (int n = 0; n < matrices.length; n++) {
+//                point.add(n, matrices[n].matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1)));
+//            }
+//        }
+
+        for (int n = 0; n < spline.length; n++) {
+            for (int p = 0; p < spline[n][s].length; p++) {
+                point.add(n, spline[n][s][p] * Math.pow(tValue, p));
             }
-//            point.x += xMatrix.matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1));
-//            point.y += yMatrix.matrix[row + i][lastSpot] * Math.pow(tValue, termsPerPiece - (i + 1));
         }
 
         return point;
@@ -81,6 +92,9 @@ public class PolynomicSpline extends Spline {
         for (int n = 0; n < matrices.length; n++) {
             matrices[n] = new Matrix(numTotalTerms, equationLength);
         }
+
+        spline = new double[matrices.length][pieces][termsPerPiece];
+        derivatives = new ArrayList<>();
     }
 
     /**
@@ -99,7 +113,7 @@ public class PolynomicSpline extends Spline {
                     row = linkMiddleValues(row, i + 1);
                     break;
                 case CatmulRom:
-                    setMiddleCatmulRomSlopes(i);
+                    setMiddleCatmulRomSlopes(i + 1);
                 case Hermite:
                     row = setMiddleValues(row, i + 1);
                     break;
@@ -111,18 +125,36 @@ public class PolynomicSpline extends Spline {
             }
         }
 
-        System.out.println(this);
+        System.out.println(printMatrices());
 
         for (int n = 0; n < matrices.length; n++) {
             matrices[n].solve();
+        }
+
+        setSpline();
+    }
+
+    /**
+     * Puts the values of each equation into the spline double[]
+     */
+    public void setSpline() {
+        int i = 0;
+        for (int n = 0; n < matrices.length; n++) {
+            for (int p = 0; p < pieces; p++) {
+                for (int t = termsPerPiece - 1; t >= 0; t--) {
+                    spline[n][p][t] = matrices[n].matrix[i][matrices[n].matrix[0].length - 1];
+                    i++;
+                }
+            }
+            i = 0;
         }
     }
 
     /**
      * A method for setting the ending equations for the given criteria
      *
-     * @param row The row to start filling
-     * @param info The object containing the necessary information
+     * @param row        The row to start filling
+     * @param info       The object containing the necessary information
      * @param derivative The level of continuity that we are setting / modifying
      * @return The number of the next row to be used
      */
@@ -132,57 +164,42 @@ public class PolynomicSpline extends Spline {
                 switch (info.endEffect) {
                     case Both:
                         setDimensionalValues(row, 0, derivative, 0, getDimensionalValues(0, derivative));
-//                        setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
-//                        setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
                         row++;
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
                         setDimensionalValues(row, pieces - 1, derivative, 1, getDimensionalValues(controlPoints.size() - 1, derivative));
                         row++;
                         break;
                     case Beginning:
-//                        setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
-//                        setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
                         setDimensionalValues(row, 0, derivative, 0, getDimensionalValues(0, derivative));
                         row++;
                         break;
                     case Ending:
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
                         setDimensionalValues(row, pieces - 1, derivative, 1, getDimensionalValues(controlPoints.size() - 1, derivative));
                         row++;
                         break;
                 }
                 break;
             case CatmulRom:
-                if (derivative == 1) {
-//                    setValue(row, 0, derivative, 0, controlPoints.get(1).x - controlPoints.get(0).x, xMatrix.matrix);
-//                    setValue(row, 0, derivative, 0, controlPoints.get(1).y - controlPoints.get(0).y, yMatrix.matrix);
-//                    setDimensionalValues(row, 0, derivative, 0, getDimensionalValues(1, 0));
-                    row++;
-//                    setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).x - controlPoints.get(controlPoints.size() - 2).x, xMatrix.matrix);
-//                    setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).y - controlPoints.get(controlPoints.size() - 2).y, yMatrix.matrix);
-//                    setDimensionalValues(row, 0, derivative, 0, getDimensionalValues(controlPoints.size() - 1, controlPoints.size() - 2));
-                    row++;
-                    break;
-                }
                 switch (info.endEffect) {
                     case Both:
-//                        setValue(row, 0, derivative, 0, controlPoints.get(1).headings.get(derivative - 2).x - controlPoints.get(0).headings.get(derivative - 2).x, xMatrix.matrix);
-//                        setValue(row, 0, derivative, 0, controlPoints.get(1).headings.get(derivative - 2).y - controlPoints.get(0).headings.get(derivative - 2).y, yMatrix.matrix);
+                        for (int n = 0; n < matrices.length; n++) {
+                            setValue(row, 0, derivative, 0, controlPoints.get(0).values.get(derivative).get(n), matrices[n].matrix);
+                        }
                         row++;
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 2).x - controlPoints.get(controlPoints.size() - 2).headings.get(derivative - 2).x, xMatrix.matrix);
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 2).y - controlPoints.get(controlPoints.size() - 2).headings.get(derivative - 2).y, yMatrix.matrix);
+                        for (int n = 0; n < matrices.length; n++) {
+                            setValue(row, pieces - 1, derivative, 1, controlPoints.get(0).values.get(derivative).get(n), matrices[n].matrix);
+                        }
                         row++;
                         break;
                     case Beginning:
-//                        setValue(row, 0, derivative, 0, controlPoints.get(1).headings.get(derivative - 2).x - controlPoints.get(0).headings.get(derivative - 2).x, xMatrix.matrix);
-//                        setValue(row, 0, derivative, 0, controlPoints.get(1).headings.get(derivative - 2).y - controlPoints.get(0).headings.get(derivative - 2).y, yMatrix.matrix);
+                        for (int n = 0; n < matrices.length; n++) {
+                            setValue(row, 0, derivative, 0, controlPoints.get(0).values.get(derivative).get(n), matrices[n].matrix);
+                        }
                         row++;
                         break;
                     case Ending:
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 2).x - controlPoints.get(controlPoints.size() - 2).headings.get(derivative - 2).x, xMatrix.matrix);
-//                        setValue(row, pieces - 1, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 2).y - controlPoints.get(controlPoints.size() - 2).headings.get(derivative - 2).y, yMatrix.matrix);
+                        for (int n = 0; n < matrices.length; n++) {
+                            setValue(row, pieces - 1, derivative, 1, controlPoints.get(0).values.get(derivative).get(n), matrices[n].matrix);
+                        }
                         row++;
                         break;
                 }
@@ -203,36 +220,24 @@ public class PolynomicSpline extends Spline {
     public int matchPositions(int row) {
 
         // The first ControlPoint
-//        setValue(row, 0, 0, 0, controlPoints.get(0).x, xMatrix.matrix);
-//        setValue(row, 0, 0, 0, controlPoints.get(0).y, yMatrix.matrix);
         setDimensionalValues(row, 0, 0, 0, getDimensionalValues(0, 0));
         row++;
 
         // ControlPoints with pieces on both sides
         for (int i = 1; i < controlPoints.size() - 1; i++) {
-//            setValue(row, i - 1, 0, 1, controlPoints.get(i).x, xMatrix.matrix);
-//            setValue(row, i - 1, 0, 1, controlPoints.get(i).y, yMatrix.matrix);
             setDimensionalValues(row, i - 1, 0, 1, getDimensionalValues(i, 0));
             row++;
-//            setValue(row, i, 0, 0, controlPoints.get(i).x, xMatrix.matrix);
-//            setValue(row, i, 0, 0, controlPoints.get(i).y, yMatrix.matrix);
             setDimensionalValues(row, i, 0, 0, getDimensionalValues(i, 0));
             row++;
         }
 
         // The last ControlPoint
-//        setValue(row, controlPoints.size() - 2, 0, 1, controlPoints.get(controlPoints.size() - 1).x, xMatrix.matrix);
-//        setValue(row, controlPoints.size() - 2, 0, 1, controlPoints.get(controlPoints.size() - 1).y, yMatrix.matrix);
         setDimensionalValues(row, controlPoints.size() - 2, 0, 1, getDimensionalValues(controlPoints.size() - 1, 0));
         row++;
 
         if (isClosed()) { // Match the positions of the piece connecting the beginning and end
-//            setValue(row, pieces - 1, 0, 0, controlPoints.get(controlPoints.size() - 1).x, xMatrix.matrix);
-//            setValue(row, pieces - 1, 0, 0, controlPoints.get(controlPoints.size() - 1).y, yMatrix.matrix);
             setDimensionalValues(row, pieces - 1, 0, 0, getDimensionalValues(controlPoints.size() - 1, 0));
             row++;
-//            setValue(row, pieces - 1, 0, 1, controlPoints.get(0).x, xMatrix.matrix);
-//            setValue(row, pieces - 1, 0, 1, controlPoints.get(0).y, yMatrix.matrix);
             setDimensionalValues(row, pieces - 1, 0, 1, getDimensionalValues(0, 0));
             row++;
         }
@@ -276,35 +281,24 @@ public class PolynomicSpline extends Spline {
 
         // ControlPoints with pieces on each side
         for (int i = 1; i < controlPoints.size() - 1; i++) {
-//            setValue(row, i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
-//            setValue(row, i - 1, derivative, 1, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
             setDimensionalValues(row, i - 1, derivative, 1, getDimensionalValues(i, derivative));
             row++;
-//            setValue(row, i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).x, xMatrix.matrix);
-//            setValue(row, i, derivative, 0, controlPoints.get(i).headings.get(derivative - 1).y, yMatrix.matrix);
             setDimensionalValues(row, i, derivative, 0, getDimensionalValues(i, derivative));
             row++;
         }
 
         if (isClosed()) {
             // The first ControlPoint
-//            setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
-//            setValue(row, 0, derivative, 0, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
             setDimensionalValues(row, 0, derivative, 0, getDimensionalValues(0, derivative));
             row++;
 
             // The last ControlPoint
-//            setValue(row, controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
-//            setValue(row, controlPoints.size() - 2, derivative, 1, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
             setDimensionalValues(row, controlPoints.size() - 2, derivative, 1, getDimensionalValues(controlPoints.size() - 1, derivative));
             row++;
 
-//            setValue(row, pieces - 1, derivative, 0, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).x, xMatrix.matrix);
-//            setValue(row, pieces - 1, derivative, 0, controlPoints.get(controlPoints.size() - 1).headings.get(derivative - 1).y, yMatrix.matrix);
             setDimensionalValues(row, pieces - 1, derivative, 0, getDimensionalValues(controlPoints.size() - 1, derivative));
             row++;
-//            setValue(row, pieces - 1, derivative, 1, controlPoints.get(0).headings.get(derivative - 1).x, xMatrix.matrix);
-//            setValue(row, pieces - 1, derivative, 1, controlPoints.get(0).headings.get(derivative - 1).y, yMatrix.matrix);
+
             setDimensionalValues(row, pieces - 1, derivative, 1, getDimensionalValues(0, derivative));
             row++;
         }
@@ -404,10 +398,10 @@ public class PolynomicSpline extends Spline {
     /**
      * A method for setting the value of an equation
      *
-     * @param row        The row of the matrix to be used
-     * @param piece      The equation of the value to be set
-     * @param derivative The number of times to differentiate
-     * @param value      The value to evaluate the function at
+     * @param row         The row of the matrix to be used
+     * @param piece       The equation of the value to be set
+     * @param derivative  The number of times to differentiate
+     * @param value       The value to evaluate the function at
      * @param finalValues The value to be inserted at the end the line, the value to which the equation equals
      * @return The number of the next row to use
      */
@@ -453,8 +447,6 @@ public class PolynomicSpline extends Spline {
             builder.append("(");
             for (int n = 0; n < matrices.length; n++) {
                 for (int t = 0; t < termsPerPiece; t++) {
-//                builder.append("(").append(xMatrix.get((i * termsPerPiece) + 0, lastSpot)).append("t^3 + ").append(xMatrix.get((i * termsPerPiece) + 1, lastSpot)).append("t^2 + ").append(xMatrix.get((i * termsPerPiece) + 2, lastSpot)).append("t + ").append(xMatrix.get((i * termsPerPiece) + 3, lastSpot));
-//                builder.append(", ").append(yMatrix.get((i * termsPerPiece) + 0, lastSpot)).append("t^3 + ").append(yMatrix.get((i * termsPerPiece) + 1, lastSpot)).append("t^2 + ").append(yMatrix.get((i * termsPerPiece) + 2, lastSpot)).append("t + ").append(yMatrix.get((i * termsPerPiece) + 3, lastSpot)).append(")\n");
                     builder.append(matrices[n].matrix[(p * termsPerPiece) + t][lastSpot]).append("t^").append(termsPerPiece - (t + 1));
                     if (t < termsPerPiece - 1) {
                         builder.append(" + ");

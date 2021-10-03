@@ -77,11 +77,13 @@ public class DVector {
     /**
      * A method for setting a value of the Direction
      *
-     * @param n     The number that corresponds to the dimension to be changed
-     * @param value The new value that is set
+     * @param n      The number that corresponds to the dimension to be changed
+     * @param values The new value that is set
      */
-    public void set(int n, double value) {
-        values[n] = value;
+    public void set(int n, double... values) {
+        for (int i = 0; i < values.length && i < this.values.length; i++) {
+            this.values[n + i] = values[i];
+        }
     }
 
 }

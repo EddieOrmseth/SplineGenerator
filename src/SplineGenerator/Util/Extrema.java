@@ -16,12 +16,23 @@ public class Extrema {
     public DPoint greaterPoint;
 
     /**
+     * A simple constructor requiring only the dimensions of the object
      *
-     * @param dimensions
+     * @param dimensions The number of dimensions required
      */
     public Extrema(int dimensions) {
         lesserPoint = new DPoint(dimensions);
         greaterPoint = new DPoint(dimensions);
+    }
+
+    /**
+     * A method for multiplying each point by a given scalar
+     *
+     * @param scalar The scalar to be multiplied by
+     */
+    public void multiplyAll(double scalar) {
+        lesserPoint.multiplyAll(scalar);
+        greaterPoint.multiplyAll(scalar);
     }
 
     /**

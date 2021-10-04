@@ -356,6 +356,15 @@ public abstract class Spline {
     }
 
     /**
+     * A method for getting the number of dimensions the spline is constructed in
+     *
+     * @return The number of dimensions in the spline is constructed in
+     */
+    public int getDimensions() {
+        return matrices.length;
+    }
+
+    /**
      * A method for getting the string representation of the matrices
      *
      * @return The string representation of the spline

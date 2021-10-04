@@ -27,7 +27,8 @@ public class BoundingBox {
 
     /**
      * A method for multiplying the entire box by a scalar
-     * @param scalar
+     *
+     * @param scalar The value to multiply the BoundingBox coordinates by
      */
     public void applyScalar(double scalar) {
         x1 *= scalar;

@@ -59,7 +59,7 @@ public class DVector extends DPoint {
      * @return The DDirection created from the current DVector
      */
     public DDirection toDirection() {
-        return new DDirection(Arrays.copyOf(values, values.length));
+        return new DDirection(values);
     }
 
     /**
@@ -68,10 +68,11 @@ public class DVector extends DPoint {
      * @param vector The vector to add to this object
      * @return The resulting DVector
      */
-    public DVector vectorAddition(DVector vector) {
+    public DVector add(DVector vector) {
         for (int n = 0; n < getDimensions() && n < vector.getDimensions(); n++) {
-            add(n, vector.get(n));
+            values[n] += vector.get(n);
         }
+
         return this;
     }
 

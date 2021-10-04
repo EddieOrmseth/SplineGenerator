@@ -84,6 +84,17 @@ public class DPoint {
     }
 
     /**
+     * A method for adding to DPoints
+     */
+    public DPoint add(DPoint point) {
+        for (int n = 0; n < point.getDimensions() && n < values.length; n++) {
+            values[n] += point.get(n);
+        }
+
+        return this;
+    }
+
+    /**
      * A method for adding a value to every index
      *
      * @param value The value to be added
@@ -128,6 +139,15 @@ public class DPoint {
         }
 
         return Math.sqrt(total);
+    }
+
+    /**
+     * A method for converting the current DPoint to a DVector
+     *
+     * @return The DVector that is created
+     */
+    public DVector toVector() {
+        return new DVector(values);
     }
 
     /**

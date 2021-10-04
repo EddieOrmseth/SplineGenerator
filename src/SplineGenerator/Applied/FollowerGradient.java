@@ -34,6 +34,12 @@ public class FollowerGradient {
     public Extrema bounds;
 
     /**
+     * A DVector for translating the given point into the first quadrant, only the first quadrant is used in the follower.
+     * This DVector moves the lowerExtrema to the origin
+     */
+    public DVector translation;
+
+    /**
      * A DVector for holding the lengths of the GradientFollower's dimensions
      */
     public DVector lengths;
@@ -87,7 +93,7 @@ public class FollowerGradient {
         DVector gradient = gradientModifier.get(spline.evaluateDerivative(pointOnSpline.get(point.getDimensions()) - 1, 1));
         DVector distance = distanceModifier.get(new DVector(point, pointOnSpline));
 
-        return gradient.vectorAddition(distance).toDirection();
+        return gradient.add(distance).toDirection();
     }
 
     /**
@@ -109,37 +115,100 @@ public class FollowerGradient {
     }
 
     /**
-     * A method for setting the bounds of the GradientFollower
+     * A method that sets the bounds object to the extrema of the spline
      */
-    public void setBounds() {
+    public void setBoundsAsExtrema() {
         bounds = spline.getExtrema(splinePointStep);
-        lengths = bounds.getVector();
     }
 
     /**
-     * A method for initialing the array that holds the gradientFollower
+     * A method for preparing necessary variables of the FollowerGradient
+     */
+    public void prepareBounds() {
+        lengths = bounds.getVector();
+        translation = bounds.lesserPoint.toVector();
+        translation.multiplyAll(-1);
+    }
+
+    /**
+     * A method for initializing the array that holds the FollowerGradient
      */
     public void initializeSpace() {
-        setBounds();
+        prepareBounds();
         arrayLengths = lengths.clone();
         arrayLengths.multiplyAll(1 / followerStep);
 
-        double[] aLValues = arrayLengths.getValues();
         int totalPoints = 1;
         for (int n = 0; n < spline.matrices.length; n++) {
-            aLValues[n] = (int) aLValues[n];
-            totalPoints *= aLValues[n];
+            totalPoints *= (int) arrayLengths.get(n);
         }
 
         followerGradient = new DDirection[totalPoints];
     }
 
-//    public int pointToIndex(DPoint point) {
-//
-//    }
-//
-//    public DPoint indexToPoint(int index) {
-//
-//    }
+    /**
+     * A method for creating the FollowerGradient
+     */
+    public void computeGradient() {
+        initializeSpace();
+        for (int i = 0; i < followerGradient.length; i++) {
+            followerGradient[i] = evaluateAt(indexToPoint(i));
+        }
+    }
 
+    /**
+     * A method for getting the correct index of a given point in the followerGradient
+     *
+     * @param point The point to find the index of
+     * @return The index of the given point
+     */
+    public int pointToIndex(DPoint point) {
+        point.add(translation);
+        point.multiplyAll(1 / followerStep);
+        int index = 0;
+        int subDimensionVolume;
+        for (int n = 0; n < spline.getDimensions(); n++) {
+            subDimensionVolume = 1;
+            for (int s = n + 1; s < spline.getDimensions(); s++) {
+                subDimensionVolume *= (int) arrayLengths.get(n);
+            }
+            index += point.get(n) * subDimensionVolume;
+        }
+
+        return index;
+    }
+
+    /**
+     * A method for getting the DPoint that an index represents
+     *
+     * @param index The index to find the DPoint for
+     * @return The DPoint that the index represents
+     */
+    public DPoint indexToPoint(int index) {
+        DPoint point = new DPoint(spline.getDimensions());
+
+        int remaining = index;
+
+        int subDimensionVolume;
+        for (int n = 0; n < spline.getDimensions(); n++) {
+            subDimensionVolume = 1;
+            for (int s = n + 1; s < spline.getDimensions(); s++) {
+                subDimensionVolume *= (int) arrayLengths.get(n);
+            }
+            point.set(n, remaining / subDimensionVolume);
+            remaining = remaining % subDimensionVolume;
+        }
+
+        return point;
+    }
+
+    /**
+     * A method for getting the precomputed direction at the specified point
+     *
+     * @param point The point at which to get the DDirection
+     * @return The DDirection at the given point
+     */
+    public DDirection get(DPoint point) {
+        return followerGradient[pointToIndex(point)];
+    }
 }

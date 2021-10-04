@@ -1,10 +1,7 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.DDirection;
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.DVector;
-import SplineGenerator.Util.Function;
+import SplineGenerator.Util.*;
 
 /**
  * A class representing a gradient such that each value points in the direction of the correct movement
@@ -27,9 +24,43 @@ public class FollowerGradient {
     private Function<DVector, DVector> distanceModifier;
 
     /**
-     * The number that is used as the step value in finding the nearest point on the spline
+     * A DDirection[] for holding the directions at each point in the space that the spline exists in
+     */
+    private DDirection[] followerGradient;
+
+    /**
+     * The Extrema object for holding the bounds of the GradientFollower
+     */
+    public Extrema bounds;
+
+    /**
+     * A DVector for holding the lengths of the GradientFollower's dimensions
+     */
+    public DVector lengths;
+
+    /**
+     * A DVector for holding the lengths of each dimension in the array
+     */
+    public DVector arrayLengths;
+
+    /**
+     * The number used to step when creating the grid
+     */
+    public double followerStep;
+
+    /**
+     * The number that is used as the step value in finding points on the spline
      */
     public double splinePointStep = .005;
+
+    /**
+     * A constructor for the FollowerGradient including all the necessary parts
+     *
+     * @param spline The spline to be followed
+     */
+    public FollowerGradient(Spline spline) {
+        this.spline = spline;
+    }
 
     /**
      * A constructor for the FollowerGradient including all the necessary parts
@@ -58,5 +89,57 @@ public class FollowerGradient {
 
         return gradient.vectorAddition(distance).toDirection();
     }
+
+    /**
+     * A method for setting the gradientModifier
+     *
+     * @param gradientModifier The function to be used
+     */
+    public void setGradientModifier(Function<DVector, DVector> gradientModifier) {
+        this.gradientModifier = gradientModifier;
+    }
+
+    /**
+     * A method for setting the distanceModifier
+     *
+     * @param distanceModifier The function to be used
+     */
+    public void setDistanceModifier(Function<DVector, DVector> distanceModifier) {
+        this.distanceModifier = distanceModifier;
+    }
+
+    /**
+     * A method for setting the bounds of the GradientFollower
+     */
+    public void setBounds() {
+        bounds = spline.getExtrema(splinePointStep);
+        lengths = bounds.getVector();
+    }
+
+    /**
+     * A method for initialing the array that holds the gradientFollower
+     */
+    public void initializeSpace() {
+        setBounds();
+        arrayLengths = lengths.clone();
+        arrayLengths.multiplyAll(1 / followerStep);
+
+        double[] aLValues = arrayLengths.getValues();
+        int totalPoints = 1;
+        for (int n = 0; n < spline.matrices.length; n++) {
+            aLValues[n] = (int) aLValues[n];
+            totalPoints *= aLValues[n];
+        }
+
+        followerGradient = new DDirection[totalPoints];
+    }
+
+//    public int pointToIndex(DPoint point) {
+//
+//    }
+//
+//    public DPoint indexToPoint(int index) {
+//
+//    }
 
 }

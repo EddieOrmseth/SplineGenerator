@@ -75,4 +75,14 @@ public class DVector extends DPoint {
         return this;
     }
 
+    /**
+     * A method for cloning the DPoint
+     *
+     * @return The cloned object
+     */
+    @Override
+    public DVector clone() {
+        return new DVector(Arrays.copyOf(values, values.length));
+    }
+
 }

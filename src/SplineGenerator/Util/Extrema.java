@@ -24,6 +24,20 @@ public class Extrema {
         greaterPoint = new DPoint(dimensions);
     }
 
+    /**
+     * A method for getting a vector pointing from the lowerPoint to the greaterPoint
+     *
+     * @return The DVector that is created
+     */
+    public DVector getVector() {
+        return new DVector(lesserPoint, greaterPoint);
+    }
+
+    /**
+     * A method for getting the String representation of the Extrema
+     *
+     * @return The String representation of the Extrema
+     */
     @Override
     public String toString() {
         return "Greater Point: \n" + greaterPoint + "\nLesser Point: \n" + lesserPoint;

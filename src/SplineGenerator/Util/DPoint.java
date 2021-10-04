@@ -1,5 +1,7 @@
 package SplineGenerator.Util;
 
+import java.util.Arrays;
+
 /**
  * A class for holding a multidimensional point
  */
@@ -22,7 +24,7 @@ public class DPoint {
     /**
      * A constructor for the Point that includes values
      *
-     * @param values     The values to assign to each dimension
+     * @param values The values to assign to each dimension
      */
     public DPoint(double... values) {
         this.values = new double[values.length];
@@ -72,13 +74,24 @@ public class DPoint {
     }
 
     /**
-     * A method for adding value to the specified index
+     * A method for adding a value to the specified index
      *
      * @param n     The dimension to modify
      * @param value The value to be added
      */
     public void add(int n, double value) {
         values[n] += value;
+    }
+
+    /**
+     * A method for adding a value to every index
+     *
+     * @param value The value to be added
+     */
+    public void addAll(double value) {
+        for (int n = 0; n < values.length; n++) {
+            values[n] += value;
+        }
     }
 
     /**
@@ -89,6 +102,17 @@ public class DPoint {
      */
     public void multiply(int n, double scalar) {
         values[n] *= scalar;
+    }
+
+    /**
+     * A method for multiplying each index by a scalar
+     *
+     * @param scalar The value to be multiplied by
+     */
+    public void multiplyAll(double scalar) {
+        for (int n = 0; n < values.length; n++) {
+            values[n] *= scalar;
+        }
     }
 
     /**
@@ -104,6 +128,16 @@ public class DPoint {
         }
 
         return Math.sqrt(total);
+    }
+
+    /**
+     * A method for cloning the DPoint
+     *
+     * @return The cloned object
+     */
+    @Override
+    public DPoint clone() {
+        return new DPoint(Arrays.copyOf(values, values.length));
     }
 
     /**

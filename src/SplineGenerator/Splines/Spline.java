@@ -328,6 +328,12 @@ public abstract class Spline {
         return nearestPoint;
     }
 
+    /**
+     * A method for getting the Extrema of the function
+     *
+     * @param step The amount to step by when finding the extrema
+     * @return The Extrema object
+     */
     public Extrema getExtrema(double step) {
         Extrema extrema = new Extrema(matrices.length);
         extrema.lesserPoint = get(0);

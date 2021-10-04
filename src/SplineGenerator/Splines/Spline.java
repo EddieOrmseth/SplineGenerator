@@ -1,9 +1,6 @@
 package SplineGenerator.Splines;
 
-import SplineGenerator.Util.DControlPoint;
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.InterpolationInfo;
-import SplineGenerator.Util.Matrix;
+import SplineGenerator.Util.*;
 
 import java.util.ArrayList;
 
@@ -184,6 +181,15 @@ public abstract class Spline {
      * @return The position of the function evaluated at t
      */
     public abstract DPoint get(double t);
+
+    /**
+     * A method for getting the value of the derivative at a certain point
+     *
+     * @param t The t-value to evaluate the derivative at
+     * @param derivative The derivative to use
+     * @return The vector at the specified point on the derivative
+     */
+    public abstract DVector evaluateDerivative(double t, int derivative);
 
     /**
      * A method for initializing the matrices to the correct size

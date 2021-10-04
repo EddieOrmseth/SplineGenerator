@@ -75,7 +75,8 @@ public class PolynomicSpline extends Spline {
      * @param derivative The derivative to evaluate
      * @return The DVector of the derivative at t
      */
-    public DVector evaluateGradient(double t, int derivative) {
+    @Override
+    public DVector evaluateDerivative(double t, int derivative) {
         DVector point = new DVector(matrices.length);
         double[][][] function = derivatives.get(derivative);
 

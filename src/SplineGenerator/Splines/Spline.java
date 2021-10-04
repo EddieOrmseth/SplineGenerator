@@ -185,7 +185,7 @@ public abstract class Spline {
     /**
      * A method for getting the value of the derivative at a certain point
      *
-     * @param t The t-value to evaluate the derivative at
+     * @param t          The t-value to evaluate the derivative at
      * @param derivative The derivative to use
      * @return The vector at the specified point on the derivative
      */
@@ -277,7 +277,7 @@ public abstract class Spline {
      * A method for finding the closest t-value / point on the spline to the given point
      *
      * @param point The Point o find the nearest point to
-     * @param step How much to step by when searching for the nearest point
+     * @param step  How much to step by when searching for the nearest point
      * @return The point on the spline nearest to the given point, the dimension of the DPoint is 1 more than that of the point parameter, in this lies the t-value
      */
     public DPoint findClosestPointOnSpline(DPoint point, double step) {
@@ -287,10 +287,10 @@ public abstract class Spline {
         DPoint newPoint;
         double newDistance;
 
-        for (double t = 0; t < pieces; t += step) {
+        for (double t = 0; t <= pieces; t += step) {
             newPoint = get(t);
             newDistance = point.getDistance(newPoint);
-            if (newDistance  < distance) {
+            if (newDistance < distance) {
                 distance = newDistance;
                 nearestPoint.set(0, newPoint.getValues());
                 nearestPoint.set(nearestPoint.getDimensions() - 1, t);
@@ -303,9 +303,9 @@ public abstract class Spline {
     /**
      * A method for finding the closest t-value / point on the spline to the given point
      *
-     * @param point The Point to find the nearest point tocx
+     * @param point   The Point to find the nearest point tocx
      * @param segment The segment of the spline to check
-     * @param step How much to step by when searching for the nearest point
+     * @param step    How much to step by when searching for the nearest point
      * @return The point on the spline nearest to the given point, the dimension of the DPoint is 1 more than that of the point parameter, in this lies the t-value
      */
     public DPoint findClosestPointOnSegment(DPoint point, int segment, double step) {
@@ -315,10 +315,10 @@ public abstract class Spline {
         DPoint newPoint;
         double newDistance;
 
-        for (double t = 0; t < 1; t += step) {
+        for (double t = 0; t <= 1; t += step) {
             newPoint = get(t + segment);
             newDistance = point.getDistance(newPoint);
-            if (newDistance  < distance) {
+            if (newDistance < distance) {
                 distance = newDistance;
                 nearestPoint.set(0, newPoint.getValues());
                 nearestPoint.set(nearestPoint.getDimensions() - 1, t + segment);
@@ -326,6 +326,27 @@ public abstract class Spline {
         }
 
         return nearestPoint;
+    }
+
+    public Extrema getExtrema(double step) {
+        Extrema extrema = new Extrema(matrices.length);
+        extrema.lesserPoint = get(0);
+        extrema.greaterPoint = get(0);
+        DPoint tempPoint;
+
+        for (double t = step; t <= pieces; t += step) {
+            tempPoint = get(t);
+            for (int n = 0; n < matrices.length; n++) {
+                if (tempPoint.get(n) > extrema.greaterPoint.get(n)) {
+                    extrema.greaterPoint.set(n, tempPoint.get(n));
+                }
+                if (tempPoint.get(n) < extrema.lesserPoint.get(n)) {
+                    extrema.lesserPoint.set(n, tempPoint.get(n));
+                }
+            }
+        }
+
+        return extrema;
     }
 
     /**

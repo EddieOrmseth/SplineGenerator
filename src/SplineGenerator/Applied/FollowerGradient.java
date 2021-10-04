@@ -1,6 +1,7 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Splines.Spline;
+import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.Function;
@@ -26,9 +27,14 @@ public class FollowerGradient {
     private Function<DVector, DVector> distanceModifier;
 
     /**
+     * The number that is used as the step value in finding the nearest point on the spline
+     */
+    public double splinePointStep = .005;
+
+    /**
      * A constructor for the FollowerGradient including all the necessary parts
      *
-     * @param spline The spline to be followed
+     * @param spline           The spline to be followed
      * @param gradientModifier The modifier for the gradient DVector
      * @param distanceModifier The modifier for the distance DVector
      */
@@ -44,13 +50,13 @@ public class FollowerGradient {
      * @param point The point to get the DVector for
      * @return The follower DVector
      */
-    public DVector evaluateAt(DPoint point) {
-        DPoint pointOnSpline = spline.findClosestPointOnSpline(point, .01);
+    public DDirection evaluateAt(DPoint point) {
+        DPoint pointOnSpline = spline.findClosestPointOnSpline(point, splinePointStep);
 
         DVector gradient = gradientModifier.get(spline.evaluateDerivative(pointOnSpline.get(point.getDimensions()) - 1, 1));
         DVector distance = distanceModifier.get(new DVector(point, pointOnSpline));
 
-        return gradient.vectorAddition(distance);
+        return gradient.vectorAddition(distance).toDirection();
     }
 
 }

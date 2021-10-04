@@ -64,6 +64,8 @@ public class Main {
         DPoint point = spline.findClosestPointOnSegment(myPoint, 1, .001);
         System.out.println(point);
 
+        System.out.println(spline.getExtrema(.01));
+
         SplineDisplay display = new SplineDisplay(spline, 0, 1);
         display.display();
     }

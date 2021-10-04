@@ -1,5 +1,7 @@
 package SplineGenerator.Util;
 
+import java.util.Arrays;
+
 /**
  * A class for holding a multidimensional vector
  */
@@ -49,6 +51,15 @@ public class DVector extends DPoint {
         }
 
         return Math.sqrt(value);
+    }
+
+    /**
+     * A method for getting a DDirection from the current DVector
+     *
+     * @return The DDirection created from the current DVector
+     */
+    public DDirection toDirection() {
+        return new DDirection(Arrays.copyOf(values, values.length));
     }
 
     /**

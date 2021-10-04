@@ -71,7 +71,7 @@ public class PolynomicSpline extends Spline {
     /**
      * A method for getting the value of the gradient at a specific t-value
      *
-     * @param t The t-value to evaluate the derivative at
+     * @param t          The t-value to evaluate the derivative at
      * @param derivative The derivative to evaluate
      * @return The DVector of the derivative at t
      */

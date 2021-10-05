@@ -199,6 +199,8 @@ public class FollowerGradient {
             remaining = remaining % subDimensionVolume;
         }
 
+        point.multiplyAll(followerStep);
+        point.subtract(translation);
         return point;
     }
 

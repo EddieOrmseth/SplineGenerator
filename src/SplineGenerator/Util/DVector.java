@@ -54,6 +54,19 @@ public class DVector extends DPoint {
     }
 
     /**
+     * A method for setting the magnitude of the vector
+     *
+     * @param magnitude The new magnitude
+     */
+    public void setMagnitude(double magnitude) {
+        double currentMagnitude = getMagnitude();
+
+        for (int n = 0; n < values.length; n++) {
+            values[n] *= (magnitude / currentMagnitude);
+        }
+    }
+
+    /**
      * A method for getting a DDirection from the current DVector
      *
      * @return The DDirection created from the current DVector
@@ -71,6 +84,20 @@ public class DVector extends DPoint {
     public DVector add(DVector vector) {
         for (int n = 0; n < getDimensions() && n < vector.getDimensions(); n++) {
             values[n] += vector.get(n);
+        }
+
+        return this;
+    }
+
+    /**
+     * A method for subtracting two DVectors
+     *
+     * @param vector The vector to be subtracted from this one
+     * @return The resulting DVector
+     */
+    public DVector subtract(DVector vector) {
+        for (int n = 0; n < getDimensions() && n < vector.getDimensions(); n++) {
+            values[n] -= vector.get(n);
         }
 
         return this;

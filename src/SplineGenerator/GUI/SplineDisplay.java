@@ -3,6 +3,7 @@ package SplineGenerator.GUI;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.BoundingBox;
 import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.DVector;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,6 +80,16 @@ public class SplineDisplay extends JFrame {
     private Color c3 = new Color(0, 255, 0);
 
     /**
+     * The length to draw each vector
+     */
+    public double vectorLength = 50;
+
+    /**
+     *
+     */
+    public Color vectorColor = new Color(120, 8, 142);
+
+    /**
      * A constructor for the SplineDisplay
      *
      * @param spline The spline to be displayed
@@ -98,14 +109,35 @@ public class SplineDisplay extends JFrame {
     public void display() {
         setBounds(100, 100, 800 + 16, 500 + 39);
         setLayout(null);
+        spline.takeNextDerivative();
+        spline.takeNextDerivative();
+        setTranslationValues();
         setVisible(true);
     }
 
     @Override
     public void paint(Graphics graphics) {
-        setTranslationValues();
         drawAxis();
         drawSpline();
+
+        paintDerivative(0.5, 1);
+        paintDerivative(1.5, 1);
+        paintDerivative(2.5, 1);
+        paintDerivative(3.5, 1);
+        paintDerivative(4.5, 1);
+        paintDerivative(5.5, 1);
+        paintDerivative(6.5, 1);
+        paintDerivative(7.5, 1);
+        paintDerivative(8.5, 1);
+        paintDerivative(9.5, 1);
+        paintDerivative(10.5, 1);
+
+//        paintDerivative(0.75, 2);
+//        paintDerivative(1.75, 2);
+//        paintDerivative(2.75, 2);
+//        paintDerivative(3.75, 2);
+//        paintDerivative(4.75, 2);
+
         graphics.drawImage(image, 8, 39, this);
     }
 
@@ -151,7 +183,7 @@ public class SplineDisplay extends JFrame {
             setP2 = !setP2;
         }
 
-        System.out.println("Spline Drawn");
+//        System.out.println("Spline Drawn");
     }
 
     /**
@@ -214,6 +246,59 @@ public class SplineDisplay extends JFrame {
         point.set(y, image.getHeight() - point.get(y));
 
         return point;
+    }
+
+    /**
+     * A method for painting a point
+     *
+     * @param point The point to draw
+     * @param x The dimension to use as x
+     * @param y The dimension to use as y
+     */
+    public void paintPoint(DPoint point, int x, int y) {
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.setColor(Color.WHITE);
+        graphics.setStroke(new BasicStroke(3));
+        graphics.fillOval((int) point.get(x) - 3, (int) point.get(y) - 3, 5, 5);
+    }
+
+    /**
+     * A method for painting a point
+     *
+     * @param point The point to which to draw the vector
+     * @param vector The vector to be draw
+     * @param x The dimension to use as x
+     * @param y The dimension to use as y
+     */
+    public void paintVector(DPoint point, DVector vector, int x, int y) {
+        vector.multiply(y, -1);
+        vector.setMagnitude(vectorLength);
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.setColor(vectorColor);
+        graphics.setStroke(new BasicStroke(3));
+        graphics.drawLine((int) point.get(x), (int) point.get(y), (int) (point.get(x) + vector.get(x)), (int) (point.get(y) + vector.get(y)));
+
+        DPoint endPoint = point.clone().add(vector);
+        DVector reverse = vector.clone();
+        reverse.multiplyAll(-vectorLength);
+        DVector orthVector = new DVector(-vector.get(y), vector.get(x));
+        orthVector.multiplyAll(.5);
+
+        graphics.drawLine((int) endPoint.get(x), (int) endPoint.get(y), (int) (endPoint.get(x) + (.2) * (reverse.get(x) + orthVector.get(x))), (int) (endPoint.get(y) + (.2) * (reverse.get(y) + orthVector.get(y))));
+        orthVector.multiplyAll(-1);
+        graphics.drawLine((int) endPoint.get(x), (int) endPoint.get(y), (int) (endPoint.get(x) + (.2) * (reverse.get(x) + orthVector.get(x))), (int) (endPoint.get(y) + (.2) * (reverse.get(y) + orthVector.get(y))));
+    }
+
+    /**
+     * A method for painting the derivative at a point
+     *
+     * @param t The t value to evaluate the derivative at
+     * @param derivative The derivative to use
+     */
+    public void paintDerivative(double t, int derivative) {
+        DPoint startPoint = translate(spline.get(t));
+        paintVector(startPoint, spline.evaluateDerivative(t, derivative).toDirection(), x, y);
+        paintPoint(startPoint, x, y);
     }
 
 }

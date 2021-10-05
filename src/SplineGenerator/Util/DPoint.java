@@ -84,11 +84,26 @@ public class DPoint {
     }
 
     /**
-     * A method for adding to DPoints
+     * A method for adding two DPoints
+     *
+     * @param point The point to be subtracted
      */
     public DPoint add(DPoint point) {
         for (int n = 0; n < point.getDimensions() && n < values.length; n++) {
             values[n] += point.get(n);
+        }
+
+        return this;
+    }
+
+    /**
+     * A method for subtracting two DPoints
+     *
+     * @param point The point to be subtracted
+     */
+    public DPoint subtract(DPoint point) {
+        for (int n = 0; n < point.getDimensions() && n < values.length; n++) {
+            values[n] -= point.get(n);
         }
 
         return this;

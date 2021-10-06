@@ -4,10 +4,12 @@ import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.BoundingBox;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
+import SplineGenerator.Util.Function;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  * A simple class for displaying a spline
@@ -32,7 +34,7 @@ public class SplineDisplay extends JFrame {
     /**
      * The amount to step by when creating the spline out of tons of line segments
      */
-    private double step = .001;
+    private double pointOnSplineStep = .001;
 
     /**
      * The image object that is painted on to screen
@@ -82,12 +84,37 @@ public class SplineDisplay extends JFrame {
     /**
      * The length to draw each vector
      */
-    public double vectorLength = 50;
+    private double vectorLength = 50;
 
     /**
-     *
+     * The length of the arrow
      */
-    public Color vectorColor = new Color(120, 8, 142);
+    private double arrowLength;
+
+    /**
+     * The color to color the vectors
+     */
+    private Color vectorColor = new Color(120, 8, 142);
+
+    /**
+     * The amount to step by when stepping on the spline, int t values
+     */
+    private double onSplineStep = .5;
+
+    /**
+     * The amount to step by when drawing on the grid, in the scale of the spline
+     */
+    private double onGridStep = 1;
+
+    /**
+     * The displayables that are dependant on the t-value of the spline
+     */
+    private ArrayList<Function<Double, Displayable>> onSplineDisplayables;
+
+    /**
+     * The displayables that are dependant on the location in the plane
+     */
+    private ArrayList<Function<DPoint, Displayable>> onGridDisplayables;
 
     /**
      * A constructor for the SplineDisplay
@@ -99,6 +126,8 @@ public class SplineDisplay extends JFrame {
         this.x = x;
         this.y = y;
         image = new BufferedImage(800, 500, 1);
+        onSplineDisplayables = new ArrayList<>();
+        onGridDisplayables = new ArrayList<>();
         setTitle("Spline Display");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
@@ -138,6 +167,9 @@ public class SplineDisplay extends JFrame {
 //        paintDerivative(3.75, 2);
 //        paintDerivative(4.75, 2);
 
+        paintOnGrid();
+        paintOnSpline();
+
         graphics.drawImage(image, 8, 39, this);
     }
 
@@ -162,7 +194,7 @@ public class SplineDisplay extends JFrame {
         DPoint p1 = translate(spline.get(0)), p2 = spline.get(0);
         int tVal;
 
-        for (double t = step; t < spline.pieces; t += step) {
+        for (double t = pointOnSplineStep; t < spline.pieces; t += pointOnSplineStep) {
             tVal = (int) t % 3;
             if (tVal == 0) {
                 graphics.setColor(c1);
@@ -184,6 +216,14 @@ public class SplineDisplay extends JFrame {
         }
 
 //        System.out.println("Spline Drawn");
+    }
+
+    public void paintOnGrid() {
+
+    }
+
+    public void paintOnSpline() {
+
     }
 
     /**
@@ -210,7 +250,7 @@ public class SplineDisplay extends JFrame {
         BoundingBox box = new BoundingBox();
         DPoint point;
 
-        for (double t = 0; t < spline.pieces; t += step) {
+        for (double t = 0; t < spline.pieces; t += pointOnSplineStep) {
             point = spline.get(t);
 
             if (point.get(x) < box.x1) {
@@ -252,8 +292,8 @@ public class SplineDisplay extends JFrame {
      * A method for painting a point
      *
      * @param point The point to draw
-     * @param x The dimension to use as x
-     * @param y The dimension to use as y
+     * @param x     The dimension to use as x
+     * @param y     The dimension to use as y
      */
     public void paintPoint(DPoint point, int x, int y) {
         Graphics2D graphics = (Graphics2D) image.getGraphics();
@@ -265,10 +305,10 @@ public class SplineDisplay extends JFrame {
     /**
      * A method for painting a point
      *
-     * @param point The point to which to draw the vector
+     * @param point  The point to which to draw the vector
      * @param vector The vector to be draw
-     * @param x The dimension to use as x
-     * @param y The dimension to use as y
+     * @param x      The dimension to use as x
+     * @param y      The dimension to use as y
      */
     public void paintVector(DPoint point, DVector vector, int x, int y) {
         vector.multiply(y, -1);
@@ -280,9 +320,9 @@ public class SplineDisplay extends JFrame {
 
         DPoint endPoint = point.clone().add(vector);
         DVector reverse = vector.clone();
-        reverse.multiplyAll(-vectorLength);
+        reverse.multiplyAll(-60);
         DVector orthVector = new DVector(-vector.get(y), vector.get(x));
-        orthVector.multiplyAll(.5);
+        orthVector.setMagnitude(30);
 
         graphics.drawLine((int) endPoint.get(x), (int) endPoint.get(y), (int) (endPoint.get(x) + (.2) * (reverse.get(x) + orthVector.get(x))), (int) (endPoint.get(y) + (.2) * (reverse.get(y) + orthVector.get(y))));
         orthVector.multiplyAll(-1);
@@ -292,7 +332,7 @@ public class SplineDisplay extends JFrame {
     /**
      * A method for painting the derivative at a point
      *
-     * @param t The t value to evaluate the derivative at
+     * @param t          The t value to evaluate the derivative at
      * @param derivative The derivative to use
      */
     public void paintDerivative(double t, int derivative) {

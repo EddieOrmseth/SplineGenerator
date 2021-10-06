@@ -1,5 +1,6 @@
 package SplineGenerator;
 
+import SplineGenerator.Applied.FollowerGradient;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
@@ -68,6 +69,26 @@ public class Main {
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1);
         display.display();
+
+        Function<DVector, DVector> distanceModifier = new Function<DVector, DVector>() {
+            @Override
+            public DVector get(DVector variable) {
+                variable.multiplyAll(2);
+                return variable;
+            }
+        };
+
+        Function<DVector, DVector> derivativeModifier = new Function<>() {
+            @Override
+            public DVector get(DVector variable) {
+                variable.toDirection().multiplyAll(10);
+                return variable;
+            }
+        };
+
+        FollowerGradient gradient = new FollowerGradient(spline, derivativeModifier, distanceModifier);
+
+        System.out.println(gradient.evaluateAt(new DPoint(-10, 0)));
     }
 
 }

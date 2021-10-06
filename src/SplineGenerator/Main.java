@@ -68,27 +68,28 @@ public class Main {
         System.out.println(spline.getExtrema(.01));
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1);
+        display.onSplineDisplayables.add((t) -> {
+            DVector derivative = spline.evaluateDerivative(t, 1);
+            DPoint startPoint = spline.get(t);
+
+            return new DPosVector(startPoint, derivative);
+        });
+
         display.display();
 
-        Function<DVector, DVector> distanceModifier = new Function<DVector, DVector>() {
-            @Override
-            public DVector get(DVector variable) {
-                variable.multiplyAll(2);
-                return variable;
-            }
-        };
-
-        Function<DVector, DVector> derivativeModifier = new Function<>() {
-            @Override
-            public DVector get(DVector variable) {
-                variable.toDirection().multiplyAll(10);
-                return variable;
-            }
-        };
-
-        FollowerGradient gradient = new FollowerGradient(spline, derivativeModifier, distanceModifier);
-
-        System.out.println(gradient.evaluateAt(new DPoint(-10, 0)));
+//        Function<DVector, DVector> distanceModifier = variable -> {
+//            variable.multiplyAll(2);
+//            return variable;
+//        };
+//
+//        Function<DVector, DVector> derivativeModifier = variable -> {
+//            variable.toDirection().multiplyAll(10);
+//            return variable;
+//        };
+//
+//        FollowerGradient gradient = new FollowerGradient(spline, derivativeModifier, distanceModifier);
+//
+//        System.out.println(gradient.evaluateAt(new DPoint(-10, 0)));
     }
 
 }

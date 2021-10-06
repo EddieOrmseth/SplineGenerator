@@ -1,10 +1,9 @@
 package SplineGenerator.GUI;
 
-import java.awt.*;
-
 /**
  * An interface for things that can be displayed
  */
+@FunctionalInterface
 public interface Displayable {
 
     /**
@@ -12,5 +11,5 @@ public interface Displayable {
      *
      * @param graphics The object to display on
      */
-    void display(Graphics2D graphics);
+    void display(SplineGraphics graphics);
 }

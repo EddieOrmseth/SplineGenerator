@@ -1,11 +1,14 @@
 package SplineGenerator.Util;
 
+import SplineGenerator.GUI.Displayable;
+import SplineGenerator.GUI.SplineGraphics;
+
 import java.util.Arrays;
 
 /**
  * A class for holding a multidimensional point
  */
-public class DPoint {
+public class DPoint implements Displayable {
 
     /**
      * The values the point represents
@@ -154,6 +157,11 @@ public class DPoint {
         }
 
         return Math.sqrt(total);
+    }
+
+    @Override
+    public void display(SplineGraphics graphics) {
+        graphics.paintPoint(this);
     }
 
     /**

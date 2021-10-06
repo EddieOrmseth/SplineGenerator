@@ -3,7 +3,6 @@ package SplineGenerator.GUI;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.BoundingBox;
 import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.Function;
 
 import javax.swing.*;
@@ -22,14 +21,19 @@ public class SplineDisplay extends JFrame {
     private Spline spline;
 
     /**
+     * The SplineGraphics object to be used for painting things
+     */
+    private SplineGraphics graphics;
+
+    /**
      * The index of the dimension of the spline to be displayed on the x-axis
      */
-    private int x;
+    public int xDim;
 
     /**
      * The index of the dimension of the spline to be displayed on the y-axis
      */
-    private int y;
+    public int yDim;
 
     /**
      * The amount to step by when creating the spline out of tons of line segments
@@ -42,9 +46,14 @@ public class SplineDisplay extends JFrame {
     private BufferedImage image;
 
     /**
-     * A BoundingBox that the spline resides in
+     * A BoundingBox that the unscaled spline resides in
      */
     private BoundingBox boundingBox;
+
+    /**
+     * A BoundingBox that the scaled spline resides in
+     */
+    private BoundingBox scaledBoundingBox;
 
     /**
      * The x offset to position the spline and related objects
@@ -82,24 +91,9 @@ public class SplineDisplay extends JFrame {
     private Color c3 = new Color(0, 255, 0);
 
     /**
-     * The length to draw each vector
-     */
-    private double vectorLength = 50;
-
-    /**
-     * The length of the arrow
-     */
-    private double arrowLength;
-
-    /**
-     * The color to color the vectors
-     */
-    private Color vectorColor = new Color(120, 8, 142);
-
-    /**
      * The amount to step by when stepping on the spline, int t values
      */
-    private double onSplineStep = .5;
+    private double onSplineStep = 1;
 
     /**
      * The amount to step by when drawing on the grid, in the scale of the spline
@@ -109,23 +103,25 @@ public class SplineDisplay extends JFrame {
     /**
      * The displayables that are dependant on the t-value of the spline
      */
-    private ArrayList<Function<Double, Displayable>> onSplineDisplayables;
+    public ArrayList<Function<Double, Displayable>> onSplineDisplayables;
 
     /**
      * The displayables that are dependant on the location in the plane
      */
-    private ArrayList<Function<DPoint, Displayable>> onGridDisplayables;
+    public ArrayList<Function<DPoint, Displayable>> onGridDisplayables;
 
     /**
      * A constructor for the SplineDisplay
      *
      * @param spline The spline to be displayed
      */
-    public SplineDisplay(Spline spline, int x, int y) {
+    public SplineDisplay(Spline spline, int xDim, int yDim) {
         this.spline = spline;
-        this.x = x;
-        this.y = y;
+        this.xDim = xDim;
+        this.yDim = yDim;
         image = new BufferedImage(800, 500, 1);
+        graphics = new SplineGraphics((Graphics2D) image.getGraphics(), this);
+        graphics.setTranslation(this::translate);
         onSplineDisplayables = new ArrayList<>();
         onGridDisplayables = new ArrayList<>();
         setTitle("Spline Display");
@@ -148,24 +144,6 @@ public class SplineDisplay extends JFrame {
     public void paint(Graphics graphics) {
         drawAxis();
         drawSpline();
-
-        paintDerivative(0.5, 1);
-        paintDerivative(1.5, 1);
-        paintDerivative(2.5, 1);
-        paintDerivative(3.5, 1);
-        paintDerivative(4.5, 1);
-        paintDerivative(5.5, 1);
-        paintDerivative(6.5, 1);
-        paintDerivative(7.5, 1);
-        paintDerivative(8.5, 1);
-        paintDerivative(9.5, 1);
-        paintDerivative(10.5, 1);
-
-//        paintDerivative(0.75, 2);
-//        paintDerivative(1.75, 2);
-//        paintDerivative(2.75, 2);
-//        paintDerivative(3.75, 2);
-//        paintDerivative(4.75, 2);
 
         paintOnGrid();
         paintOnSpline();
@@ -206,10 +184,10 @@ public class SplineDisplay extends JFrame {
 
             if (setP2) {
                 p2 = translate(spline.get(t));
-                graphics.drawLine((int) p1.get(x), (int) p1.get(y), (int) p2.get(x), (int) p2.get(y));
+                graphics.drawLine((int) p1.get(xDim), (int) p1.get(yDim), (int) p2.get(xDim), (int) p2.get(yDim));
             } else {
                 p1 = translate(spline.get(t));
-                graphics.drawLine((int) p2.get(x), (int) p2.get(y), (int) p1.get(x), (int) p1.get(y));
+                graphics.drawLine((int) p2.get(xDim), (int) p2.get(yDim), (int) p1.get(xDim), (int) p1.get(yDim));
             }
 
             setP2 = !setP2;
@@ -218,27 +196,47 @@ public class SplineDisplay extends JFrame {
 //        System.out.println("Spline Drawn");
     }
 
+    /**
+     * A method for displaying the onGridDisplayables
+     */
     public void paintOnGrid() {
-
+        DPoint point = new DPoint(spline.getDimensions());
+        for (double y = boundingBox.y1; y < boundingBox.y2; y += onGridStep) {
+            for (double x = boundingBox.x1; x < boundingBox.x2; x += onGridStep) {
+                for (int d = 0; d < onGridDisplayables.size(); d++) {
+                    point.set(yDim, y);
+                    point.set(xDim, x);
+                    onGridDisplayables.get(d).get(point).display(graphics);
+                }
+            }
+        }
     }
 
+    /**
+     * A method for displaying the onSplineDisplayables
+     */
     public void paintOnSpline() {
-
+        for (double t = onSplineStep / 2.0; t < spline.pieces; t += onSplineStep) {
+            for (int d = 0; d < onSplineDisplayables.size(); d++) {
+                onSplineDisplayables.get(d).get(t).display(graphics);
+            }
+        }
     }
 
     /**
      * A method for setting the translation values, namely xOffset, yOffset and scalar
      */
     public void setTranslationValues() {
-        etBoundingBox();
+        boundingBox = etBoundingBox();
         double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.x2 - boundingBox.x1);
         double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.y2 - boundingBox.y1);
 
         scalar = Math.min(xScalar, yScalar);
-        boundingBox.applyScalar(scalar);
+        scaledBoundingBox = boundingBox.clone();
+        scaledBoundingBox.applyScalar(scalar);
 
-        xOffset = (int) ((image.getWidth() / 2) - ((boundingBox.x2 + boundingBox.x1) / 2));
-        yOffset = (int) ((image.getHeight() / 2) - ((boundingBox.y2 + boundingBox.y1) / 2));
+        xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.x2 + scaledBoundingBox.x1) / 2));
+        yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.y2 + scaledBoundingBox.y1) / 2));
     }
 
     /**
@@ -253,20 +251,19 @@ public class SplineDisplay extends JFrame {
         for (double t = 0; t < spline.pieces; t += pointOnSplineStep) {
             point = spline.get(t);
 
-            if (point.get(x) < box.x1) {
-                box.x1 = point.get(x);
-            } else if (point.get(x) > box.x2) {
-                box.x2 = point.get(x);
+            if (point.get(xDim) < box.x1) {
+                box.x1 = point.get(xDim);
+            } else if (point.get(xDim) > box.x2) {
+                box.x2 = point.get(xDim);
             }
 
-            if (point.get(y) < box.y1) {
-                box.y1 = point.get(y);
-            } else if (point.get(y) > box.y2) {
-                box.y2 = point.get(y);
+            if (point.get(yDim) < box.y1) {
+                box.y1 = point.get(yDim);
+            } else if (point.get(yDim) > box.y2) {
+                box.y2 = point.get(yDim);
             }
         }
 
-        boundingBox = box;
         return box;
     }
 
@@ -277,56 +274,15 @@ public class SplineDisplay extends JFrame {
      * @return The new translated point
      */
     public DPoint translate(DPoint point) {
-        point.multiply(x, scalar);
-        point.multiply(y, scalar);
+        point.multiply(xDim, scalar);
+        point.multiply(yDim, scalar);
 
-        point.add(x, xOffset);
-        point.add(y, yOffset);
+        point.add(xDim, xOffset);
+        point.add(yDim, yOffset);
 
-        point.set(y, image.getHeight() - point.get(y));
+        point.set(yDim, image.getHeight() - point.get(yDim));
 
         return point;
-    }
-
-    /**
-     * A method for painting a point
-     *
-     * @param point The point to draw
-     * @param x     The dimension to use as x
-     * @param y     The dimension to use as y
-     */
-    public void paintPoint(DPoint point, int x, int y) {
-        Graphics2D graphics = (Graphics2D) image.getGraphics();
-        graphics.setColor(Color.WHITE);
-        graphics.setStroke(new BasicStroke(3));
-        graphics.fillOval((int) point.get(x) - 3, (int) point.get(y) - 3, 5, 5);
-    }
-
-    /**
-     * A method for painting a point
-     *
-     * @param point  The point to which to draw the vector
-     * @param vector The vector to be draw
-     * @param x      The dimension to use as x
-     * @param y      The dimension to use as y
-     */
-    public void paintVector(DPoint point, DVector vector, int x, int y) {
-        vector.multiply(y, -1);
-        vector.setMagnitude(vectorLength);
-        Graphics2D graphics = (Graphics2D) image.getGraphics();
-        graphics.setColor(vectorColor);
-        graphics.setStroke(new BasicStroke(3));
-        graphics.drawLine((int) point.get(x), (int) point.get(y), (int) (point.get(x) + vector.get(x)), (int) (point.get(y) + vector.get(y)));
-
-        DPoint endPoint = point.clone().add(vector);
-        DVector reverse = vector.clone();
-        reverse.multiplyAll(-60);
-        DVector orthVector = new DVector(-vector.get(y), vector.get(x));
-        orthVector.setMagnitude(30);
-
-        graphics.drawLine((int) endPoint.get(x), (int) endPoint.get(y), (int) (endPoint.get(x) + (.2) * (reverse.get(x) + orthVector.get(x))), (int) (endPoint.get(y) + (.2) * (reverse.get(y) + orthVector.get(y))));
-        orthVector.multiplyAll(-1);
-        graphics.drawLine((int) endPoint.get(x), (int) endPoint.get(y), (int) (endPoint.get(x) + (.2) * (reverse.get(x) + orthVector.get(x))), (int) (endPoint.get(y) + (.2) * (reverse.get(y) + orthVector.get(y))));
     }
 
     /**
@@ -337,8 +293,8 @@ public class SplineDisplay extends JFrame {
      */
     public void paintDerivative(double t, int derivative) {
         DPoint startPoint = translate(spline.get(t));
-        paintVector(startPoint, spline.evaluateDerivative(t, derivative).toDirection(), x, y);
-        paintPoint(startPoint, x, y);
+        graphics.paintVector(startPoint, spline.evaluateDerivative(t, derivative).toDirection(), xDim, yDim);
+        graphics.paintPoint(startPoint, xDim, yDim);
     }
 
 }

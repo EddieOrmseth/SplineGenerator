@@ -6,6 +6,7 @@ package SplineGenerator.Util;
  * @param <T> The type to be taken in
  * @param <K> The type to be returned
  */
+@FunctionalInterface
 public interface Function<T, K> {
 
     /**

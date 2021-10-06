@@ -1,5 +1,7 @@
 package SplineGenerator.Util;
 
+import SplineGenerator.GUI.SplineGraphics;
+
 import java.util.Arrays;
 
 /**
@@ -101,6 +103,16 @@ public class DVector extends DPoint {
         }
 
         return this;
+    }
+
+    /**
+     * A method for displaying the vector
+     *
+     * @param graphics What to display the vector on
+     */
+    @Override
+    public void display(SplineGraphics graphics) {
+        graphics.paintVector(new DPosVector(values.length), this);
     }
 
     /**

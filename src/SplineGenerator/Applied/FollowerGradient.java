@@ -89,11 +89,13 @@ public class FollowerGradient {
      */
     public DDirection evaluateAt(DPoint point) {
         DPoint pointOnSpline = spline.findClosestPointOnSpline(point, splinePointStep);
+        DVector position = new DVector(point.clone(), pointOnSpline);
+        position = distanceModifier.get(position);
 
-        DVector gradient = gradientModifier.get(spline.evaluateDerivative(pointOnSpline.get(point.getDimensions()) - 1, 1));
-        DVector distance = distanceModifier.get(new DVector(point, pointOnSpline));
+        DVector derivative = spline.evaluateDerivative(pointOnSpline.get(pointOnSpline.getDimensions() - 1), 1);
+        derivative = gradientModifier.get(derivative);
 
-        return gradient.add(distance).toDirection();
+        return derivative.add(position).toDirection();
     }
 
     /**

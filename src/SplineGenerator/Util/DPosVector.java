@@ -42,7 +42,13 @@ public class DPosVector extends DVector {
      * @param p2 The second point
      */
     public DPosVector(DPoint p1, DPoint p2) {
-        super(p1, p2);
+        p1 = p1.clone();
+        p2 = p2.clone();
+        values = new double[p1.getDimensions()];
+        for (int n = 0; n < values.length; n++) {
+            values[n] = p2.get(n) - p1.get(n);
+        }
+
         startPoint = p1;
     }
 
@@ -54,7 +60,7 @@ public class DPosVector extends DVector {
      */
     public DPosVector(DPoint startPoint, DVector vector) {
         this(Arrays.copyOf(vector.getValues(), vector.getValues().length));
-        this.startPoint = startPoint;
+        this.startPoint = startPoint.clone();
     }
 
     /**

@@ -50,7 +50,7 @@ public class SplineGraphics {
     /**
      * The length to draw each vector
      */
-    private double vectorLength = 65;
+    private double vectorLength = 25;
 
     /**
      * The ration from vectorLength to the desired arrow length

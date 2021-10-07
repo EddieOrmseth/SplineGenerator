@@ -34,6 +34,8 @@ public class DVector extends DPoint {
      * @param p2 The second point
      */
     public DVector(DPoint p1, DPoint p2) {
+        p1 = p1.clone();
+        p2 = p2.clone();
         values = new double[p1.getDimensions()];
         for (int n = 0; n < values.length; n++) {
             values[n] = p2.get(n) - p1.get(n);

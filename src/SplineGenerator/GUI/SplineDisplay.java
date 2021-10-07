@@ -98,7 +98,7 @@ public class SplineDisplay extends JFrame {
     /**
      * The amount to step by when drawing on the grid, in the scale of the spline
      */
-    private double onGridStep = 1;
+    private double onGridStep = 2;
 
     /**
      * The displayables that are dependant on the t-value of the spline

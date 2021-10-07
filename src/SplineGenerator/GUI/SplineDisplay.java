@@ -1,14 +1,14 @@
 package SplineGenerator.GUI;
 
+import SplineGenerator.Applied.FollowerGradient;
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.BoundingBox;
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.Function;
+import SplineGenerator.Util.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 /**
  * A simple class for displaying a spline
@@ -48,12 +48,12 @@ public class SplineDisplay extends JFrame {
     /**
      * A BoundingBox that the unscaled spline resides in
      */
-    private BoundingBox boundingBox;
+    private Extrema boundingBox;
 
     /**
      * A BoundingBox that the scaled spline resides in
      */
-    private BoundingBox scaledBoundingBox;
+    private Extrema scaledBoundingBox;
 
     /**
      * The x offset to position the spline and related objects
@@ -74,6 +74,16 @@ public class SplineDisplay extends JFrame {
      * The percent of the image to leave as border
      */
     private double percentBorder = .1;
+
+    /**
+     * The amount to offset the image in the window with respect to the width
+     */
+    private int windowWidthOffset = 8;
+
+    /**
+     * The amount to offset the image in the window with respect to the height
+     */
+    private int windowHeightOffset = 31;
 
     /**
      * The color to color the splines when (int) t % 3 == 0
@@ -98,7 +108,7 @@ public class SplineDisplay extends JFrame {
     /**
      * The amount to step by when drawing on the grid, in the scale of the spline
      */
-    private double onGridStep = 2;
+    private double onGridStep = 1;
 
     /**
      * The displayables that are dependant on the t-value of the spline
@@ -111,19 +121,31 @@ public class SplineDisplay extends JFrame {
     public ArrayList<Function<DPoint, Displayable>> onGridDisplayables;
 
     /**
+     * the displayables that are not dependent on any sort of input
+     */
+    public ArrayList<Displayable> displayables;
+
+    /**
+     * An Extrema object for holding the bounds of the grid drawings
+     */
+    public Extrema onGridBoundaries;
+
+    /**
      * A constructor for the SplineDisplay
      *
      * @param spline The spline to be displayed
      */
-    public SplineDisplay(Spline spline, int xDim, int yDim) {
+    public SplineDisplay(Spline spline, int xDim, int yDim, int width, int height) {
         this.spline = spline;
         this.xDim = xDim;
         this.yDim = yDim;
-        image = new BufferedImage(800, 500, 1);
+        image = new BufferedImage(width, height, 1);
         graphics = new SplineGraphics((Graphics2D) image.getGraphics(), this);
         graphics.setTranslation(this::translate);
         onSplineDisplayables = new ArrayList<>();
         onGridDisplayables = new ArrayList<>();
+        displayables = new ArrayList<>();
+        onGridBoundaries = new Extrema(spline.getDimensions());
         setTitle("Spline Display");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
@@ -132,23 +154,23 @@ public class SplineDisplay extends JFrame {
      * A method for creating the window and displaying the spline
      */
     public void display() {
-        setBounds(100, 100, 800 + 16, 500 + 39);
+        setBounds(0, 0, image.getWidth() + windowWidthOffset, image.getHeight() + windowHeightOffset);
         setLayout(null);
-        spline.takeNextDerivative();
-        spline.takeNextDerivative();
         setTranslationValues();
         setVisible(true);
     }
 
     @Override
     public void paint(Graphics graphics) {
+        image.getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
         drawAxis();
         drawSpline();
 
         paintOnGrid();
         paintOnSpline();
+        paintDisplayables();
 
-        graphics.drawImage(image, 8, 39, this);
+        graphics.drawImage(image, windowWidthOffset, windowHeightOffset, this);
     }
 
     /**
@@ -192,8 +214,6 @@ public class SplineDisplay extends JFrame {
 
             setP2 = !setP2;
         }
-
-//        System.out.println("Spline Drawn");
     }
 
     /**
@@ -201,8 +221,8 @@ public class SplineDisplay extends JFrame {
      */
     public void paintOnGrid() {
         DPoint point = new DPoint(spline.getDimensions());
-        for (double y = boundingBox.y1; y < boundingBox.y2; y += onGridStep) {
-            for (double x = boundingBox.x1; x < boundingBox.x2; x += onGridStep) {
+        for (double y = onGridBoundaries.lesserPoint.get(yDim); y < onGridBoundaries.greaterPoint.get(yDim); y += onGridStep) {
+            for (double x = onGridBoundaries.lesserPoint.get(xDim); x < onGridBoundaries.greaterPoint.get(xDim); x += onGridStep) {
                 for (int d = 0; d < onGridDisplayables.size(); d++) {
                     point.set(yDim, y);
                     point.set(xDim, x);
@@ -224,19 +244,28 @@ public class SplineDisplay extends JFrame {
     }
 
     /**
+     * A method for painting the displayables that are not dependent on anything
+     */
+    public void paintDisplayables() {
+        for (int i = 0; i < displayables.size(); i++) {
+            displayables.get(i).display(graphics);
+        }
+    }
+
+    /**
      * A method for setting the translation values, namely xOffset, yOffset and scalar
      */
     public void setTranslationValues() {
         boundingBox = etBoundingBox();
-        double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.x2 - boundingBox.x1);
-        double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.y2 - boundingBox.y1);
+        double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(xDim) - boundingBox.lesserPoint.get(xDim));
+        double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(yDim) - boundingBox.lesserPoint.get(yDim));
 
         scalar = Math.min(xScalar, yScalar);
         scaledBoundingBox = boundingBox.clone();
-        scaledBoundingBox.applyScalar(scalar);
+        scaledBoundingBox.multiplyAll(scalar);
 
-        xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.x2 + scaledBoundingBox.x1) / 2));
-        yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.y2 + scaledBoundingBox.y1) / 2));
+        xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
+        yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
     }
 
     /**
@@ -244,23 +273,23 @@ public class SplineDisplay extends JFrame {
      *
      * @return The BoundingBox object that the spline resides inside
      */
-    public BoundingBox etBoundingBox() {
-        BoundingBox box = new BoundingBox();
+    public Extrema etBoundingBox() {
+        Extrema box = new Extrema(spline.getDimensions());
         DPoint point;
 
         for (double t = 0; t < spline.pieces; t += pointOnSplineStep) {
             point = spline.get(t);
 
-            if (point.get(xDim) < box.x1) {
-                box.x1 = point.get(xDim);
-            } else if (point.get(xDim) > box.x2) {
-                box.x2 = point.get(xDim);
+            if (point.get(xDim) < box.lesserPoint.get(xDim)) {
+                box.lesserPoint.set(xDim, point.get(xDim));
+            } else if (point.get(xDim) > box.greaterPoint.get(xDim)) {
+                box.greaterPoint.set(xDim, point.get(xDim));
             }
 
-            if (point.get(yDim) < box.y1) {
-                box.y1 = point.get(yDim);
-            } else if (point.get(yDim) > box.y2) {
-                box.y2 = point.get(yDim);
+            if (point.get(yDim) < box.lesserPoint.get(yDim)) {
+                box.lesserPoint.set(yDim, point.get(yDim));
+            } else if (point.get(yDim) > box.greaterPoint.get(yDim)) {
+                box.greaterPoint.set(yDim, point.get(yDim));
             }
         }
 
@@ -295,6 +324,18 @@ public class SplineDisplay extends JFrame {
         DPoint startPoint = translate(spline.get(t));
         graphics.paintVector(startPoint, spline.evaluateDerivative(t, derivative).toDirection(), xDim, yDim);
         graphics.paintPoint(startPoint, xDim, yDim);
+    }
+
+    /**
+     * A method for displaying a FollowerGradient
+     *
+     * @param follower The FollowerGradient to display
+     */
+    public void displayGradient(FollowerGradient follower) {
+        onGridDisplayables.add(gridPoint -> {
+            DVector followerPoint = follower.evaluateAt(gridPoint);
+            return new DPosVector(gridPoint, followerPoint);
+        });
     }
 
 }

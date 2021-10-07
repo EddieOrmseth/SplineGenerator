@@ -124,7 +124,12 @@ public class DVector extends DPoint {
      */
     @Override
     public DVector clone() {
-        return new DVector(Arrays.copyOf(values, values.length));
+        DVector vector = new DVector(values.length);
+        for (int n = 0; n < values.length; n++) {
+            vector.set(n, values[n]);
+        }
+
+        return vector;
     }
 
 }

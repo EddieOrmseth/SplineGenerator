@@ -118,7 +118,11 @@ public class DPosVector extends DVector {
      */
     @Override
     public DPosVector clone() {
-        DPosVector clone = new DPosVector(Arrays.copyOf(values, values.length));
+        DPosVector clone = new DPosVector(values.length);
+        for (int n = 0; n < values.length; n++) {
+            clone.set(n, values[n]);
+        }
+
         clone.setStartPoint(startPoint.clone());
         return clone;
     }

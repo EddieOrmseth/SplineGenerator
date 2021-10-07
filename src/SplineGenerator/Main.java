@@ -1,6 +1,8 @@
 package SplineGenerator;
 
 import SplineGenerator.Applied.FollowerGradient;
+import SplineGenerator.GUI.BallFollower;
+import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
@@ -9,6 +11,8 @@ import SplineGenerator.Util.*;
 public class Main {
 
     public static void main(String[] args) {
+
+        KeyBoardListener.initialize();
 
         PolynomicSpline spline = new PolynomicSpline(2);
         spline.addControlPoint(new DControlPoint(new DVector(9, 1), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0), new DDirection(0, 0)));
@@ -57,27 +61,13 @@ public class Main {
         System.out.println(spline);
 
         spline.takeNextDerivative();
-//        System.out.println(spline.printAsSpline(spline.derivatives.get(1)));
 
         DPoint myPoint = new DPoint(0, 0);
         DPoint point = spline.findClosestPointOnSegment(myPoint, 1, .001);
         System.out.println(point);
 
-//        System.out.println(spline.getExtrema(.01));
-
-        SplineDisplay display = new SplineDisplay(spline, 0, 1);
-//        display.onSplineDisplayables.add((t) -> {
-//            DVector derivative = spline.evaluateDerivative(t, 1);
-//            DPoint startPoint = spline.get(t);
-//
-//            return new DPosVector(startPoint, derivative);
-//        });
-
-//        display.onGridDisplayables.add(gridPoint -> {
-//           DPoint nearestPoint = spline.findClosestPointOnSpline(gridPoint, .01);
-//
-//           return new DPosVector(gridPoint, nearestPoint);
-//        });
+        SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
+        display.onGridBoundaries = new Extrema(new DPoint(-15, -13), new DPoint(14, 15));
 
         Function<DVector, DVector> distanceModifier = variable -> {
             variable.multiplyAll(6);
@@ -91,24 +81,19 @@ public class Main {
 
         FollowerGradient follower = new FollowerGradient(spline, derivativeModifier, distanceModifier);
 
-        display.onGridDisplayables.add(gridPoint -> {
-            DVector followerPoint = follower.evaluateAt(gridPoint);
-            return new DPosVector(gridPoint, followerPoint);
-        });
-
+//        display.displayGradient(follower);
+        display.displayables.add(new BallFollower(follower, new DPoint(spline.getDimensions())));
 //        display.onGridDisplayables.add(gridPoint -> {
-//            DPoint pointOnSpline = spline.findClosestPointOnSpline(gridPoint, .01);
-//            DVector position = new DVector(gridPoint.clone(), pointOnSpline);
-//            position.multiplyAll(6);
+//            DPoint pt = spline.findClosestPointOnSpline(gridPoint, .01);
+//            DVector deriv = spline.evaluateDerivative(pt.get(pt.getDimensions() - 1), 1);
 //
-//            DVector derivative = spline.evaluateDerivative(pointOnSpline.get(pointOnSpline.getDimensions() - 1), 1);
-//            derivative.setMagnitude(10);
-//            derivative.add(position);
-//
-//            return new DPosVector(gridPoint, derivative);
+//            return new DPosVector(gridPoint, deriv);
 //        });
-
         display.display();
+
+        while (true) {
+            display.repaint();
+        }
     }
 
 }

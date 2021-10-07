@@ -75,7 +75,12 @@ public class DDirection extends DVector {
      */
     @Override
     public DDirection clone() {
-        return new DDirection(Arrays.copyOf(values, values.length));
+        DDirection direction = new DDirection(values.length);
+        for (int n = 0; n < values.length; n++) {
+            direction.values[n] = values[n];
+        }
+
+        return direction;
     }
 
 }

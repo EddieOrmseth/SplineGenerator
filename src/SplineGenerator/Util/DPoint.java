@@ -180,7 +180,12 @@ public class DPoint implements Displayable {
      */
     @Override
     public DPoint clone() {
-        return new DPoint(Arrays.copyOf(values, values.length));
+        DPoint point = new DPoint(values.length);
+        for (int n = 0; n < values.length; n++) {
+            point.set(n, values[n]);
+        }
+
+        return point;
     }
 
     /**

@@ -25,6 +25,11 @@ public class Extrema {
         greaterPoint = new DPoint(dimensions);
     }
 
+    public Extrema(DPoint lesserPoint, DPoint greaterPoint) {
+        this.lesserPoint = lesserPoint;
+        this.greaterPoint = greaterPoint;
+    }
+
     /**
      * A method for multiplying each point by a given scalar
      *
@@ -33,6 +38,16 @@ public class Extrema {
     public void multiplyAll(double scalar) {
         lesserPoint.multiplyAll(scalar);
         greaterPoint.multiplyAll(scalar);
+    }
+
+    /**
+     * A method for cloning the Extrema object
+     *
+     * @return The new identical Extrema object
+     */
+    @Override
+    public Extrema clone() {
+        return new Extrema(lesserPoint.clone(), greaterPoint.clone());
     }
 
     /**

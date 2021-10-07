@@ -88,7 +88,7 @@ public class FollowerGradient {
      * @return The follower DVector
      */
     public DDirection evaluateAt(DPoint point) {
-        DPoint pointOnSpline = spline.findClosestPointOnSpline(point, splinePointStep);
+        DPoint pointOnSpline = spline.findClosestPointOnSpline(point.clone(), splinePointStep);
         DVector position = new DVector(point.clone(), pointOnSpline);
         position = distanceModifier.get(position);
 

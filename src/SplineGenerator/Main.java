@@ -61,6 +61,7 @@ public class Main {
         System.out.println(spline);
 
         spline.takeNextDerivative();
+        spline.takeNextDerivative();
 
         DPoint myPoint = new DPoint(0, 0);
         DPoint point = spline.findClosestPointOnSegment(myPoint, 1, .001);
@@ -80,7 +81,6 @@ public class Main {
         };
 
         FollowerGradient follower = new FollowerGradient(spline, derivativeModifier, distanceModifier);
-//        follower.bounds = new Extrema(new DPoint(-15, -13), new DPoint(14, 15));
         follower.bounds = new Extrema(new DPoint(-20, -20), new DPoint(20, 20));
         follower.computeGradient();
 
@@ -92,6 +92,16 @@ public class Main {
 //
 //            return new DPosVector(gridPoint, deriv);
 //        });
+
+//        display.onSplineDisplayables.add(t -> {
+//            DVector vector = spline.evaluateDerivative(t, 1);
+//            return new DPosVector(spline.get(t), vector);
+//        });
+//        display.onSplineDisplayables.add(t -> {
+//            DVector vector = spline.evaluateDerivative(t, 2);
+//            return new DPosVector(spline.get(t), vector);
+//        });
+
         display.display();
 
         while (true) {

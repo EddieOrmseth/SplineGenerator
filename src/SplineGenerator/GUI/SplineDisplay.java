@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 /**
  * A simple class for displaying a spline
@@ -103,12 +102,12 @@ public class SplineDisplay extends JFrame {
     /**
      * The amount to step by when stepping on the spline, int t values
      */
-    private double onSplineStep = 1;
+    private double onSplineStep = .1;
 
     /**
      * The amount to step by when drawing on the grid, in the scale of the spline
      */
-    private double onGridStep = 1;
+    private double onGridStep = .748;
 
     /**
      * The displayables that are dependant on the t-value of the spline

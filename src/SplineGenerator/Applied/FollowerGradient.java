@@ -128,6 +128,7 @@ public class FollowerGradient {
      */
     public void prepareBounds() {
         lengths = bounds.getVector();
+        lengths.addAll(1);
         translation = bounds.lesserPoint.toVector();
         translation.multiplyAll(-1);
     }

@@ -65,6 +65,10 @@ public class DVector extends DPoint {
     public void setMagnitude(double magnitude) {
         double currentMagnitude = getMagnitude();
 
+        if (currentMagnitude == 0) {
+            return;
+        }
+
         for (int n = 0; n < values.length; n++) {
             values[n] *= (magnitude / currentMagnitude);
         }

@@ -11,28 +11,49 @@ import java.awt.event.KeyEvent;
  */
 public class BallFollower implements Displayable {
 
+    /**
+     * The position of the ball
+     */
     private DPoint position;
 
+    /**
+     * The FollowerGradient to be followed
+     */
     private FollowerGradient followerGradient;
 
+    /**
+     * The movement of the ball
+     */
     private DVector movement;
 
+    /**
+     * How are to move on each call of display
+     */
     private double movementLength = .1;
 
+    /**
+     * A constructor requiring the FollowerGradient and an initial position
+     *
+     * @param followerGradient The FollowerGradient to be followed
+     * @param position The initial position of the ball
+     */
     public BallFollower(FollowerGradient followerGradient, DPoint position) {
         this.followerGradient = followerGradient;
         this.position = position.clone();
     }
 
+    /**
+     * The method that moves and displays the ball
+     *
+     * @param graphics The object to display on
+     */
     @Override
     public void display(SplineGraphics graphics) {
         DPoint tempPos = position.clone();
         if (!arrowPressed()) {
-            movement = followerGradient.evaluateAt(tempPos).toVector();
+            movement = followerGradient.get(tempPos.clone()).toVector();
             movement.setMagnitude(movementLength);
             tempPos.add(movement);
-
-            System.out.println("Here: " + tempPos);
 
             position = tempPos;
         } else {
@@ -52,6 +73,11 @@ public class BallFollower implements Displayable {
         graphics.paintPoint(position.clone());
     }
 
+    /**
+     * A method for getting if an arrow key is currently pressed
+     *
+     * @return Whether or not an arrow key is pressed
+     */
     public boolean arrowPressed() {
         return KeyBoardListener.get(KeyEvent.VK_LEFT) || KeyBoardListener.get(KeyEvent.VK_RIGHT) || KeyBoardListener.get(KeyEvent.VK_UP) || KeyBoardListener.get(KeyEvent.VK_DOWN);
     }

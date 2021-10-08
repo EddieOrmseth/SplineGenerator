@@ -52,7 +52,7 @@ public class FollowerGradient {
     /**
      * The number used to step when creating the grid
      */
-    public double followerStep;
+    public double followerStep = .25;
 
     /**
      * The number that is used as the step value in finding points on the spline
@@ -141,7 +141,7 @@ public class FollowerGradient {
         arrayLengths.multiplyAll(1 / followerStep);
 
         int totalPoints = 1;
-        for (int n = 0; n < spline.matrices.length; n++) {
+        for (int n = 0; n < arrayLengths.getDimensions(); n++) {
             totalPoints *= (int) arrayLengths.get(n);
         }
 
@@ -174,7 +174,7 @@ public class FollowerGradient {
             for (int s = n + 1; s < spline.getDimensions(); s++) {
                 subDimensionVolume *= (int) arrayLengths.get(n);
             }
-            index += point.get(n) * subDimensionVolume;
+            index += ((int) point.get(n)) * subDimensionVolume;
         }
 
         return index;
@@ -213,6 +213,19 @@ public class FollowerGradient {
      * @return The DDirection at the given point
      */
     public DDirection get(DPoint point) {
+        if (isOutOfBounds(point)) {
+            return new DDirection(spline.getDimensions());
+        }
         return followerGradient[pointToIndex(point)];
+    }
+
+    /**
+     * A method for checking to see if a given point is within the bounds of the FollowerGradient
+     *
+     * @param point The point to check
+     * @return false if it is within the bounds, true if it is out of bounds
+     */
+    public boolean isOutOfBounds(DPoint point) {
+        return !bounds.contains(point);
     }
 }

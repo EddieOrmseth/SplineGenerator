@@ -41,6 +41,22 @@ public class Extrema {
     }
 
     /**
+     * A method for checking to see if the given point is between the Extrema
+     *
+     * @param point The point to check
+     * @return Whether or not the point is between the Extrema
+     */
+    public boolean contains(DPoint point) {
+        for (int n = 0; n < lesserPoint.getDimensions() && n < point.getDimensions(); n++) {
+            if (point.get(n) < lesserPoint.get(n) || point.get(n) > greaterPoint.get(n)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * A method for cloning the Extrema object
      *
      * @return The new identical Extrema object

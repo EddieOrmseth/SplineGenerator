@@ -333,7 +333,7 @@ public class SplineDisplay extends JFrame {
      */
     public void displayGradient(FollowerGradient follower) {
         onGridDisplayables.add(gridPoint -> {
-            DVector followerPoint = follower.evaluateAt(gridPoint);
+            DVector followerPoint = follower.get(gridPoint.clone());
             return new DPosVector(gridPoint, followerPoint);
         });
     }

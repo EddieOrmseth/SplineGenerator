@@ -80,8 +80,11 @@ public class Main {
         };
 
         FollowerGradient follower = new FollowerGradient(spline, derivativeModifier, distanceModifier);
+//        follower.bounds = new Extrema(new DPoint(-15, -13), new DPoint(14, 15));
+        follower.bounds = new Extrema(new DPoint(-20, -20), new DPoint(20, 20));
+        follower.computeGradient();
 
-//        display.displayGradient(follower);
+        display.displayGradient(follower);
         display.displayables.add(new BallFollower(follower, new DPoint(spline.getDimensions())));
 //        display.onGridDisplayables.add(gridPoint -> {
 //            DPoint pt = spline.findClosestPointOnSpline(gridPoint, .01);

@@ -173,7 +173,7 @@ public class FollowerGradient {
         for (int n = 0; n < spline.getDimensions(); n++) {
             subDimensionVolume = 1;
             for (int s = n + 1; s < spline.getDimensions(); s++) {
-                subDimensionVolume *= (int) arrayLengths.get(n);
+                subDimensionVolume *= (int) arrayLengths.get(s);
             }
             index += ((int) point.get(n)) * subDimensionVolume;
         }
@@ -196,7 +196,7 @@ public class FollowerGradient {
         for (int n = 0; n < spline.getDimensions(); n++) {
             subDimensionVolume = 1;
             for (int s = n + 1; s < spline.getDimensions(); s++) {
-                subDimensionVolume *= (int) arrayLengths.get(n);
+                subDimensionVolume *= (int) arrayLengths.get(s);
             }
             point.set(n, remaining / subDimensionVolume);
             remaining = remaining % subDimensionVolume;

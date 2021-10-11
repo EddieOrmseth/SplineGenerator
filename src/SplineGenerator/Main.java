@@ -28,14 +28,14 @@ public class Main {
 //        spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
 
         // Figure 8
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(-Math.cos(Math.PI / 4), Math.sin(-Math.PI / 4))));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(-Math.cos(Math.PI / 4), Math.sin(-Math.PI / 4)), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(10, -10)));
         spline.addControlPoint(new DControlPoint(new DVector(20, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(10, 10)));
         spline.addControlPoint(new DControlPoint(new DVector(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(-10, -10)));
         spline.addControlPoint(new DControlPoint(new DVector(-20, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-10, 10)));
+        spline.addControlPoint(new DControlPoint(new DVector(-10, 10), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0)));
 
         spline.setPolynomicOrder(5);
         spline.closed = true;
@@ -60,15 +60,15 @@ public class Main {
         c4.endBehavior = Spline.EndBehavior.None;
         spline.interpolationTypes.add(c4);
 
-        long startTime = System.currentTimeMillis();
+        long startTimeGenerate = System.currentTimeMillis();
         spline.generate();
-        long endTime = System.currentTimeMillis();
+        long endTimeGenerate = System.currentTimeMillis();
 
-        System.out.println("Time to Generate: " + (endTime - startTime) + " milliseconds");
+        System.out.println("Time to Generate: " + (endTimeGenerate - startTimeGenerate) + " milliseconds");
 
-        System.out.println(spline.printMatrices());
-        System.out.println(spline.getDesmosEquations());
-        System.out.println(spline);
+//        System.out.println(spline.printMatrices());
+//        System.out.println(spline.getDesmosEquations());
+//        System.out.println(spline);
 
         spline.takeNextDerivative();
         spline.takeNextDerivative();
@@ -92,9 +92,12 @@ public class Main {
 
         FollowerGradient follower = new FollowerGradient(spline, derivativeModifier, distanceModifier);
         follower.bounds = new Extrema(new DPoint(-30, -20), new DPoint(30, 20));
-        follower.computeGradient();
 
-        follower.get(new DPoint(12, 0));
+        long startTimeCompute = System.currentTimeMillis();
+        follower.computeGradient();
+        long endTimeCompute = System.currentTimeMillis();
+
+        System.out.println("Time to Compute: " + (endTimeCompute - startTimeCompute) + " milliseconds");
 
         display.displayGradient(follower);
         display.displayables.add(new BallFollower(follower, new DPoint(spline.getDimensions())));

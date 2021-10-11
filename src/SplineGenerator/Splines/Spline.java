@@ -1,9 +1,6 @@
 package SplineGenerator.Splines;
 
-import SplineGenerator.Util.DControlPoint;
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.InterpolationInfo;
-import SplineGenerator.Util.Matrix;
+import SplineGenerator.Util.*;
 
 import java.util.ArrayList;
 
@@ -186,6 +183,15 @@ public abstract class Spline {
     public abstract DPoint get(double t);
 
     /**
+     * A method for getting the value of the derivative at a certain point
+     *
+     * @param t          The t-value to evaluate the derivative at
+     * @param derivative The derivative to use
+     * @return The vector at the specified point on the derivative
+     */
+    public abstract DVector evaluateDerivative(double t, int derivative);
+
+    /**
      * A method for initializing the matrices to the correct size
      */
     public abstract void initializeMatrices();
@@ -249,7 +255,7 @@ public abstract class Spline {
     }
 
     /**
-     * A method for adding the derivatives from 1 to n
+     * A method for adding the next derivative
      */
     public void takeNextDerivative() {
         double[][][] function = derivatives.size() == 0 ? spline : derivatives.get(derivatives.size() - 1);
@@ -265,6 +271,94 @@ public abstract class Spline {
         }
 
         derivatives.add(derivative);
+    }
+
+    /**
+     * A method for finding the closest t-value / point on the spline to the given point
+     *
+     * @param point The Point o find the nearest point to
+     * @param tStart The t-value to start at
+     * @param tEnd The t-value to end at
+     * @param step  How much to step by when searching for the nearest point
+     * @return The point on the spline nearest to the given point, the dimension of the DPoint is 1 more than that of the point parameter, in this lies the t-value
+     */
+    public DPoint findClosestPointOnInterval(DPoint point, double tStart, double tEnd, double step) {
+        DPoint nearestPoint = new DPoint(point.getDimensions() + 1);
+        double distance = Double.MAX_VALUE;
+
+        DPoint newPoint;
+        double newDistance;
+
+        for (double t = tStart; t <= tEnd; t += step) {
+            newPoint = get(t);
+            newDistance = point.getDistance(newPoint);
+            if (newDistance < distance) {
+                distance = newDistance;
+                nearestPoint.set(0, newPoint.getValues());
+                nearestPoint.set(nearestPoint.getDimensions() - 1, t);
+            }
+        }
+
+        return nearestPoint;
+    }
+
+    /**
+     * A method for finding the closest t-value / point on the spline to the given point
+     *
+     * @param point The Point o find the nearest point to
+     * @param step  How much to step by when searching for the nearest point
+     * @return The point on the spline nearest to the given point, the dimension of the DPoint is 1 more than that of the point parameter, in this lies the t-value
+     */
+    public DPoint findClosestPointOnSpline(DPoint point, double step) {
+        return findClosestPointOnInterval(point, 0, pieces, step);
+    }
+
+    /**
+     * A method for finding the closest t-value / point on the spline to the given point
+     *
+     * @param point   The Point to find the nearest point tocx
+     * @param segment The segment of the spline to check
+     * @param step    How much to step by when searching for the nearest point
+     * @return The point on the spline nearest to the given point, the dimension of the DPoint is 1 more than that of the point parameter, in this lies the t-value
+     */
+    public DPoint findClosestPointOnSegment(DPoint point, int segment, double step) {
+        return findClosestPointOnInterval(point, segment, segment + 1, step);
+    }
+
+    /**
+     * A method for getting the Extrema of the function
+     *
+     * @param step The amount to step by when finding the extrema
+     * @return The Extrema object
+     */
+    public Extrema getExtrema(double step) {
+        Extrema extrema = new Extrema(matrices.length);
+        extrema.lesserPoint = get(0);
+        extrema.greaterPoint = get(0);
+        DPoint tempPoint;
+
+        for (double t = step; t <= pieces; t += step) {
+            tempPoint = get(t);
+            for (int n = 0; n < matrices.length; n++) {
+                if (tempPoint.get(n) > extrema.greaterPoint.get(n)) {
+                    extrema.greaterPoint.set(n, tempPoint.get(n));
+                }
+                if (tempPoint.get(n) < extrema.lesserPoint.get(n)) {
+                    extrema.lesserPoint.set(n, tempPoint.get(n));
+                }
+            }
+        }
+
+        return extrema;
+    }
+
+    /**
+     * A method for getting the number of dimensions the spline is constructed in
+     *
+     * @return The number of dimensions in the spline is constructed in
+     */
+    public int getDimensions() {
+        return matrices.length;
     }
 
     /**

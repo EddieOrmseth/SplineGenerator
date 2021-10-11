@@ -1,14 +1,13 @@
 package SplineGenerator.Util;
 
+import SplineGenerator.GUI.SplineGraphics;
+
+import java.util.Arrays;
+
 /**
  * A class for holding a multidimensional vector
  */
-public class DVector {
-
-    /**
-     * The values contained by the Vector
-     */
-    protected double[] values;
+public class DVector extends DPoint {
 
     /**
      * A simple constructor for the Vector
@@ -16,7 +15,7 @@ public class DVector {
      * @param dimensions The number of dimensions the Vector has
      */
     public DVector(int dimensions) {
-        values = new double[dimensions];
+        super(dimensions);
     }
 
     /**
@@ -25,19 +24,22 @@ public class DVector {
      * @param values The values to assign to each dimension
      */
     public DVector(double... values) {
-        this.values = new double[values.length];
-        for (int i = 0; i < values.length; i++) {
-            this.values[i] = values[i];
-        }
+        super(values);
     }
 
     /**
-     * A method for getting the number of dimensions the point has
+     * A constructor for a vector between the two given points.
      *
-     * @return The number of dimensions the Vector has
+     * @param p1 The first point
+     * @param p2 The second point
      */
-    public int getDimensions() {
-        return values.length;
+    public DVector(DPoint p1, DPoint p2) {
+        p1 = p1.clone();
+        p2 = p2.clone();
+        values = new double[p1.getDimensions()];
+        for (int n = 0; n < values.length; n++) {
+            values[n] = p2.get(n) - p1.get(n);
+        }
     }
 
     /**
@@ -56,34 +58,82 @@ public class DVector {
     }
 
     /**
-     * A method for getting the value for the specified dimension
+     * A method for setting the magnitude of the vector
      *
-     * @param n The dimension to get the value at
-     * @return The value contained
+     * @param magnitude The new magnitude
      */
-    public double get(int n) {
-        return values[n];
-    }
+    public void setMagnitude(double magnitude) {
+        double currentMagnitude = getMagnitude();
 
-    /**
-     * A method for getting all the values of the Vector
-     *
-     * @return All the values of the Vector
-     */
-    public double[] getAll() {
-        return values;
-    }
-
-    /**
-     * A method for setting a value of the Direction
-     *
-     * @param n      The number that corresponds to the dimension to be changed
-     * @param values The new value that is set
-     */
-    public void set(int n, double... values) {
-        for (int i = 0; i < values.length && i < this.values.length; i++) {
-            this.values[n + i] = values[i];
+        if (currentMagnitude == 0) {
+            return;
         }
+
+        for (int n = 0; n < values.length; n++) {
+            values[n] *= (magnitude / currentMagnitude);
+        }
+    }
+
+    /**
+     * A method for getting a DDirection from the current DVector
+     *
+     * @return The DDirection created from the current DVector
+     */
+    public DDirection toDirection() {
+        return new DDirection(values);
+    }
+
+    /**
+     * A method for adding two DVectors
+     *
+     * @param vector The vector to add to this object
+     * @return The resulting DVector
+     */
+    public DVector add(DVector vector) {
+        for (int n = 0; n < getDimensions() && n < vector.getDimensions(); n++) {
+            values[n] += vector.get(n);
+        }
+
+        return this;
+    }
+
+    /**
+     * A method for subtracting two DVectors
+     *
+     * @param vector The vector to be subtracted from this one
+     * @return The resulting DVector
+     */
+    public DVector subtract(DVector vector) {
+        for (int n = 0; n < getDimensions() && n < vector.getDimensions(); n++) {
+            values[n] -= vector.get(n);
+        }
+
+        return this;
+    }
+
+    /**
+     * A method for displaying the vector
+     *
+     * @param graphics What to display the vector on
+     */
+    @Override
+    public void display(SplineGraphics graphics) {
+        graphics.paintVector(new DPosVector(values.length), this);
+    }
+
+    /**
+     * A method for cloning the DPoint
+     *
+     * @return The cloned object
+     */
+    @Override
+    public DVector clone() {
+        DVector vector = new DVector(values.length);
+        for (int n = 0; n < values.length; n++) {
+            vector.set(n, values[n]);
+        }
+
+        return vector;
     }
 
 }

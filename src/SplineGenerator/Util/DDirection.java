@@ -1,5 +1,7 @@
 package SplineGenerator.Util;
 
+import java.util.Arrays;
+
 /**
  * A class representing a multidimensional direction in the form of a unit vector
  */
@@ -64,6 +66,21 @@ public class DDirection extends DVector {
         for (int i = 0; i < this.values.length; i++) {
             this.values[i] /= initialMagnitude;
         }
+    }
+
+    /**
+     * A method for cloning the DPoint
+     *
+     * @return The cloned object
+     */
+    @Override
+    public DDirection clone() {
+        DDirection direction = new DDirection(values.length);
+        for (int n = 0; n < values.length; n++) {
+            direction.values[n] = values[n];
+        }
+
+        return direction;
     }
 
 }

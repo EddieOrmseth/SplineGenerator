@@ -37,7 +37,7 @@ public class DVector extends DPoint {
         p1 = p1.clone();
         p2 = p2.clone();
         values = new double[p1.getDimensions()];
-        for (int n = 0; n < values.length; n++) {
+        for (int n = 0; n < p1.getDimensions() && n < p2.getDimensions(); n++) {
             values[n] = p2.get(n) - p1.get(n);
         }
     }

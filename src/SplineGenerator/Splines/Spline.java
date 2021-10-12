@@ -289,13 +289,13 @@ public abstract class Spline {
         DPoint newPoint;
         double newDistance;
 
-        for (double t = tStart; t <= tEnd; t += step) {
+        for (double t = tStart; t < tEnd; t += step) {
             newPoint = get(t);
             newDistance = point.getDistance(newPoint);
             if (newDistance < distance) {
                 distance = newDistance;
                 nearestPoint.set(0, newPoint.getValues());
-                nearestPoint.set(nearestPoint.getDimensions() - 1, t);
+                nearestPoint.set(nearestPoint.getDimensions() - 1, t); // I don't think this is necessary
             }
         }
 

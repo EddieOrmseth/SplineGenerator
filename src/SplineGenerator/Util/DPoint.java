@@ -159,6 +159,14 @@ public class DPoint implements Displayable {
         return Math.sqrt(total);
     }
 
+    public void addDimensions(int numDimensions) {
+        double[] newValues = new double[values.length + numDimensions];
+        for (int n = 0; n < values.length; n++) {
+            newValues[n] = values[n];
+        }
+        values = newValues;
+    }
+
     @Override
     public void display(SplineGraphics graphics) {
         graphics.paintPoint(this);

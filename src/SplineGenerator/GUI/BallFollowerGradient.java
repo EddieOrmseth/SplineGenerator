@@ -1,5 +1,6 @@
 package SplineGenerator.GUI;
 
+import SplineGenerator.Applied.DirectionController;
 import SplineGenerator.Applied.FollowerGradient;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
@@ -9,7 +10,7 @@ import java.awt.event.KeyEvent;
 /**
  * A class that displays a small ball that follows a given FollowerGradient
  */
-public class BallFollower implements Displayable {
+public class BallFollowerGradient implements Displayable {
 
     /**
      * The position of the ball
@@ -19,7 +20,7 @@ public class BallFollower implements Displayable {
     /**
      * The FollowerGradient to be followed
      */
-    private FollowerGradient followerGradient;
+    private DirectionController follower;
 
     /**
      * The movement of the ball
@@ -34,11 +35,11 @@ public class BallFollower implements Displayable {
     /**
      * A constructor requiring the FollowerGradient and an initial position
      *
-     * @param followerGradient The FollowerGradient to be followed
+     * @param follower The FollowerGradient to be followed
      * @param position The initial position of the ball
      */
-    public BallFollower(FollowerGradient followerGradient, DPoint position) {
-        this.followerGradient = followerGradient;
+    public BallFollowerGradient(DirectionController follower, DPoint position) {
+        this.follower = follower;
         this.position = position.clone();
     }
 
@@ -51,7 +52,7 @@ public class BallFollower implements Displayable {
     public void display(SplineGraphics graphics) {
         DPoint tempPos = position.clone();
         if (!arrowPressed()) {
-            movement = followerGradient.get(tempPos.clone()).toVector();
+            movement = follower.getDirection(tempPos.clone()).toVector();
             movement.setMagnitude(movementLength);
             tempPos.add(movement);
 

@@ -1,7 +1,9 @@
 package SplineGenerator;
 
 import SplineGenerator.Applied.FollowerGradient;
-import SplineGenerator.GUI.BallFollower;
+import SplineGenerator.Applied.IntersectionResolver;
+import SplineGenerator.GUI.BallFollowerGradient;
+import SplineGenerator.GUI.BallIntersectionResolver;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
@@ -90,6 +92,7 @@ public class Main {
             return variable;
         };
 
+         /* Follower Gradient
         FollowerGradient follower = new FollowerGradient(spline, derivativeModifier, distanceModifier);
         follower.bounds = new Extrema(new DPoint(-30, -20), new DPoint(30, 20));
 
@@ -100,22 +103,21 @@ public class Main {
         System.out.println("Time to Compute: " + (endTimeCompute - startTimeCompute) + " milliseconds");
 
         display.displayGradient(follower);
-        display.displayables.add(new BallFollower(follower, new DPoint(spline.getDimensions())));
-//        display.onGridDisplayables.add(gridPoint -> {
-//            DPoint pt = spline.findClosestPointOnSpline(gridPoint, .01);
-//            DVector deriv = spline.evaluateDerivative(pt.get(pt.getDimensions() - 1), 1);
-//
-//            return new DPosVector(gridPoint, deriv);
-//        });
+        display.displayables.add(new BallFollowerGradient(follower, new DPoint(spline.getDimensions())));
+        // */
 
-//        display.onSplineDisplayables.add(t -> {
-//            DVector vector = spline.evaluateDerivative(t, 1);
-//            return new DPosVector(spline.get(t), vector);
-//        });
-//        display.onSplineDisplayables.add(t -> {
-//            DVector vector = spline.evaluateDerivative(t, 2);
-//            return new DPosVector(spline.get(t), vector);
-//        });
+        // /* IntersectionResolver
+        IntersectionResolver resolver = new IntersectionResolver(spline, derivativeModifier, distanceModifier);
+        resolver.bounds = new Extrema(new DPoint(-30, -20), new DPoint(30, 20));
+
+        long startTimeCompute = System.currentTimeMillis();
+        resolver.computeGradient();
+        long endTimeCompute = System.currentTimeMillis();
+
+        System.out.println("Time to Compute: " + (endTimeCompute - startTimeCompute) + " milliseconds");
+
+        display.displayables.add(new BallIntersectionResolver(resolver, new DPoint(10, 13, 1)));
+        // */
 
         display.display();
 

@@ -71,10 +71,11 @@ public class BallIntersectionResolver implements Displayable {
                 timeDirection.getMinSurroundingSegment(tValue);
             }
             if (segment != -1) {
-                DVector movement = timeDirection.get(segment).clone();
+                DVector movement = timeDirection.get(segment);
                 if (movement == null) {
                     return;
                 }
+                movement = movement.clone();
                 tValue = timeDirection.times[segment];
 
                 DVector adjustedDistance = follower.getDistanceModifier().get(movement);

@@ -126,7 +126,11 @@ public class Main {
             int segment = ball.segment;
             if (segment != -1) {
                 DVector vector = resolver.get(gridPoint.clone()).get(segment);
-                return new DPosVector(gridPoint.clone(), vector);
+                if (vector != null) {
+                    return new DPosVector(gridPoint.clone(), vector);
+                } else {
+                    return new DVector(gridPoint.getDimensions());
+                }
             }
             return new DVector(gridPoint.getDimensions());
         });

@@ -116,7 +116,9 @@ public class IntersectionResolver {
             }
 
             DVector distance = new DVector(point, nearestPoint);
-            direction.insert(distance, nearestPoint.get(point.getDimensions()), s);
+            if (distance.getMagnitude() < onPathRadius) {
+                direction.insert(distance, nearestPoint.get(point.getDimensions()), s);
+            }
 
             t += onSplineSegmentSize;
             s++;

@@ -38,6 +38,11 @@ public class BallIntersectionResolver implements Displayable {
     private double movementLength = .1;
 
     /**
+     * The segment the ball is currently on
+     */
+    public int segment = 0;
+
+    /**
      * A constructor requiring the FollowerGradient and an initial position
      *
      * @param follower The FollowerGradient to be followed
@@ -57,12 +62,16 @@ public class BallIntersectionResolver implements Displayable {
     @Override
     public void display(SplineGraphics graphics) {
         DPoint tempPos = position.clone();
-        int segment = 0;
         if (!arrowPressed()) {
             TimeDirection timeDirection = follower.get(tempPos.clone());
+            int prevSeg = segment;
             segment = timeDirection.getMinSurroundingSegment(tValue);
+            if (KeyBoardListener.get(KeyEvent.VK_ENTER) && tValue % .5 > .2 && tValue % .5 < .3 && prevSeg != segment || KeyBoardListener.get(KeyEvent.VK_S)) {
+                int k = 0;
+                timeDirection.getMinSurroundingSegment(tValue);
+            }
             if (segment != -1) {
-                DVector movement = timeDirection.get(segment);
+                DVector movement = timeDirection.get(segment).clone();
                 if (movement == null) {
                     return;
                 }

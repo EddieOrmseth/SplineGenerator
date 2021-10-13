@@ -295,7 +295,7 @@ public abstract class Spline {
             if (newDistance < distance) {
                 distance = newDistance;
                 nearestPoint.set(0, newPoint.getValues());
-                nearestPoint.set(nearestPoint.getDimensions() - 1, t); // I don't think this is necessary
+                nearestPoint.set(nearestPoint.getDimensions() - 1, t);
             }
         }
 

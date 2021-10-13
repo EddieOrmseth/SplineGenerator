@@ -100,25 +100,9 @@ public class IntersectionResolver {
     public TimeDirection evaluateAt(DPoint point) {
         TimeDirection direction = new TimeDirection(spline.pieces, onSplineSegmentSize);
         DPoint nearestPoint = null;
-//        int s = 0;
-//        double t = onSplineSegmentSize;
-//        for (;t < spline.pieces; t += onSplineSegmentSize) {
-//            nearestPoint = spline.findClosestPointOnInterval(point, t - onSplineSegmentSize, t, splinePointStep);
-////            if (point.getDistance(nearestPoint) < onPathRadius) {
-//                DVector distance = new DVector(point.clone(), nearestPoint);
-//                direction.insert(distance, nearestPoint.get(nearestPoint.getDimensions() - 1), s);
-////            }
-//            s++;
-//        }
-//
-//        if (t - onSplineSegmentSize < spline.pieces) {
-//            nearestPoint = spline.findClosestPointOnInterval(point, t - onSplineSegmentSize, spline.pieces, splinePointStep);
-////            if (point.getDistance(nearestPoint) < onPathRadius) {
-//                DVector distance = new DVector(point.clone(), nearestPoint);
-//                direction.insert(distance, nearestPoint.get(nearestPoint.getDimensions() - 1), s);
-////            }
-//        }
+
         double t = 0;
+        int s = 0;
         boolean lastSegment = false;
         while (!lastSegment) {
 
@@ -132,9 +116,10 @@ public class IntersectionResolver {
             }
 
             DVector distance = new DVector(point, nearestPoint);
-            direction.insert(distance, nearestPoint.get(point.getDimensions()), direction.tToSegment(t));
+            direction.insert(distance, nearestPoint.get(point.getDimensions()), s);
 
             t += onSplineSegmentSize;
+            s++;
         }
 
         return direction;

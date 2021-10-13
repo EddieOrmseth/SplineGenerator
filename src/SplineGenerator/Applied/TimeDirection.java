@@ -49,41 +49,11 @@ public class TimeDirection {
         return directions[(int) tValue];
     }
 
-    public DVector getMinSurrounding(double tValue) {
-        int segment = tToSegment(tValue);
-
-        DVector v0 = segment - 1 >= 0 ? get(segment - 1) : null;
-        DVector v1 = get(segment);
-        DVector v2 = segment + 1 < directions.length ? get(segment + 1) : null;
-
-        double v0Mag = v0 != null ? v0.getMagnitude() : Double.MAX_VALUE;
-        double v1Mag = v1 != null ? v1.getMagnitude() : -1;
-        double v2Mag = v2 != null ? v2.getMagnitude() : Double.MAX_VALUE;
-
-        if (v0 == null && v1 == null && v2 == null) {
-            return new DVector(3);
-        }
-
-        if (v0Mag < v1Mag && v0Mag < v2Mag) {
-//            v0.addDimensions(1);
-//            v0.set(v0.getDimensions() - 1, times[segment - 1]);
-            return v0;
-        } else if (v1Mag < v0Mag && v1Mag < v2Mag) {
-//            v1.addDimensions(1);
-//            v1.set(v1.getDimensions() - 1, times[segment]);
-            return v1;
-        } else {
-//            v2.addDimensions(1);
-//            v2.set(v2.getDimensions() - 1, times[segment + 1]);
-            return v2;
-        }
-    }
-
     public int getMinSurroundingSegment(double tValue) {
         int segment = tToSegment(tValue);
 
         DVector v0 = segment - 1 >= 0 ? get(segment - 1) : null;
-        DVector v1 = get(segment);
+        DVector v1 = segment < directions.length ? get(segment) : null;
         DVector v2 = segment + 1 < directions.length ? get(segment + 1) : null;
 
         double v0Mag = v0 != null ? v0.getMagnitude() : Double.MAX_VALUE;
@@ -96,10 +66,10 @@ public class TimeDirection {
 
         if (v0Mag < v1Mag && v0Mag < v2Mag) {
             return segment - 1;
-        } else if (v1Mag < v0Mag && v1Mag < v2Mag) {
-            return segment;
-        } else {
+        } else if (v2Mag < v0Mag && v2Mag < v1Mag) {
             return segment + 1;
+        } else {
+            return segment;
         }
     }
 

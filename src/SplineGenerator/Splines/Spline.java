@@ -289,7 +289,7 @@ public abstract class Spline {
         DPoint newPoint;
         double newDistance;
 
-        for (double t = tStart; t <= tEnd; t += step) {
+        for (double t = tStart; t < tEnd; t += step) {
             newPoint = get(t);
             newDistance = point.getDistance(newPoint);
             if (newDistance < distance) {

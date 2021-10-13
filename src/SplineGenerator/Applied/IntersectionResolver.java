@@ -6,12 +6,12 @@ import SplineGenerator.Util.*;
 /**
  * A class representing a gradient such that each value points in the direction of the correct movement
  */
-public class FollowerGradient implements DirectionController {
+public class IntersectionResolver {
 
     /**
      * The spline to be followed
      */
-    private Spline spline;
+    public Spline spline;
 
     /**
      * A Function for modifying the Vector given by the spline
@@ -26,7 +26,7 @@ public class FollowerGradient implements DirectionController {
     /**
      * A DDirection[] for holding the directions at each point in the space that the spline exists in
      */
-    private DDirection[] followerGradient;
+    private TimeDirection[] followerGradient;
 
     /**
      * The Extrema object for holding the bounds of the GradientFollower
@@ -60,11 +60,21 @@ public class FollowerGradient implements DirectionController {
     public double splinePointStep = .005;
 
     /**
+     * The number to step by when finding the smallest values on the spline
+     */
+    private double onSplineSegmentSize = .5;
+
+    /**
+     * The radius that each value must be within
+     */
+    private double onPathRadius = 4;
+
+    /**
      * A constructor for the FollowerGradient including all the necessary parts
      *
      * @param spline The spline to be followed
      */
-    public FollowerGradient(Spline spline) {
+    public IntersectionResolver(Spline spline) {
         this.spline = spline;
     }
 
@@ -75,7 +85,7 @@ public class FollowerGradient implements DirectionController {
      * @param gradientModifier The modifier for the gradient DVector
      * @param distanceModifier The modifier for the distance DVector
      */
-    public FollowerGradient(Spline spline, Function<DVector, DVector> gradientModifier, Function<DVector, DVector> distanceModifier) {
+    public IntersectionResolver(Spline spline, Function<DVector, DVector> gradientModifier, Function<DVector, DVector> distanceModifier) {
         this.spline = spline;
         this.gradientModifier = gradientModifier;
         this.distanceModifier = distanceModifier;
@@ -84,18 +94,37 @@ public class FollowerGradient implements DirectionController {
     /**
      * A method for getting the follower DVector at the given point
      *
-     * @param point The point to get the DVector for
-     * @return The follower DVector
+     * @param point The point to get the TimeDirection for
+     * @return The follower object TimeDirection
      */
-    public DDirection evaluateAt(DPoint point) {
-        DPoint pointOnSpline = spline.findClosestPointOnSpline(point.clone(), splinePointStep);
-        DVector position = new DVector(point.clone(), pointOnSpline);
-        position = distanceModifier.get(position);
+    public TimeDirection evaluateAt(DPoint point) {
+        TimeDirection direction = new TimeDirection(spline.pieces, onSplineSegmentSize);
+        DPoint nearestPoint = null;
 
-        DVector derivative = spline.evaluateDerivative(pointOnSpline.get(pointOnSpline.getDimensions() - 1), 1);
-        derivative = gradientModifier.get(derivative);
+        double t = 0;
+        int s = 0;
+        boolean lastSegment = false;
+        while (!lastSegment) {
 
-        return derivative.add(position).toDirection();
+            if (t + onSplineSegmentSize >= spline.pieces) {
+                lastSegment = true;
+                nearestPoint = spline.findClosestPointOnInterval(point.clone(), t, spline.pieces, splinePointStep);
+            }
+
+            if (!lastSegment) {
+                nearestPoint = spline.findClosestPointOnInterval(point.clone(), t, t + onSplineSegmentSize, splinePointStep);
+            }
+
+            DVector distance = new DVector(point, nearestPoint);
+            if (distance.getMagnitude() < onPathRadius) {
+                direction.insert(distance, nearestPoint.get(point.getDimensions()), s);
+            }
+
+            t += onSplineSegmentSize;
+            s++;
+        }
+
+        return direction;
     }
 
     /**
@@ -108,12 +137,30 @@ public class FollowerGradient implements DirectionController {
     }
 
     /**
+     * A method for getting the gradientModifier
+     *
+     * @return The function for gradient modification
+     */
+    public Function<DVector, DVector> getGradientModifier() {
+        return  gradientModifier;
+    }
+
+    /**
      * A method for setting the distanceModifier
      *
      * @param distanceModifier The function to be used
      */
     public void setDistanceModifier(Function<DVector, DVector> distanceModifier) {
         this.distanceModifier = distanceModifier;
+    }
+
+    /**
+     * A method for setting the distanceModifier
+     *
+     * @return The function for distance modification
+     */
+    public Function<DVector, DVector> getDistanceModifier() {
+        return distanceModifier;
     }
 
     /**
@@ -146,7 +193,7 @@ public class FollowerGradient implements DirectionController {
             totalPoints *= (int) arrayLengths.get(n);
         }
 
-        followerGradient = new DDirection[totalPoints];
+        followerGradient = new TimeDirection[totalPoints];
     }
 
     /**
@@ -213,10 +260,9 @@ public class FollowerGradient implements DirectionController {
      * @param point The point at which to get the DDirection
      * @return The DDirection at the given point
      */
-    @Override
-    public DDirection getDirection(DPoint point) {
+    public TimeDirection get(DPoint point) {
         if (isOutOfBounds(point)) {
-            return new DDirection(spline.getDimensions());
+            return new TimeDirection(spline.pieces, onSplineSegmentSize);
         }
         return followerGradient[pointToIndex(point)];
     }

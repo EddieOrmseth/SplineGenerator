@@ -163,5 +163,14 @@ public class SplineGraphics {
         graphics.fillOval((int) (point.get(xDim) - pointRadius), (int) (point.get(yDim) - pointRadius), (int) (2 * pointRadius), (int) (2 * pointRadius));
     }
 
+    /**
+     * A method for getting the Graphics2D object
+     *
+     * @return The Graphics2D object
+     */
+    public Graphics2D getGraphics() {
+        return graphics;
+    }
+
 
 }

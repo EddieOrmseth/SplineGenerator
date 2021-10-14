@@ -6,7 +6,7 @@ import SplineGenerator.Util.*;
 /**
  * A class representing a gradient such that each value points in the direction of the correct movement
  */
-public class IntersectionResolver {
+public class Segmenter implements DirectionController {
 
     /**
      * The spline to be followed
@@ -62,7 +62,7 @@ public class IntersectionResolver {
     /**
      * The number to step by when finding the smallest values on the spline
      */
-    private double onSplineSegmentSize = .5;
+    private double onSplineSegmentSize = .25;
 
     /**
      * The radius that each value must be within
@@ -74,7 +74,7 @@ public class IntersectionResolver {
      *
      * @param spline The spline to be followed
      */
-    public IntersectionResolver(Spline spline) {
+    public Segmenter(Spline spline) {
         this.spline = spline;
     }
 
@@ -85,7 +85,7 @@ public class IntersectionResolver {
      * @param gradientModifier The modifier for the gradient DVector
      * @param distanceModifier The modifier for the distance DVector
      */
-    public IntersectionResolver(Spline spline, Function<DVector, DVector> gradientModifier, Function<DVector, DVector> distanceModifier) {
+    public Segmenter(Spline spline, Function<DVector, DVector> gradientModifier, Function<DVector, DVector> distanceModifier) {
         this.spline = spline;
         this.gradientModifier = gradientModifier;
         this.distanceModifier = distanceModifier;
@@ -117,7 +117,7 @@ public class IntersectionResolver {
 
             DVector distance = new DVector(point, nearestPoint);
             if (distance.getMagnitude() < onPathRadius) {
-                direction.insert(distance, nearestPoint.get(point.getDimensions()), s);
+                direction.set(distance, nearestPoint.get(point.getDimensions()), s);
             }
 
             t += onSplineSegmentSize;
@@ -142,7 +142,7 @@ public class IntersectionResolver {
      * @return The function for gradient modification
      */
     public Function<DVector, DVector> getGradientModifier() {
-        return  gradientModifier;
+        return gradientModifier;
     }
 
     /**
@@ -265,6 +265,43 @@ public class IntersectionResolver {
             return new TimeDirection(spline.pieces, onSplineSegmentSize);
         }
         return followerGradient[pointToIndex(point)];
+    }
+
+    /**
+     * A method for getting the direction at the specified point
+     *
+     * @param point The point in space INCLUDING the time as the last dimension
+     * @return The point in space, the final dimension will be the time
+     */
+    @Override
+    public DDirection getDirection(DPoint point) {
+        DPoint position = point.clone();
+        position.removeDimension(position.getDimensions() - 1);
+
+        TimeDirection timeDirection = get(position.clone()).clone();
+        int segment = timeDirection.getMinSurroundingSegment(point.get(point.getDimensions() - 1));
+        if (segment == -1) {
+            DDirection returnDirection = new DDirection(spline.getDimensions() + 1);
+            returnDirection.forceSet(returnDirection.getDimensions() - 1, point.get(point.getDimensions() - 1));
+            return returnDirection;
+        }
+
+        DVector distance = timeDirection.get(segment);
+        if (distance == null) {
+            DDirection returnDirection = new DDirection(spline.getDimensions() + 1);
+            returnDirection.forceSet(returnDirection.getDimensions() - 1, point.get(point.getDimensions() - 1));
+            return returnDirection;
+        }
+
+        distance = distanceModifier.get(distance);
+        DVector derivative = gradientModifier.get(spline.evaluateDerivative(timeDirection.times[segment], 1));
+        distance.add(derivative);
+
+        DDirection direction = distance.toDirection();
+        direction.addDimensions(1);
+        direction.forceSet(direction.getDimensions() - 1, timeDirection.times[segment]);
+
+        return direction;
     }
 
     /**

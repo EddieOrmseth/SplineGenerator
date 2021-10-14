@@ -69,6 +69,13 @@ public class DDirection extends DVector {
     }
 
     /**
+     * A method for setting a value without adjusting the magnitude
+     */
+    public void forceSet(int n, double... values) {
+        super.set(n, values);
+    }
+
+    /**
      * A method for cloning the DPoint
      *
      * @return The cloned object

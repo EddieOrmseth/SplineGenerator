@@ -1,8 +1,6 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.FollowerGradient;
-import SplineGenerator.Applied.IntersectionResolver;
-import SplineGenerator.GUI.BallFollowerGradient;
+import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.GUI.BallIntersectionResolver;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
@@ -111,7 +109,7 @@ public class Main {
         // */
 
         // /* IntersectionResolver
-        IntersectionResolver resolver = new IntersectionResolver(spline, derivativeModifier, distanceModifier);
+        Segmenter resolver = new Segmenter(spline, derivativeModifier, distanceModifier);
         resolver.bounds = new Extrema(new DPoint(-30, -20), new DPoint(30, 20));
 
         long startTimeCompute = System.currentTimeMillis();

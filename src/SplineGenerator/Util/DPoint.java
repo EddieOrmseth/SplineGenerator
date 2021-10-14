@@ -159,12 +159,38 @@ public class DPoint implements Displayable {
         return Math.sqrt(total);
     }
 
+    /**
+     * A method for adding a number of dimensions on the end of the point
+     *
+     * @param numDimensions The number of dimensions to be added
+     */
     public void addDimensions(int numDimensions) {
         double[] newValues = new double[values.length + numDimensions];
         for (int n = 0; n < values.length; n++) {
             newValues[n] = values[n];
         }
         values = newValues;
+    }
+
+    /**
+     * A method for removing dimensions
+     *
+     * @param dimension The dimension to remove
+     * @return The value previously held by that dimension
+     */
+    public double removeDimension(int dimension) {
+        double value = values[dimension];
+        int realIndex = 0;
+        double[] newValues = new double[values.length - 1];
+        for (int i = 0; i < getDimensions(); i++) {
+            if (realIndex == dimension) {
+                continue;
+            }
+            newValues[realIndex] = values[i];
+            realIndex++;
+        }
+        values = newValues;
+        return value;
     }
 
     @Override

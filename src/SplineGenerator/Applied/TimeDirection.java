@@ -35,7 +35,7 @@ public class TimeDirection {
         times = new double[directions.length];
     }
 
-    public void insert(DVector vector, double time, int segment) {
+    public void set(DVector vector, double time, int segment) {
         directions[segment] = vector;
         times[segment] = time;
     }
@@ -75,6 +75,19 @@ public class TimeDirection {
 
     public int tToSegment(double tValue) {
         return (int) (tValue / segmentSize);
+    }
+
+    @Override
+    public TimeDirection clone() {
+        TimeDirection timeDirection = new TimeDirection(length, segmentSize);
+        DVector direction;
+
+        for (int s = 0; s < times.length; s++) {
+            direction = directions[s] != null ? directions[s].clone() : null;
+            timeDirection.set(direction, times[s], s);
+        }
+
+        return timeDirection;
     }
 
 }

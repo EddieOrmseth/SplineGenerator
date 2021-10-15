@@ -1,6 +1,4 @@
-package SplineGenerator.Applied;
-
-import SplineGenerator.Util.DVector;
+package SplineGenerator.Util;
 
 /**
  * A class for holding multiple DDirections with different times attached to each

@@ -230,25 +230,55 @@ public class FollowerGradient implements Navigator {
         return !bounds.contains(point);
     }
 
+    /**
+     * A method for getting the Controller for this Navigator
+     *
+     * @return The Controller object
+     */
     @Override
     public Controller getController() {
         return new Controller(this);
     }
 
+    /**
+     * A class that acts as a controller for this class
+     */
     public class Controller extends Navigator.Controller {
 
+        /**
+         * The FollowerGradient to be followed
+         */
         private FollowerGradient followerGradient;
+
+        /**
+         * The position of the controlled object
+         */
         private DPoint point;
 
+        /**
+         * A simple constructor requiring the object to be followed / provide directions
+         *
+         * @param followerGradient The object that provides data about the desired path
+         */
         private Controller(FollowerGradient followerGradient) {
             this.followerGradient = followerGradient;
         }
 
+        /**
+         * A method for updating the current position of the controlled object
+         *
+         * @param point The new position
+         */
         @Override
         public void update(DPoint point) {
             this.point = point;
         }
 
+        /**
+         * A method for getting the desired direction at the current point
+         *
+         * @return The DDirection at the specified point
+         */
         @Override
         public DDirection getDirection() {
             return followerGradient.getDirection(point.clone());

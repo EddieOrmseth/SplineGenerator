@@ -27,6 +27,12 @@ public class TimeDirection {
      */
     private double segmentSize;
 
+    /**
+     * A constructor that requires the variables to initialize the array to the correct length
+     *
+     * @param length The length of the spline to be followed
+     * @param segmentSize The size of each segment
+     */
     public TimeDirection(double length, double segmentSize) {
         this.length = length;
         this.segmentSize = segmentSize;
@@ -34,20 +40,45 @@ public class TimeDirection {
         times = new double[directions.length];
     }
 
+    /**
+     * A method for setting the DVector and time value at a specified point
+     *
+     * @param vector The new DVector to be set
+     * @param time The time to set to
+     * @param segment The segment to set the new information on
+     */
     public void set(DVector vector, double time, int segment) {
         directions[segment] = vector;
         times[segment] = time;
     }
 
+    /**
+     * A method for getting the value at the specified segment
+     *
+     * @param segment The segment to get the DVector at
+     * @return The DVector at the specified segment
+     */
     public DVector get(int segment) {
         return directions[segment];
     }
 
+    /**
+     * A method for getting the time at a certain t value;
+     *
+     * @param tValue The specified t value
+     * @return The DVector at the specified t value
+     */
     public DVector get(double tValue) {
         tValue /= segmentSize;
         return directions[(int) tValue];
     }
 
+    /**
+     * A method for getting the segment that contains the closest point to the position of the TimeDirection
+     *
+     * @param tValue The given t value
+     * @return The segment containing the closest point on the spline
+     */
     public int getMinSurroundingSegment(double tValue) {
         int segment = tToSegment(tValue);
 
@@ -72,10 +103,21 @@ public class TimeDirection {
         }
     }
 
+    /**
+     * A method for converting t values to segment numbers
+     *
+     * @param tValue The t value to find the segment at
+     * @return The segment of t
+     */
     public int tToSegment(double tValue) {
         return (int) (tValue / segmentSize);
     }
 
+    /**
+     * A method for cloning the TimeDirection object
+     *
+     * @return The new cloned TimeDirection
+     */
     @Override
     public TimeDirection clone() {
         TimeDirection timeDirection = new TimeDirection(length, segmentSize);

@@ -316,30 +316,70 @@ public class Segmenter implements Navigator {
         return !bounds.contains(point);
     }
 
+    /**
+     * A method for getting a random TimeDirection
+     *
+     * @return A random TimeDirection
+     */
     public TimeDirection getTimeDirection() {
         return followerGradient[0];
     }
 
+    /**
+     * A method for getting the Controller for this Navigator
+     *
+     * @return The Controller object
+     */
     @Override
     public Controller getController() {
         return new Controller(this);
     }
 
+    /**
+     * A class that acts as a controller for this class
+     */
     public class Controller extends Navigator.Controller {
 
+        /**
+         * The Navigator to follow
+         */
         private Segmenter segmenter;
+
+        /**
+         * The position of the controlled object
+         */
         private DPoint point;
 
+        /**
+         * The t value of the controlled object
+         */
         private double tValue = 0;
 
+        /**
+         * A TimeDirection for converting t values to segment numbers
+         */
         private TimeDirection segmentGetter;
+
+        /**
+         * The current segment of the controlled object
+         */
         public int segment;
 
+        /**
+         * A constructor, all the Controller needs is the Segmenter to follow
+         *
+         * @param segmenter The Segmenter to follow
+         */
         private Controller(Segmenter segmenter) {
             this.segmenter = segmenter;
             segmentGetter = segmenter.getTimeDirection();
         }
 
+        /**
+         * A method for updating the position of the controlled object
+         *
+         * @param point The new position
+         */
         @Override
         public void update(DPoint point) {
             this.point = point;
@@ -348,6 +388,11 @@ public class Segmenter implements Navigator {
             }
         }
 
+        /**
+         * A method for getting the desired direction at the current point
+         *
+         * @return The DDirection at the specified point
+         */
         @Override
         public DDirection getDirection() {
             DPoint timePoint = point.clone();

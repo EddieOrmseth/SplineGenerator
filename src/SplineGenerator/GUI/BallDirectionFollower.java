@@ -1,16 +1,21 @@
 package SplineGenerator.GUI;
 
-import SplineGenerator.Applied.DirectionController;
-import SplineGenerator.Applied.FollowerGradient;
+import SplineGenerator.Applied.Navigator;
+import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
 import java.awt.event.KeyEvent;
 
 /**
- * A class that displays a small ball that follows a given FollowerGradient
+ * A class that follows the path given to it by a Controller at a constant speed
  */
-public class BallFollowerGradient implements Displayable {
+public class BallDirectionFollower implements Displayable {
+
+    /**
+     * The controller that provides the direction
+     */
+    private Navigator.Controller controller;
 
     /**
      * The position of the ball
@@ -18,45 +23,37 @@ public class BallFollowerGradient implements Displayable {
     private DPoint position;
 
     /**
-     * The FollowerGradient to be followed
+     * The distance to move the ball each time display is called
      */
-    private DirectionController follower;
+    private double movementLength = .15;
 
     /**
-     * The movement of the ball
-     */
-    private DVector movement;
-
-    /**
-     * How are to move on each call of display
-     */
-    private double movementLength = .1;
-
-    /**
-     * A constructor requiring the FollowerGradient and an initial position
+     * A simple constructor requiring the necessary components
      *
-     * @param follower The FollowerGradient to be followed
+     * @param controller The controller that will provide directions
      * @param position The initial position of the ball
      */
-    public BallFollowerGradient(DirectionController follower, DPoint position) {
-        this.follower = follower;
-        this.position = position.clone();
+    public BallDirectionFollower(Navigator.Controller controller, DPoint position) {
+        this.controller = controller;
+        this.position = position;
     }
 
     /**
-     * The method that moves and displays the ball
+     * The method to be called constantly as to move the ball
      *
      * @param graphics The object to display on
      */
     @Override
     public void display(SplineGraphics graphics) {
-        DPoint tempPos = position.clone();
-        if (!arrowPressed()) {
-            movement = follower.getDirection(tempPos.clone()).toVector();
-            movement.setMagnitude(movementLength);
-            tempPos.add(movement);
 
-            position = tempPos;
+        if (!arrowPressed()) {
+
+            controller.update(position.clone());
+            DDirection direction = controller.getDirection();
+            DVector movement = direction.toVector();
+            movement.setMagnitude(movementLength);
+            position.add(movement);
+
         } else {
             if (KeyBoardListener.get(KeyEvent.VK_LEFT)) {
                 position.add(graphics.xDim, -movementLength);
@@ -71,6 +68,7 @@ public class BallFollowerGradient implements Displayable {
                 position.add(graphics.yDim, -movementLength);
             }
         }
+
         graphics.paintPoint(position.clone());
     }
 

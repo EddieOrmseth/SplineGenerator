@@ -1,7 +1,7 @@
 package SplineGenerator;
 
 import SplineGenerator.Applied.Segmenter;
-import SplineGenerator.GUI.BallIntersectionResolver;
+import SplineGenerator.GUI.BallDirectionFollower;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
@@ -16,7 +16,7 @@ public class Main {
 
         PolynomicSpline spline = new PolynomicSpline(2);
 
-        ///* Crazy Shit
+        /* Crazy Shit
         spline.addControlPoint(new DControlPoint(new DVector(9, 1), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(3, 3)));
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10)));
@@ -30,7 +30,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
         //*/
 
-        /*// Figure 8
+        // /* Figure 8
         spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(-Math.cos(Math.PI / 4), Math.sin(-Math.PI / 4)), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(10, -10)));
         spline.addControlPoint(new DControlPoint(new DVector(20, 0)));
@@ -39,7 +39,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, -10)));
         spline.addControlPoint(new DControlPoint(new DVector(-20, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0)));
-         //*/
+        //*/
 
         spline.setPolynomicOrder(5);
         spline.closed = true;
@@ -105,7 +105,7 @@ public class Main {
         System.out.println("Time to Compute: " + (endTimeCompute - startTimeCompute) + " milliseconds");
 
         display.displayGradient(follower);
-        display.displayables.add(new BallFollowerGradient(follower, new DPoint(spline.getDimensions())));
+        display.displayables.add(new BallDirectionFollower(follower.getController(), new DPoint(spline.getDimensions())));
         // */
 
         // /* IntersectionResolver
@@ -118,10 +118,15 @@ public class Main {
 
         System.out.println("Time to Compute: " + (endTimeCompute - startTimeCompute) + " milliseconds");
 
-        BallIntersectionResolver ball = new BallIntersectionResolver(resolver, new DPoint(10, 13));
+//        BallIntersectionResolver ball = new BallIntersectionResolver(resolver, new DPoint(10, 13));
+//        display.displayables.add(ball);
+
+        Segmenter.Controller ballController = resolver.getController();
+        BallDirectionFollower ball = new BallDirectionFollower(ballController, new DPoint(0, 0));
         display.displayables.add(ball);
+
         display.onGridDisplayables.add(gridPoint -> {
-            int segment = ball.segment;
+            int segment = ballController.segment;
             if (segment != -1) {
                 DVector vector = resolver.get(gridPoint.clone()).get(segment);
                 if (vector != null) {

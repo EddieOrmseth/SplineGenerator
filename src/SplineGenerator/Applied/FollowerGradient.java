@@ -6,7 +6,7 @@ import SplineGenerator.Util.*;
 /**
  * A class representing a gradient such that each value points in the direction of the correct movement
  */
-public class FollowerGradient implements DirectionController {
+public class FollowerGradient implements Navigator {
 
     /**
      * The spline to be followed
@@ -213,7 +213,6 @@ public class FollowerGradient implements DirectionController {
      * @param point The point at which to get the DDirection
      * @return The DDirection at the given point
      */
-    @Override
     public DDirection getDirection(DPoint point) {
         if (isOutOfBounds(point)) {
             return new DDirection(spline.getDimensions());
@@ -230,4 +229,31 @@ public class FollowerGradient implements DirectionController {
     public boolean isOutOfBounds(DPoint point) {
         return !bounds.contains(point);
     }
+
+    @Override
+    public Controller getController() {
+        return new Controller(this);
+    }
+
+    public class Controller extends Navigator.Controller {
+
+        private FollowerGradient followerGradient;
+        private DPoint point;
+
+        private Controller(FollowerGradient followerGradient) {
+            this.followerGradient = followerGradient;
+        }
+
+        @Override
+        public void update(DPoint point) {
+            this.point = point;
+        }
+
+        @Override
+        public DDirection getDirection() {
+            return followerGradient.getDirection(point.clone());
+        }
+
+    }
+
 }

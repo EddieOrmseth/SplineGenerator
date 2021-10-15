@@ -27,7 +27,7 @@ public class KeyBoardListener implements KeyEventDispatcher {
     }
 
     /**
-     * A simple method for initializing the listener
+     * A simple method for initializing the listener, this must be called before calling other methods
      */
     public static void initialize() {
         keyCodes = new ArrayList<>();

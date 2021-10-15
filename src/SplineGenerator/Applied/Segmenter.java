@@ -1,12 +1,15 @@
 package SplineGenerator.Applied;
 
+import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
+
+import java.awt.event.KeyEvent;
 
 /**
  * A class representing a gradient such that each value points in the direction of the correct movement
  */
-public class Segmenter implements DirectionController {
+public class Segmenter implements Navigator {
 
     /**
      * The spline to be followed
@@ -273,7 +276,6 @@ public class Segmenter implements DirectionController {
      * @param point The point in space INCLUDING the time as the last dimension
      * @return The point in space, the final dimension will be the time
      */
-    @Override
     public DDirection getDirection(DPoint point) {
         DPoint position = point.clone();
         position.removeDimension(position.getDimensions() - 1);
@@ -313,4 +315,53 @@ public class Segmenter implements DirectionController {
     public boolean isOutOfBounds(DPoint point) {
         return !bounds.contains(point);
     }
+
+    public TimeDirection getTimeDirection() {
+        return followerGradient[0];
+    }
+
+    @Override
+    public Controller getController() {
+        return new Controller(this);
+    }
+
+    public class Controller extends Navigator.Controller {
+
+        private Segmenter segmenter;
+        private DPoint point;
+
+        private double tValue = 0;
+
+        private TimeDirection segmentGetter;
+        public int segment;
+
+        private Controller(Segmenter segmenter) {
+            this.segmenter = segmenter;
+            segmentGetter = segmenter.getTimeDirection();
+        }
+
+        @Override
+        public void update(DPoint point) {
+            this.point = point;
+            if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
+                tValue = 0;
+            }
+        }
+
+        @Override
+        public DDirection getDirection() {
+            DPoint timePoint = point.clone();
+            timePoint.addDimensions(1);
+            timePoint.set(timePoint.getDimensions() - 1, tValue);
+
+            DDirection direction = segmenter.getDirection(timePoint);
+
+            tValue = direction.get(direction.getDimensions() - 1);
+            segment = segmentGetter.tToSegment(tValue);
+
+            direction.removeDimension(direction.getDimensions() - 1);
+            return direction;
+        }
+    }
+
 }

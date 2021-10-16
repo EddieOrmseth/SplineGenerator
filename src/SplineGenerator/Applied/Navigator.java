@@ -13,10 +13,10 @@ public interface Navigator {
      *
      * @return The Controller object that can navigate the spline
      */
-     Controller getController();
+    Controller getController();
 
     /**
-     * An abstract class definning the methods that a controller must have
+     * An abstract class defining the methods that a controller must have
      */
     abstract class Controller {
 
@@ -25,24 +25,24 @@ public interface Navigator {
          *
          * @param point The new position
          */
-         public abstract void update(DPoint point);
+        public abstract void update(DPoint point);
 
         /**
          * A method for getting the direction in the form of a unit vector
          *
          * @return The direction in the form a unit vector
          */
-         public abstract DDirection getDirection();
+        public abstract DDirection getDirection();
 
         /**
          * The velocity at that specified point
          *
          * @return The specified velocity
          */
-         public double getVelocity() {
-             return 0;
-         }
+        public double getVelocity() {
+            return 0;
+        }
 
-     }
+    }
 
 }

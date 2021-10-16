@@ -96,7 +96,6 @@ public class Matrix {
      * @return Whether or not a satisfactory row was found, if false the matrix may be unsolvable
      */
     public boolean gaussianArrange(int row, int column) {
-        System.out.println("Gaussian Arrange");
         if (matrix[row][column] == 0) {
             for (int r = row; r < matrix.length; r++) {
                 if (matrix[r][column] != 0) {

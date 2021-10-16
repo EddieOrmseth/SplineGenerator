@@ -70,16 +70,8 @@ public class Main {
 
         System.out.println("Time to Generate: " + (endTimeGenerate - startTimeGenerate) + " milliseconds");
 
-//        System.out.println(spline.printMatrices());
-//        System.out.println(spline.getDesmosEquations());
-//        System.out.println(spline);
-
         spline.takeNextDerivative();
         spline.takeNextDerivative();
-
-        DPoint myPoint = new DPoint(0, 0);
-        DPoint point = spline.findClosestPointOnSegment(myPoint, 1, .001);
-        System.out.println(point);
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
         display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));

@@ -77,6 +77,17 @@ public class DPoint implements Displayable {
     }
 
     /**
+     * A method for all the values of the DPoint
+     *
+     * @param point The new value that is set
+     */
+    public void set(DPoint point) {
+        for (int i = 0; i < point.values.length && i < values.length; i++) {
+            values[i] = point.values[i];
+        }
+    }
+
+    /**
      * A method for adding a value to the specified index
      *
      * @param n     The dimension to modify
@@ -89,11 +100,25 @@ public class DPoint implements Displayable {
     /**
      * A method for adding two DPoints
      *
-     * @param point The point to be subtracted
+     * @param point The point to be added
      */
     public DPoint add(DPoint point) {
         for (int n = 0; n < point.getDimensions() && n < values.length; n++) {
             values[n] += point.get(n);
+        }
+
+        return this;
+    }
+
+    /**
+     * A method for adding two DPoints
+     *
+     * @param point The point to be added
+     * @param times The number of times to add the point
+     */
+    public DPoint addNTimes(DPoint point, double times) {
+        for (int n = 0; n < point.getDimensions() && n < values.length; n++) {
+            values[n] += point.get(n) * times;
         }
 
         return this;

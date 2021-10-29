@@ -79,8 +79,8 @@ public class PositionTracker {
         avgVel.multiplyAll(.5);
 //        double distance = .5 * ((currentSpeed - previousSpeed) / time) * (time * time) + (previousSpeed) * time;
         double distance = .5 * ((currentSpeed - previousSpeed)) * (time) + (previousSpeed) * time;
-        previousVelocity.setMagnitude(distance);
-        update(previousVelocity);
+        avgVel.setMagnitude(distance);
+        update(avgVel);
         previousVelocity.set(currentVelocity);
     }
 

@@ -39,16 +39,6 @@ public class PositionTracker {
     }
 
     /**
-     * A method fore directly adding distance to the position
-     *
-     * @param point The velocity to add
-     * @param time The duration over which to add the velocity
-     */
-    private void addDistance(DPoint point, double time) {
-        position.addNTimes(point, time);
-    }
-
-    /**
      * A method for directly setting the position
      *
      * @param point The new position

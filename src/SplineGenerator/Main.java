@@ -28,7 +28,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 5)));
         spline.addControlPoint(new DControlPoint(new DVector(-7, 9)));
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
-        //*/
+        // */
 
          /* Figure 8
         spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(-Math.cos(Math.PI / 4), Math.sin(-Math.PI / 4)), new DDirection(0, 0)));
@@ -110,9 +110,6 @@ public class Main {
 
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
-//        BallIntersectionResolver ball = new BallIntersectionResolver(resolver, new DPoint(10, 13));
-//        display.displayables.add(ball);
-
         Segmenter.Controller ballController = resolver.getController();
         BallDirectionFollower ball = new BallDirectionFollower(ballController, new DPoint(0, 0));
         display.displayables.add(ball);
@@ -128,6 +125,14 @@ public class Main {
                 }
             }
             return new DVector(gridPoint.getDimensions());
+        });        
+        // */
+        
+        // /*
+        display.onSplineDisplayables.add(tValue ->  {
+            DPoint point = spline.get(tValue);
+            DVector derivative = spline.evaluateDerivative(tValue, 1);
+            return new DPosVector(point, derivative);
         });
         // */
 

@@ -16,7 +16,7 @@ public class Main {
 
         PolynomicSpline spline = new PolynomicSpline(2);
 
-        // /* Crazy Shit
+         /* Crazy Shit
         spline.addControlPoint(new DControlPoint(new DVector(9, 1), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(3, 3)));
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10)));
@@ -30,7 +30,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
         // */
 
-         /* Figure 8
+        // /* Figure 8
         spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(-Math.cos(Math.PI / 4), Math.sin(-Math.PI / 4)), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(10, -10)));
         spline.addControlPoint(new DControlPoint(new DVector(20, 0)));
@@ -128,7 +128,7 @@ public class Main {
         });        
         // */
         
-        // /*
+        // /* Display the derivative on the spline
         display.onSplineDisplayables.add(tValue ->  {
             DPoint point = spline.get(tValue);
             DVector derivative = spline.evaluateDerivative(tValue, 1);

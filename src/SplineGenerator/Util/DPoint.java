@@ -3,8 +3,6 @@ package SplineGenerator.Util;
 import SplineGenerator.GUI.Displayable;
 import SplineGenerator.GUI.SplineGraphics;
 
-import java.util.Arrays;
-
 /**
  * A class for holding a multidimensional point
  */

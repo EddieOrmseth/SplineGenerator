@@ -112,6 +112,21 @@ public class DVector extends DPoint {
     }
 
     /**
+     * A method for getting the dot product of two vectors
+     *
+     * @param vector The other vector to be used in the dot product
+     * @return The result of the dot product between the two vectors
+     */
+    public double dot(DVector vector) {
+        double total = 0;
+        for (int i = 0; i < values.length && i < vector.getDimensions(); i++) {
+            total += values[i] * vector.get(i);
+        }
+
+        return total;
+    }
+
+    /**
      * A method for displaying the vector
      *
      * @param graphics What to display the vector on

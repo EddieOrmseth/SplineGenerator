@@ -150,12 +150,13 @@ public class Main {
 //            return gridPoint;
 //        }));
 
-        DPoint p2 = new DPoint(5, -5);
-        pathFinder.addModifier(gridPoint -> {
-            DVector vector = new DVector(p2, gridPoint);
+        DPoint p2f = new DPoint(5, -5);
+        Function<DPoint, DVector> p2fModifier = gridPoint -> {
+            DVector vector = new DVector(p2f, gridPoint);
             vector.setMagnitude(15 * (Math.pow(1 / vector.getMagnitude(), 1)));
             return vector;
-        });
+        };
+        pathFinder.addModifier(p2fModifier);
 
 //        DPoint p3 = new DPoint(5, 5);
 //        pathFinder.addModifier(gridPoint -> {
@@ -183,10 +184,38 @@ public class Main {
 
         pathFinder.compute();
 
+        pathFinder.removeModifier(p2fModifier);
+
         PathFinder.Controller ballController = pathFinder.getController();
         BallDirectionFollower ball = new BallDirectionFollower(ballController, new DPoint(15, 10));
         display.displayables.add(ball);
         // */
+
+        DPoint p2 = new DPoint(5, -5);
+        pathFinder.addModifier(gridPoint -> {
+//            DVector vector = new DVector(p2, gridPoint);
+//            vector.setMagnitude(15 * (Math.pow(1 / vector.getMagnitude(), 1)));
+//            return vector;
+
+            DVector vectorBetween = new DVector(p2, gridPoint);
+            DVector velocity = ballController.velocity.clone();
+
+            if (vectorBetween.dot(velocity) > 0) {
+                System.out.println("Returning Here");
+                return new DDirection(vectorBetween.getDimensions());
+            }
+
+            System.out.println("Here");
+
+            double betweenMag = vectorBetween.getMagnitude();
+            double projMag = velocity.projectOnto(vectorBetween.clone()).getMagnitude();
+
+            velocity.multiplyAll(betweenMag / projMag);
+
+            DVector orth = velocity.add(vectorBetween);
+            orth.setMagnitude(15 * (Math.pow(1 / vectorBetween.getMagnitude(), 1)));
+            return orth.toDirection();
+        });
 
         // /* Display PathFinder On Grid
         display.onGridDisplayables.add(gridPoint -> {

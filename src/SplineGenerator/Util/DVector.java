@@ -127,6 +127,18 @@ public class DVector extends DPoint {
     }
 
     /**
+     * A method for projecting this vector onto a given vector
+     *
+     * @param vector The vector to project this onto
+     * @return The resulting vector
+     */
+    public DVector projectOnto(DVector vector) {
+        double scalar = (dot(vector)) / (vector.getMagnitude() * vector.getMagnitude());
+        vector.multiplyAll(scalar);
+        return vector;
+    }
+
+    /**
      * A method for displaying the vector
      *
      * @param graphics What to display the vector on

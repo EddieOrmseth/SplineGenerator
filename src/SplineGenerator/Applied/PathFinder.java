@@ -77,6 +77,37 @@ public class PathFinder implements Navigator {
     }
 
     /**
+     * A method for getting the number of dimensions of the PathFinder
+     *
+     * @return The number of dimensions of the PathFinder
+     */
+    public int getDimensions() {
+        return space.getDimensions();
+    }
+
+//
+//    /**
+//     * A method for getting the direction from a position and velocity;
+//     *
+//     * @param position The current position of the object
+//     * @param velocity The current velocity of the object
+//     * @return The direction created
+//     */
+//    public DDirection getMovement(DPoint position, DVector velocity) {
+//
+//        DVector finalVector = new DVector(position.getDimensions());
+//        DVector vectorBetween;
+//
+//        for (int i = 0; i < modifiers.size(); i++) {
+//            vectorBetween = new DVector()
+//
+//
+//        }
+//
+//        return finalVector.toDirection();
+//    }
+
+    /**
      * A class for holding objects in the way of the PathFinder
      */
     public static class Obstacle implements Function<DPoint, DVector> {
@@ -137,7 +168,7 @@ public class PathFinder implements Navigator {
     /**
      * A method for getting a function that determines the distance from a point
      *
-     * @param point The point at which to base the circle
+     * @param point  The point at which to base the circle
      * @param radius The radius of the circle
      * @return The Function that can be used to find the distance
      */
@@ -166,7 +197,7 @@ public class PathFinder implements Navigator {
 
         if (x1 == x2 && y1 == y2) {
 //                return Math.sqrt(((x - x1) * (x - x2)) + ((y - y1) * (y - y2)));
-            return  getPointDistanceFunction(p1);
+            return getPointDistanceFunction(p1);
         }
 
         return variable -> {
@@ -229,7 +260,7 @@ public class PathFinder implements Navigator {
                 double d2 = Math.sqrt(((x - x2) * (x - x2)) + ((y - y2) * (y - y2)));
 //                return Math.min(d1, d2);
                 if (d1 < d2) {
-                     return new DVector(x - x1, y - y1);
+                    return new DVector(x - x1, y - y1);
                 } else {
                     return new DVector(x - x2, y - y2);
                 }
@@ -272,7 +303,7 @@ public class PathFinder implements Navigator {
         /**
          * The velocity of the controlled object
          */
-        private DVector velocity;
+        public DVector velocity;
 
         /**
          * A simple constructor for a controller that follows the pathfinder
@@ -281,6 +312,9 @@ public class PathFinder implements Navigator {
          */
         public Controller(PathFinder pathFinder) {
             this.pathFinder = pathFinder;
+            position = new DPoint(pathFinder.getDimensions());
+            previousPosition = new DPoint(pathFinder.getDimensions());
+            velocity = new DVector(pathFinder.getDimensions());
         }
 
         /**
@@ -290,7 +324,9 @@ public class PathFinder implements Navigator {
          */
         @Override
         public void update(DPoint point) {
+            previousPosition = position.clone();
             position = point;
+            velocity = new DVector(previousPosition, position);
         }
 
         /**
@@ -300,7 +336,10 @@ public class PathFinder implements Navigator {
          */
         @Override
         public DDirection getDirection() {
-            return pathFinder.getDirection(position);
+//            return pathFinder.getDirection(position);
+
+            return pathFinder.evaluateModifiers(position);
+
         }
     }
 

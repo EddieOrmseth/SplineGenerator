@@ -1,7 +1,5 @@
 package SplineGenerator.Util;
 
-import java.util.Arrays;
-
 /**
  * A class representing a multidimensional direction in the form of a unit vector
  */
@@ -55,12 +53,12 @@ public class DDirection extends DVector {
      * @param values The new value that is set
      */
     @Override
-    public void set(int n, double... values) {
+    public void copy(int n, double... values) {
         for (int i = 0; i < this.values.length; i++) {
             this.values[i] *= initialMagnitude;
         }
 
-        super.set(n, values);
+        super.copy(n, values);
 
         initialMagnitude = super.getMagnitude();
         for (int i = 0; i < this.values.length; i++) {
@@ -72,7 +70,7 @@ public class DDirection extends DVector {
      * A method for setting a value without adjusting the magnitude
      */
     public void forceSet(int n, double... values) {
-        super.set(n, values);
+        super.copy(n, values);
     }
 
     /**

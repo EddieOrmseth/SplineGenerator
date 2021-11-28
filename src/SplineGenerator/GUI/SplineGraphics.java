@@ -164,6 +164,24 @@ public class SplineGraphics {
     }
 
     /**
+     * A method for painting a point
+     *
+     * @param point  The point to be painted
+     * @param xDim   The index to be used as the x-dimension
+     * @param yDim   The index to be used as the y-dimension
+     * @param color  The color to paint the circle
+     * @param radius The radius of the circle
+     */
+    public void paintPoint(DPoint point, int xDim, int yDim, Color color, int radius) {
+        graphics.setColor(color);
+        graphics.setStroke(new BasicStroke(3));
+
+        point = translate.get(point);
+
+        graphics.fillOval((int) (point.get(xDim) - radius), (int) (point.get(yDim) - radius), (int) (2 * radius), (int) (2 * radius));
+    }
+
+    /**
      * A method for getting the Graphics2D object
      *
      * @return The Graphics2D object

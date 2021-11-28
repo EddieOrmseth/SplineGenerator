@@ -223,8 +223,8 @@ public class SplineDisplay extends JFrame {
         for (double y = onGridBoundaries.lesserPoint.get(yDim); y < onGridBoundaries.greaterPoint.get(yDim); y += onGridStep) {
             for (double x = onGridBoundaries.lesserPoint.get(xDim); x < onGridBoundaries.greaterPoint.get(xDim); x += onGridStep) {
                 for (int d = 0; d < onGridDisplayables.size(); d++) {
-                    point.set(yDim, y);
-                    point.set(xDim, x);
+                    point.copy(yDim, y);
+                    point.copy(xDim, x);
                     onGridDisplayables.get(d).get(point).display(graphics);
                 }
             }
@@ -280,15 +280,15 @@ public class SplineDisplay extends JFrame {
             point = spline.get(t);
 
             if (point.get(xDim) < box.lesserPoint.get(xDim)) {
-                box.lesserPoint.set(xDim, point.get(xDim));
+                box.lesserPoint.copy(xDim, point.get(xDim));
             } else if (point.get(xDim) > box.greaterPoint.get(xDim)) {
-                box.greaterPoint.set(xDim, point.get(xDim));
+                box.greaterPoint.copy(xDim, point.get(xDim));
             }
 
             if (point.get(yDim) < box.lesserPoint.get(yDim)) {
-                box.lesserPoint.set(yDim, point.get(yDim));
+                box.lesserPoint.copy(yDim, point.get(yDim));
             } else if (point.get(yDim) > box.greaterPoint.get(yDim)) {
-                box.greaterPoint.set(yDim, point.get(yDim));
+                box.greaterPoint.copy(yDim, point.get(yDim));
             }
         }
 
@@ -308,7 +308,7 @@ public class SplineDisplay extends JFrame {
         point.add(xDim, xOffset);
         point.add(yDim, yOffset);
 
-        point.set(yDim, image.getHeight() - point.get(yDim));
+        point.copy(yDim, image.getHeight() - point.get(yDim));
 
         return point;
     }

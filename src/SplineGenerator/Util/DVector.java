@@ -2,8 +2,6 @@ package SplineGenerator.Util;
 
 import SplineGenerator.GUI.SplineGraphics;
 
-import java.util.Arrays;
-
 /**
  * A class for holding a multidimensional vector
  */
@@ -167,7 +165,7 @@ public class DVector extends DPoint {
     public DVector clone() {
         DVector vector = new DVector(values.length);
         for (int n = 0; n < values.length; n++) {
-            vector.set(n, values[n]);
+            vector.copy(n, values[n]);
         }
 
         return vector;

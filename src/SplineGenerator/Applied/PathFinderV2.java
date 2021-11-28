@@ -3,10 +3,6 @@ package SplineGenerator.Applied;
 import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
-import SplineGenerator.Util.Function;
-import SplineGenerator.Util.MultivariableFunctions.FiveVariableFunction;
-import SplineGenerator.Util.MultivariableFunctions.FourVariableFunction;
-import SplineGenerator.Util.MultivariableFunctions.ThreeVariableFunction;
 
 import java.util.ArrayList;
 
@@ -26,9 +22,15 @@ public class PathFinderV2 implements Navigator {
     private PathAugment target;
 
     /**
+     * The number of dimensions of the PathFinder
+     */
+    private int dimensions;
+
+    /**
      * A simple constructor that requires to arguments
      */
-    public PathFinderV2() {
+    public PathFinderV2(int dimensions) {
+        this.dimensions = dimensions;
         augments = new ArrayList<>();
     }
 
@@ -38,6 +40,8 @@ public class PathFinderV2 implements Navigator {
      * @param target The new target for the PathFinder
      */
     public void setTarget(PathAugment target) {
+        augments.remove(this.target);
+        augments.add(target);
         this.target = target;
     }
 
@@ -102,144 +106,78 @@ public class PathFinderV2 implements Navigator {
     }
 
     /**
-     * A class representing objects in the space that affect the path
+     * A method for getting the dimensions of the PathFinder
+     *
+     * @return The dimensions of the PathFinder
      */
-    public static class PathAugment {
-
-        /**
-         * The Function to be called when skipAugment is called
-         */
-        private ThreeVariableFunction<DVector, DPoint, DVector, Boolean> skipAugment;
-
-        /**
-         * The Function to be called when getVectorBetween is called
-         */
-        private Function<DPoint, DVector> getVectorBetween;
-
-        /**
-         * The Function to be called when getEffect is called
-         */
-        private FourVariableFunction<DVector, DVector, DPoint, DVector, DVector> getEffect;
-
-        /**
-         * The Function to be called when skipEffect is called;
-         */
-        private FiveVariableFunction<DVector, DVector, DVector, DPoint, DVector, Boolean> skipEffect;
-
-        /**
-         * A method for setting the skipAugment Function
-         *
-         * @param skipAugment The skipAugment function
-         */
-        public void setSkipAugment(ThreeVariableFunction<DVector, DPoint, DVector, Boolean> skipAugment) {
-            this.skipAugment = skipAugment;
-        }
-
-        /**
-         * A method for setting the getVectorBetween Function
-         *
-         * @param getVectorBetween The skipAugment function
-         */
-        public void setGetVectorBetween(Function<DPoint, DVector> getVectorBetween) {
-            this.getVectorBetween = getVectorBetween;
-        }
-
-        /**
-         * A method for setting the getEffect Function
-         *
-         * @param getEffect The skipAugment function
-         */
-        public void setGetEffect(FourVariableFunction<DVector, DVector, DPoint, DVector, DVector> getEffect) {
-            this.getEffect = getEffect;
-        }
-
-        /**
-         * A method for setting the skipEffect Function
-         *
-         * @param skipEffect The skipAugment function
-         */
-        public void setSkipEffect(FiveVariableFunction<DVector, DVector, DVector, DPoint, DVector, Boolean> skipEffect) {
-            this.skipEffect = skipEffect;
-        }
-
-        /**
-         * A method for determining weather or not to use this PathAugment
-         *
-         * @param toTarget The vector pointing from the object to the target
-         * @param position The position of the object
-         * @param velocity The velocity of the object
-         * @return true if this PathAugment should be used, false otherwise
-         */
-        public boolean skipAugment(DVector toTarget, DPoint position, DVector velocity) {
-            return skipAugment.get(toTarget, position, velocity);
-        }
-
-        /**
-         * A method for getting the vector between the given DPoint and PathAugment. The vector shall point form the PathAugment to the DPoint
-         *
-         * @param point The given point
-         * @return The DVector between the PathAugment and the given point
-         */
-        public DVector getVectorBetween(DPoint point) {
-            return getVectorBetween.get(point);
-        }
-
-        /**
-         * A method for getting the effect of the PathAugment
-         *
-         * @param vectorBetween The vector from the PathAugment to the object
-         * @param toTarget      The vector form the object to the target
-         * @param position      The position of the object
-         * @param velocity      The velocity of the object
-         * @return The effect of the PathAugment on the object
-         */
-        public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
-            return getEffect.get(vectorBetween, toTarget, position, velocity);
-        }
-
-        /**
-         * A method for determining weather or not to use the effect of this PathAugment
-         *
-         * @param vectorBetween The vector from the PathAugment and object
-         * @param toTarget      The vector from the object to the target
-         * @param effect        The effect of the PathAugment
-         * @param position      The position of the object
-         * @param velocity      The velocity of the object
-         * @return true if the effect should be used, false otherwise
-         */
-        public boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity) {
-            return skipEffect.get(vectorBetween, toTarget, effect, position, velocity);
-        }
-
-        /**
-         * A method for determining if the object is moving towards this PathAugment
-         *
-         * @param vectorBetween The vector between the PathAugment and the object, it shall point from the PathAugment to the object
-         * @param velocity      The velocity vector of the object
-         * @return true if the object is moving away from the PathAugment, false otherwise
-         */
-        public boolean movingAwayFrom(DVector vectorBetween, DVector velocity) {
-            return vectorBetween.dot(velocity) >= 0;
-        }
-
+    public int getDimensions() {
+        return dimensions;
     }
 
+    /**
+     * A method for getting a controller associated with this object
+     *
+     * @return The controller for the PathFinder
+     */
     @Override
     public Controller getController() {
-        return null;
+        return new Controller(this);
     }
 
     public class Controller extends Navigator.Controller {
 
+        /**
+         * The PathFinder object to be followed
+         */
+        private PathFinderV2 pathFinder;
 
-        @Override
-        public void update(DPoint point) {
+        /**
+         * The position of the controlled object
+         */
+        private DPoint position;
 
+        /**
+         * The previous position of the controlled object
+         */
+        private DPoint previousPosition;
+
+        /**
+         * The velocity of the controlled object
+         */
+        public DVector velocity;
+
+        /**
+         * A simple constructor for a controller that follows the pathfinder
+         *
+         * @param pathFinder
+         */
+        public Controller(PathFinderV2 pathFinder) {
+            this.pathFinder = pathFinder;
+            position = new DPoint(pathFinder.getDimensions());
+            previousPosition = new DPoint(pathFinder.getDimensions());
+            velocity = new DVector(pathFinder.getDimensions());
         }
 
+        /**
+         * A method for setting the position of the controller
+         *
+         * @param point The new position
+         */
+        @Override
+        public void update(DPoint point) {
+            previousPosition = position.clone();
+            position = point;
+            velocity = new DVector(previousPosition, position);
+        }
+
+        /**
+         * A method for getting the direction signified by the PathFinder
+         *
+         * @return The direction to be followed
+         */
         @Override
         public DDirection getDirection() {
-            return null;
+            return pathFinder.getDirection(position, velocity);
         }
     }
 

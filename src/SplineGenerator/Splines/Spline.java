@@ -240,7 +240,7 @@ public abstract class Spline {
         for (int i = 1; i < controlPoints.size() - 1; i++) {
 //            controlPoints.get(i).values.set(heading, new Direction(controlPoints.get(i + 1).x - controlPoints.get(i - 1).x, controlPoints.get(i + 1).y - controlPoints.get(i - 1).y));
             for (int n = 0; n < matrices.length; n++) {
-                controlPoints.get(i).values.get(derivative).set(n, controlPoints.get(i + 1).values.get(derivative - 1).get(n) - controlPoints.get(i - 1).values.get(derivative - 1).get(n));
+                controlPoints.get(i).values.get(derivative).copy(n, controlPoints.get(i + 1).values.get(derivative - 1).get(n) - controlPoints.get(i - 1).values.get(derivative - 1).get(n));
             }
         }
 
@@ -248,8 +248,8 @@ public abstract class Spline {
 //            controlPoints.get(0).values.set(heading, new Direction(controlPoints.get(controlPoints.size() - 1).x - controlPoints.get(1).x, controlPoints.get(controlPoints.size() - 1).y - controlPoints.get(1).y));
 //            controlPoints.get(controlPoints.size() - 1).values.set(heading, new Direction(controlPoints.get(controlPoints.size() - 2).x - controlPoints.get(0).x, controlPoints.get(controlPoints.size() - 2).y - controlPoints.get(0).y));
             for (int n = 0; n < matrices.length; n++) {
-                controlPoints.get(0).values.get(derivative).set(n, controlPoints.get(controlPoints.size() - 1).values.get(derivative - 1).get(n) - controlPoints.get(1).values.get(derivative - 1).get(n));
-                controlPoints.get(controlPoints.size() - 1).values.get(derivative).set(n, controlPoints.get(controlPoints.size() - 2).values.get(derivative - 1).get(n) - controlPoints.get(0).values.get(derivative - 1).get(n));
+                controlPoints.get(0).values.get(derivative).copy(n, controlPoints.get(controlPoints.size() - 1).values.get(derivative - 1).get(n) - controlPoints.get(1).values.get(derivative - 1).get(n));
+                controlPoints.get(controlPoints.size() - 1).values.get(derivative).copy(n, controlPoints.get(controlPoints.size() - 2).values.get(derivative - 1).get(n) - controlPoints.get(0).values.get(derivative - 1).get(n));
             }
         }
     }
@@ -294,8 +294,8 @@ public abstract class Spline {
             newDistance = point.getDistance(newPoint);
             if (newDistance < distance) {
                 distance = newDistance;
-                nearestPoint.set(0, newPoint.getValues());
-                nearestPoint.set(nearestPoint.getDimensions() - 1, t);
+                nearestPoint.copy(0, newPoint.getValues());
+                nearestPoint.copy(nearestPoint.getDimensions() - 1, t);
             }
         }
 
@@ -341,10 +341,10 @@ public abstract class Spline {
             tempPoint = get(t);
             for (int n = 0; n < matrices.length; n++) {
                 if (tempPoint.get(n) > extrema.greaterPoint.get(n)) {
-                    extrema.greaterPoint.set(n, tempPoint.get(n));
+                    extrema.greaterPoint.copy(n, tempPoint.get(n));
                 }
                 if (tempPoint.get(n) < extrema.lesserPoint.get(n)) {
-                    extrema.lesserPoint.set(n, tempPoint.get(n));
+                    extrema.lesserPoint.copy(n, tempPoint.get(n));
                 }
             }
         }

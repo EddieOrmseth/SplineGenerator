@@ -1,6 +1,5 @@
 package SplineGenerator.Util;
 
-import SplineGenerator.GUI.Displayable;
 import SplineGenerator.GUI.SplineGraphics;
 
 import java.util.Arrays;
@@ -120,7 +119,7 @@ public class DPosVector extends DVector {
     public DPosVector clone() {
         DPosVector clone = new DPosVector(values.length);
         for (int n = 0; n < values.length; n++) {
-            clone.set(n, values[n]);
+            clone.copy(n, values[n]);
         }
 
         clone.setStartPoint(startPoint.clone());

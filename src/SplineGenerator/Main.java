@@ -1,8 +1,6 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.PathFinder;
-import SplineGenerator.Applied.Segmenter;
-import SplineGenerator.GUI.BallDirectionFollower;
+import SplineGenerator.Applied.PathFinderV2;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
@@ -77,6 +75,7 @@ public class Main {
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
         display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
 
+         /* Segmenter
         Function<DVector, DVector> distanceModifier = variable -> {
             variable.multiplyAll(6);
             return variable;
@@ -87,21 +86,6 @@ public class Main {
             return variable;
         };
 
-         /* Follower Gradient
-        FollowerGradient follower = new FollowerGradient(spline, derivativeModifier, distanceModifier);
-        follower.bounds = new Extrema(new DPoint(-30, -20), new DPoint(30, 20));
-
-        long startTimeCompute = System.currentTimeMillis();
-        follower.computeGradient();
-        long endTimeCompute = System.currentTimeMillis();
-
-        System.out.println("Time to Compute: " + (endTimeCompute - startTimeCompute) + " milliseconds");
-
-        display.displayGradient(follower);
-        display.displayables.add(new BallDirectionFollower(follower.getController(), new DPoint(spline.getDimensions())));
-        // */
-
-         /* IntersectionResolver
         Segmenter resolver = new Segmenter(spline, derivativeModifier, distanceModifier);
         resolver.bounds = new Extrema(new DPoint(-30, -20), new DPoint(30, 20));
 
@@ -137,90 +121,12 @@ public class Main {
         });
         // */
 
-        // /* Create PathFinder
-        PathFinder pathFinder = new PathFinder(new Extrema(new DPoint(-25, -20), new DPoint(25, 20)), .25);
+        // /* PathFinderV2
+        PathFinderV2 pathFinder = new PathFinderV2();
 
-//        DPoint p1 = new DPoint(5, -5);
-//        pathFinder.addModifier(new PathFinder.Obstacle(PathFinder.getCircleDistanceFunction(p1, .5), gridPoint -> {
-////            if (gridPoint.getMagnitude() < 5) {
-////                gridPoint.setMagnitude(0);
-////            } else {
-//                gridPoint.setMagnitude(45 * (Math.pow(1 / gridPoint.getMagnitude(), 2)));
-////            }
-//            return gridPoint;
-//        }));
+        PointAugment target = new PointAugment(new DPoint(-15, -10));
+        pathFinder.setTarget(target);
 
-        DPoint p2f = new DPoint(5, -5);
-        Function<DPoint, DVector> p2fModifier = gridPoint -> {
-            DVector vector = new DVector(p2f, gridPoint);
-            vector.setMagnitude(15 * (Math.pow(1 / vector.getMagnitude(), 1)));
-            return vector;
-        };
-        pathFinder.addModifier(p2fModifier);
-
-//        DPoint p3 = new DPoint(5, 5);
-//        pathFinder.addModifier(gridPoint -> {
-//            DVector vector = new DVector(p3, gridPoint);
-//            vector.setMagnitude(15 * (Math.pow(1 / vector.getMagnitude(), 1)));
-//            return vector;
-//        });
-
-//        DPoint ls1p1 = new DPoint(-10, 10);
-//        DPoint ls1p2 = new DPoint(10, -10);
-//        pathFinder.addModifier(new PathFinder.Obstacle(PathFinder.getLineSegment2DDistanceFunction(ls1p1, ls1p2), new Function<DVector, DVector>() {
-//            @Override
-//            public DVector get(DVector variable) {
-//                variable.setMagnitude(15 * (Math.pow(1 / variable.getMagnitude(), 1)));
-//                return variable;
-//            }
-//        }));
-
-        DPoint destination = new DPoint(-15, -10);
-        pathFinder.addModifier(gridPoint -> {
-            DVector vector = new DVector(gridPoint, destination);
-            vector.setMagnitude(4);
-            return vector;
-        });
-
-        pathFinder.compute();
-
-        pathFinder.removeModifier(p2fModifier);
-
-        PathFinder.Controller ballController = pathFinder.getController();
-        BallDirectionFollower ball = new BallDirectionFollower(ballController, new DPoint(15, 10));
-        display.displayables.add(ball);
-        // */
-
-        DPoint p2 = new DPoint(5, -5);
-        pathFinder.addModifier(gridPoint -> {
-//            DVector vector = new DVector(p2, gridPoint);
-//            vector.setMagnitude(15 * (Math.pow(1 / vector.getMagnitude(), 1)));
-//            return vector;
-
-            DVector vectorBetween = new DVector(p2, gridPoint);
-            DVector velocity = ballController.velocity.clone();
-
-            if (vectorBetween.dot(velocity) > 0) {
-                System.out.println("Returning Here");
-                return new DDirection(vectorBetween.getDimensions());
-            }
-
-            System.out.println("Here");
-
-            double betweenMag = vectorBetween.getMagnitude();
-            double projMag = velocity.projectOnto(vectorBetween.clone()).getMagnitude();
-
-            velocity.multiplyAll(betweenMag / projMag);
-
-            DVector orth = velocity.add(vectorBetween);
-            orth.setMagnitude(15 * (Math.pow(1 / vectorBetween.getMagnitude(), 1)));
-            return orth.toDirection();
-        });
-
-        // /* Display PathFinder On Grid
-        display.onGridDisplayables.add(gridPoint -> {
-            return new DPosVector(gridPoint, pathFinder.getDirection(gridPoint.clone()).toDirection());
-        });
         // */
 
         display.display();

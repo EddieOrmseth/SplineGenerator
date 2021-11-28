@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * A class for finding a path around objects to a certain destination
  */
-public class PathFinder implements Navigator {
+public class PathFinderV1 implements Navigator {
 
     /**
      * A list of the modifiers that determine the paths to be created
@@ -19,7 +19,7 @@ public class PathFinder implements Navigator {
      */
     private Space<DDirection> space;
 
-    public PathFinder(Extrema bounds, double spaceStep) {
+    public PathFinderV1(Extrema bounds, double spaceStep) {
         modifiers = new ArrayList<>();
         space = new Space<>(bounds, spaceStep);
     }
@@ -288,7 +288,7 @@ public class PathFinder implements Navigator {
         /**
          * The PathFinder object to be followed
          */
-        private PathFinder pathFinder;
+        private PathFinderV1 pathFinder;
 
         /**
          * The position of the controlled object
@@ -310,7 +310,7 @@ public class PathFinder implements Navigator {
          *
          * @param pathFinder
          */
-        public Controller(PathFinder pathFinder) {
+        public Controller(PathFinderV1 pathFinder) {
             this.pathFinder = pathFinder;
             position = new DPoint(pathFinder.getDimensions());
             previousPosition = new DPoint(pathFinder.getDimensions());
@@ -339,7 +339,6 @@ public class PathFinder implements Navigator {
 //            return pathFinder.getDirection(position);
 
             return pathFinder.evaluateModifiers(position);
-
         }
     }
 

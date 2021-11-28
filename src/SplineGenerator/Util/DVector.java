@@ -127,6 +127,16 @@ public class DVector extends DPoint {
     }
 
     /**
+     * A method for getting the angle between this vector and the given vector
+     *
+     * @param vector The given vector
+     * @return The angle, in radians, between the vectors
+     */
+    public double getAngleBetween(DVector vector) {
+        return Math.acos((dot(vector)) / (getMagnitude() * vector.getMagnitude()));
+    }
+
+    /**
      * A method for projecting this vector onto a given vector
      *
      * @param vector The vector to project this onto

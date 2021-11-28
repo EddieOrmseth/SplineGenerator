@@ -9,6 +9,7 @@ import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 import SplineGenerator.Util.PathAugments.StandardPointObstacle;
 import SplineGenerator.Util.PathAugments.StandardPointTarget;
+import SplineGenerator.Util.PathAugments.StreamPointObstacle;
 
 public class Main {
 
@@ -127,11 +128,15 @@ public class Main {
         // /* PathFinderV2
         PathFinderV2 pathFinder = new PathFinderV2(2);
 
-        StandardPointTarget target = new StandardPointTarget(new DPoint(-15, -10), 4, 1);
+        StandardPointTarget target = new StandardPointTarget( 2, new DPoint(-15, -10), 4, 1);
         pathFinder.setTarget(target);
         display.displayables.add(target);
 
-        StandardPointObstacle obstacle1 = new StandardPointObstacle(new DPoint(0, 0), 100, -2);
+//        StandardPointObstacle obstacle1 = new StandardPointObstacle(2, new DPoint(0, 0), 200, -2);
+//        pathFinder.addAugment(obstacle1);
+//        display.displayables.add(obstacle1);
+
+        StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, 40);
         pathFinder.addAugment(obstacle1);
         display.displayables.add(obstacle1);
 

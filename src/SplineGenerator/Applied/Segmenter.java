@@ -248,7 +248,7 @@ public class Segmenter implements Navigator {
             for (int s = n + 1; s < spline.getDimensions(); s++) {
                 subDimensionVolume *= (int) arrayLengths.get(s);
             }
-            point.copy(n, remaining / subDimensionVolume);
+            point.set(n, remaining / subDimensionVolume);
             remaining = remaining % subDimensionVolume;
         }
 
@@ -397,7 +397,7 @@ public class Segmenter implements Navigator {
         public DDirection getDirection() {
             DPoint timePoint = point.clone();
             timePoint.addDimensions(1);
-            timePoint.copy(timePoint.getDimensions() - 1, tValue);
+            timePoint.set(timePoint.getDimensions() - 1, tValue);
 
             DDirection direction = segmenter.getDirection(timePoint);
 

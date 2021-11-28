@@ -115,7 +115,7 @@ public class Space<T> {
             for (int s = n + 1; s < bounds.getDimensions(); s++) {
                 subDimensionVolume *= (int) arrayLengths.get(s);
             }
-            point.copy(n, remaining / subDimensionVolume);
+            point.set(n, remaining / subDimensionVolume);
             remaining = remaining % subDimensionVolume;
         }
 

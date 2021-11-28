@@ -68,7 +68,7 @@ public class DPoint implements Displayable {
      * @param n      The number that corresponds to the dimension to be changed
      * @param values The new value that is set
      */
-    public void copy(int n, double... values) {
+    public void set(int n, double... values) {
         for (int i = 0; i < values.length && i < this.values.length; i++) {
             this.values[n + i] = values[i];
         }
@@ -79,7 +79,7 @@ public class DPoint implements Displayable {
      *
      * @param point The new value that is set
      */
-    public void copy(DPoint point) {
+    public void set(DPoint point) {
         for (int i = 0; i < point.values.length && i < values.length; i++) {
             values[i] = point.values[i];
         }
@@ -239,7 +239,7 @@ public class DPoint implements Displayable {
     public DPoint clone() {
         DPoint point = new DPoint(values.length);
         for (int n = 0; n < values.length; n++) {
-            point.copy(n, values[n]);
+            point.set(n, values[n]);
         }
 
         return point;

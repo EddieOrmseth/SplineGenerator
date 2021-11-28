@@ -198,7 +198,7 @@ public class FollowerGradient implements Navigator {
             for (int s = n + 1; s < spline.getDimensions(); s++) {
                 subDimensionVolume *= (int) arrayLengths.get(s);
             }
-            point.copy(n, remaining / subDimensionVolume);
+            point.set(n, remaining / subDimensionVolume);
             remaining = remaining % subDimensionVolume;
         }
 

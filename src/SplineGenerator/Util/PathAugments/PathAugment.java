@@ -2,95 +2,36 @@ package SplineGenerator.Util.PathAugments;
 
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
-import SplineGenerator.Util.Function;
-import SplineGenerator.Util.MultivariableFunctions.FiveVariableFunction;
-import SplineGenerator.Util.MultivariableFunctions.FourVariableFunction;
-import SplineGenerator.Util.MultivariableFunctions.ThreeVariableFunction;
 
 /**
  * A class representing objects in the space that affect the path
  */
-public class PathAugment {
+public abstract class PathAugment {
 
     /**
-     * The Function to be called when skipAugment is called
+     * The DVector representing the vector from the object to the PathAugment
      */
-    private ThreeVariableFunction<DVector, DPoint, DVector, Boolean> skipAugment;
+    protected DVector vectorBetween;
 
     /**
-     * The Function to be called when getVectorBetween is called
+     * The DVector representing the effect of the PathAugment
      */
-    private Function<DPoint, DVector> getVectorBetween;
+    protected DVector effect;
 
     /**
-     * The Function to be called when getEffect is called
+     * The number of dimensions the PathAugment exists in
      */
-    private FourVariableFunction<DVector, DVector, DPoint, DVector, DVector> getEffect;
+    protected int dimensions;
 
     /**
-     * The Function to be called when skipEffect is called;
-     */
-    private FiveVariableFunction<DVector, DVector, DVector, DPoint, DVector, Boolean> skipEffect;
-
-    /**
-     * A simple constructor that does nothing
-     */
-    public PathAugment() {
-
-    }
-
-    /**
-     * A constructor that yields a ready-to-go PathAugment
+     * A simple constructor that initializes the necessary objects
      *
-     * @param skipAugment      The skipAugment Function
-     * @param getVectorBetween The getVectorBetween Function
-     * @param getEffect        The getEffect Function
-     * @param skipEffect       The skipEffect Function
+     * @param dimensions The number of dimensions the PathAugment exists in
      */
-    public PathAugment(ThreeVariableFunction<DVector, DPoint, DVector, Boolean> skipAugment,
-                       Function<DPoint, DVector> getVectorBetween,
-                       FourVariableFunction<DVector, DVector, DPoint, DVector, DVector> getEffect,
-                       FiveVariableFunction<DVector, DVector, DVector, DPoint, DVector, Boolean> skipEffect) {
-        this.skipAugment = skipAugment;
-        this.getVectorBetween = getVectorBetween;
-        this.getEffect = getEffect;
-        this.skipEffect = skipEffect;
-    }
-
-    /**
-     * A method for setting the skipAugment Function
-     *
-     * @param skipAugment The skipAugment function
-     */
-    public void setSkipAugment(ThreeVariableFunction<DVector, DPoint, DVector, Boolean> skipAugment) {
-        this.skipAugment = skipAugment;
-    }
-
-    /**
-     * A method for setting the getVectorBetween Function
-     *
-     * @param getVectorBetween The skipAugment function
-     */
-    public void setGetVectorBetween(Function<DPoint, DVector> getVectorBetween) {
-        this.getVectorBetween = getVectorBetween;
-    }
-
-    /**
-     * A method for setting the getEffect Function
-     *
-     * @param getEffect The skipAugment function
-     */
-    public void setGetEffect(FourVariableFunction<DVector, DVector, DPoint, DVector, DVector> getEffect) {
-        this.getEffect = getEffect;
-    }
-
-    /**
-     * A method for setting the skipEffect Function
-     *
-     * @param skipEffect The skipAugment function
-     */
-    public void setSkipEffect(FiveVariableFunction<DVector, DVector, DVector, DPoint, DVector, Boolean> skipEffect) {
-        this.skipEffect = skipEffect;
+    protected PathAugment(int dimensions) {
+        this.dimensions = dimensions;
+        vectorBetween = new DVector(dimensions);
+        effect = new DVector(dimensions);
     }
 
     /**
@@ -101,9 +42,7 @@ public class PathAugment {
      * @param velocity The velocity of the object
      * @return true if this PathAugment should be used, false otherwise
      */
-    public boolean skipAugment(DVector toTarget, DPoint position, DVector velocity) {
-        return skipAugment.get(toTarget, position, velocity);
-    }
+    public abstract boolean skipAugment(DVector toTarget, DPoint position, DVector velocity);
 
     /**
      * A method for getting the vector between the given DPoint and PathAugment. The vector shall point form the PathAugment to the DPoint
@@ -111,9 +50,7 @@ public class PathAugment {
      * @param point The given point
      * @return The DVector between the PathAugment and the given point
      */
-    public DVector getVectorBetween(DPoint point) {
-        return getVectorBetween.get(point);
-    }
+    public abstract DVector getVectorBetween(DPoint point);
 
     /**
      * A method for getting the effect of the PathAugment
@@ -124,9 +61,7 @@ public class PathAugment {
      * @param velocity      The velocity of the object
      * @return The effect of the PathAugment on the object
      */
-    public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
-        return getEffect.get(vectorBetween, toTarget, position, velocity);
-    }
+    public abstract DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity);
 
     /**
      * A method for determining weather or not to use the effect of this PathAugment
@@ -138,9 +73,7 @@ public class PathAugment {
      * @param velocity      The velocity of the object
      * @return true if the effect should be used, false otherwise
      */
-    public boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity) {
-        return skipEffect.get(vectorBetween, toTarget, effect, position, velocity);
-    }
+    public abstract boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity);
 
     /**
      * A method for determining if the object is moving towards this PathAugment
@@ -151,6 +84,15 @@ public class PathAugment {
      */
     public boolean movingAwayFrom(DVector vectorBetween, DVector velocity) {
         return vectorBetween.dot(velocity) >= 0;
+    }
+
+    /**
+     * A method getting the number of dimensions the PathAugment exists in
+     *
+     * @return The number of dimensions the PathAugment exists in
+     */
+    public int getDimensions() {
+        return dimensions;
     }
 
 }

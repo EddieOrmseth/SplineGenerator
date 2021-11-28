@@ -32,12 +32,25 @@ public class DVector extends DPoint {
      * @param p2 The second point
      */
     public DVector(DPoint p1, DPoint p2) {
-        p1 = p1.clone();
-        p2 = p2.clone();
         values = new double[p1.getDimensions()];
         for (int n = 0; n < p1.getDimensions() && n < p2.getDimensions(); n++) {
             values[n] = p2.get(n) - p1.get(n);
         }
+    }
+
+    /**
+     * A method for a setting the vector so that it can lie between the two given points.
+     *
+     * @param p1 The first point
+     * @param p2 The second point
+     */
+    public DVector set(DPoint p1, DPoint p2) {
+        values = new double[p1.getDimensions()];
+        for (int n = 0; n < p1.getDimensions() && n < p2.getDimensions(); n++) {
+            values[n] = p2.get(n) - p1.get(n);
+        }
+
+        return this;
     }
 
     /**
@@ -165,7 +178,7 @@ public class DVector extends DPoint {
     public DVector clone() {
         DVector vector = new DVector(values.length);
         for (int n = 0; n < values.length; n++) {
-            vector.copy(n, values[n]);
+            vector.set(n, values[n]);
         }
 
         return vector;

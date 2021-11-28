@@ -18,17 +18,28 @@ public class StandardPointTarget extends PathAugment implements Displayable {
     private DPoint targetPosition;
 
     /**
+     * The number to scale the distance by
+     */
+    private double coefficient;
+
+    /**
+     * The number to raise the distance to
+     */
+    private double power;
+
+    /**
      * A simple constructor that requires the position of the target
      *
+     * @param dimensions     The number of dimensions the PathAugment exists in
      * @param targetPosition The position of the target
-     * @param strength The strength of the pull towards the target
+     * @param coefficient    The strength of the pull towards the target
+     * @param power          The power to raise the distance to
      */
-    public StandardPointTarget(DPoint targetPosition, double coefficient, double power) {
+    public StandardPointTarget(int dimensions, DPoint targetPosition, double coefficient, double power) {
+        super(dimensions);
         this.targetPosition = targetPosition;
-        setSkipAugment((toTarget, point, velocity) -> false);
-        setGetVectorBetween(objectPoint -> new DVector(targetPosition, objectPoint));
-        setGetEffect(PathAugmentFunctions.GetEffect.getDirectSingleTermPolynomialDistanceFunction(-coefficient, power, targetPosition.getDimensions()));
-        setSkipEffect((vectorBetween, toTarget, effect, position, velocity) -> false);
+        this.coefficient = -coefficient;
+        this.power = power;
     }
 
     /**
@@ -37,7 +48,29 @@ public class StandardPointTarget extends PathAugment implements Displayable {
      * @param targetPosition The new targetPosition;
      */
     public void setPosition(DPoint targetPosition) {
-        this.targetPosition.copy(targetPosition);
+        this.targetPosition.set(targetPosition);
+    }
+
+    @Override
+    public boolean skipAugment(DVector toTarget, DPoint position, DVector velocity) {
+        return false;
+    }
+
+    @Override
+    public DVector getVectorBetween(DPoint point) {
+        return vectorBetween.set(targetPosition, point);
+    }
+
+    @Override
+    public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
+        effect.set(vectorBetween);
+        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplifier(vectorBetween.getMagnitude(), coefficient, power));
+        return effect;
+    }
+
+    @Override
+    public boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity) {
+        return false;
     }
 
     /**
@@ -49,4 +82,5 @@ public class StandardPointTarget extends PathAugment implements Displayable {
     public void display(SplineGraphics graphics) {
         graphics.paintPoint(targetPosition.clone(), 0, 1, new Color(0, 0, 255), 14);
     }
+
 }

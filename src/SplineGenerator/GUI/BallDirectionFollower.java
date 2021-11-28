@@ -25,7 +25,7 @@ public class BallDirectionFollower implements Displayable {
     /**
      * The distance to move the ball each time display is called
      */
-    private double movementLength = .15;
+    private double movementLength = .1;
 
     /**
      * A simple constructor requiring the necessary components

@@ -119,7 +119,7 @@ public class DPosVector extends DVector {
     public DPosVector clone() {
         DPosVector clone = new DPosVector(values.length);
         for (int n = 0; n < values.length; n++) {
-            clone.copy(n, values[n]);
+            clone.set(n, values[n]);
         }
 
         clone.setStartPoint(startPoint.clone());

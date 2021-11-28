@@ -1,4 +1,4 @@
-package SplineGenerator.Applied;
+package SplineGenerator.Util.PathAugments;
 
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
@@ -31,6 +31,31 @@ public class PathAugment {
      * The Function to be called when skipEffect is called;
      */
     private FiveVariableFunction<DVector, DVector, DVector, DPoint, DVector, Boolean> skipEffect;
+
+    /**
+     * A simple constructor that does nothing
+     */
+    public PathAugment() {
+
+    }
+
+    /**
+     * A constructor that yields a ready-to-go PathAugment
+     *
+     * @param skipAugment      The skipAugment Function
+     * @param getVectorBetween The getVectorBetween Function
+     * @param getEffect        The getEffect Function
+     * @param skipEffect       The skipEffect Function
+     */
+    public PathAugment(ThreeVariableFunction<DVector, DPoint, DVector, Boolean> skipAugment,
+                       Function<DPoint, DVector> getVectorBetween,
+                       FourVariableFunction<DVector, DVector, DPoint, DVector, DVector> getEffect,
+                       FiveVariableFunction<DVector, DVector, DVector, DPoint, DVector, Boolean> skipEffect) {
+        this.skipAugment = skipAugment;
+        this.getVectorBetween = getVectorBetween;
+        this.getEffect = getEffect;
+        this.skipEffect = skipEffect;
+    }
 
     /**
      * A method for setting the skipAugment Function

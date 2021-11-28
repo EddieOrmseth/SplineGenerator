@@ -1,6 +1,5 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.PathAugment;
 import SplineGenerator.Applied.PathFinderV2;
 import SplineGenerator.GUI.BallDirectionFollower;
 import SplineGenerator.GUI.KeyBoardListener;
@@ -8,6 +7,7 @@ import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
+import SplineGenerator.Util.PathAugments.StandardPointObstacle;
 import SplineGenerator.Util.PathAugments.StandardPointTarget;
 
 public class Main {
@@ -127,11 +127,13 @@ public class Main {
         // /* PathFinderV2
         PathFinderV2 pathFinder = new PathFinderV2(2);
 
-        StandardPointTarget target = new StandardPointTarget(new DPoint(-15, -10), 4);
+        StandardPointTarget target = new StandardPointTarget(new DPoint(-15, -10), 4, 1);
         pathFinder.setTarget(target);
         display.displayables.add(target);
 
-
+        StandardPointObstacle obstacle1 = new StandardPointObstacle(new DPoint(0, 0), 100, -2);
+        pathFinder.addAugment(obstacle1);
+        display.displayables.add(obstacle1);
 
         BallDirectionFollower ballDirectionFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(15, 10));
         display.displayables.add(ballDirectionFollower);

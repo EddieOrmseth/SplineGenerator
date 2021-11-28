@@ -1,6 +1,5 @@
 package SplineGenerator.Util.PathAugments;
 
-import SplineGenerator.Applied.PathAugment;
 import SplineGenerator.GUI.Displayable;
 import SplineGenerator.GUI.SplineGraphics;
 import SplineGenerator.Util.DPoint;
@@ -24,15 +23,11 @@ public class StandardPointTarget extends PathAugment implements Displayable {
      * @param targetPosition The position of the target
      * @param strength The strength of the pull towards the target
      */
-    public StandardPointTarget(DPoint targetPosition, double strength) {
+    public StandardPointTarget(DPoint targetPosition, double coefficient, double power) {
         this.targetPosition = targetPosition;
         setSkipAugment((toTarget, point, velocity) -> false);
         setGetVectorBetween(objectPoint -> new DVector(targetPosition, objectPoint));
-        setGetEffect((vectorBetween, toTarget, position, velocity) -> {
-            DVector effect = vectorBetween.clone();
-            effect.setMagnitude(-strength);
-            return effect;
-        });
+        setGetEffect(PathAugmentFunctions.GetEffect.getDirectSingleTermPolynomialDistanceFunction(-coefficient, power, targetPosition.getDimensions()));
         setSkipEffect((vectorBetween, toTarget, effect, position, velocity) -> false);
     }
 

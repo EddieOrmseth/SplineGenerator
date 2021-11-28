@@ -42,7 +42,7 @@ public abstract class PathAugment {
      * @param velocity The velocity of the object
      * @return true if this PathAugment should be used, false otherwise
      */
-    public abstract boolean skipAugment(DVector toTarget, DPoint position, DVector velocity);
+    public abstract boolean skipAugment(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity);
 
     /**
      * A method for getting the vector between the given DPoint and PathAugment. The vector shall point form the PathAugment to the DPoint
@@ -66,7 +66,7 @@ public abstract class PathAugment {
     /**
      * A method for determining weather or not to use the effect of this PathAugment
      *
-     * @param vectorBetween The vector from the PathAugment and object
+     * @param vectorBetween The vector from the PathAugment to object
      * @param toTarget      The vector from the object to the target
      * @param effect        The effect of the PathAugment
      * @param position      The position of the object

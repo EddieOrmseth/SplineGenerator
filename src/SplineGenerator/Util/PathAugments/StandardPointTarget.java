@@ -52,7 +52,7 @@ public class StandardPointTarget extends PathAugment implements Displayable {
     }
 
     @Override
-    public boolean skipAugment(DVector toTarget, DPoint position, DVector velocity) {
+    public boolean skipAugment(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
         return false;
     }
 

@@ -83,6 +83,7 @@ public class PathFinderV2 implements Navigator {
     public DDirection getDirection(DPoint position, DVector velocity) {
         DVector finalEffect = new DVector(position.getDimensions());
         DVector toTarget = target.getVectorBetween(position);
+        toTarget.multiplyAll(-1);
 
         PathAugment augment;
         DVector vectorBetween;
@@ -90,12 +91,12 @@ public class PathFinderV2 implements Navigator {
 
         for (int i = 0; i < augments.size(); i++) {
             augment = augments.get(i);
+            vectorBetween = augment.getVectorBetween(position);
 
-            if (augment.skipAugment(toTarget, position, velocity)) {
+            if (augment.skipAugment(vectorBetween, toTarget, position, velocity)) {
                 continue;
             }
 
-            vectorBetween = augment.getVectorBetween(position);
             effect = augment.getEffect(vectorBetween, toTarget, position, velocity);
 
             if (!augment.skipEffect(vectorBetween, toTarget, effect, position, velocity)) {

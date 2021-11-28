@@ -120,19 +120,21 @@ public final class PathAugmentFunctions {
          * @param v2 The vector to accentuate during the process
          * @return The orthogonal vector
          */
-        public static DVector getOrthogonalVectorAccentuation(DVector v1, DVector v2) {
-//            DVector v1Orig = v1.clone();
+        public static DVector getOrthogonalVectorAccentuation(DVector v1, DVector v2, DVector result) {
+            DVector v1Orig = v1.clone();
             double v1Mag = v1.getMagnitude();
             double projMag = v2.projectOnto(v1.clone()).getMagnitude();
 
             v2.multiplyAll(v1Mag / projMag);
-            v1.add(v2);
 
-//            if (Math.abs(v1Orig.dot(v1)) > .1) {
+            result.set(v1);
+            result.add(v2);
+
+//            if (Math.abs(v1Orig.dot(result)) > .1) {
 //                System.out.println("ERROR HERE");
 //            }
 
-            return v1;
+            return result;
         }
 
     }

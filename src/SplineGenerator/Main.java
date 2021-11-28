@@ -136,12 +136,24 @@ public class Main {
 //        pathFinder.addAugment(obstacle1);
 //        display.displayables.add(obstacle1);
 
-        StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, 40);
+        StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(2, 4), 200, -3, -200);
         pathFinder.addAugment(obstacle1);
         display.displayables.add(obstacle1);
 
+        StreamPointObstacle obstacle2 = new StreamPointObstacle(2, new DPoint(0, -1), 200, -3, -200);
+        pathFinder.addAugment(obstacle2);
+        display.displayables.add(obstacle2);
+
+        StreamPointObstacle obstacle3 = new StreamPointObstacle(2, new DPoint(-10, -7), 200, -3, -200);
+        pathFinder.addAugment(obstacle3);
+        display.displayables.add(obstacle3);
+
         BallDirectionFollower ballDirectionFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(15, 10));
         display.displayables.add(ballDirectionFollower);
+
+//        display.onGridDisplayables.add(gridPoint -> {
+//
+//        });
         // */
 
         display.display();

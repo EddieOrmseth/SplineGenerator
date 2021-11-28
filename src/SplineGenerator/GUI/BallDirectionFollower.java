@@ -69,6 +69,10 @@ public class BallDirectionFollower implements Displayable {
             }
         }
 
+        if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
+            position = new DPoint(15, 10);
+        }
+
         graphics.paintPoint(position.clone());
     }
 

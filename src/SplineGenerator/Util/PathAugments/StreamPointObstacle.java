@@ -65,8 +65,13 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
     }
 
     @Override
-    public boolean skipAugment(DVector toTarget, DPoint position, DVector velocity) {
-        return false;
+    public boolean skipAugment(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
+        boolean returnValue = vectorBetween.dot(velocity) > 0;
+        if (returnValue) {
+            System.out.println("Skipped");
+        }
+        return returnValue;
+//        return false;
     }
 
     @Override
@@ -79,9 +84,9 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
         effect.set(vectorBetween);
         effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplifier(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
 
-        if (vectorBetween.dot(velocity) <= 0) {
-            orth.set(PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, velocity));
-            orth.setMagnitude(Math.pow(vectorBetween.getMagnitude(), -2) * streamDotCoefficient);
+        if (vectorBetween.getAngleBetween(velocity) >= Math.PI / 4) {
+            PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, velocity, orth);
+            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * (vectorBetween.dot(velocity) / (vectorBetween.getMagnitude() * velocity.getMagnitude())) * streamDotCoefficient);
             effect.add(orth);
         }
 
@@ -90,6 +95,10 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
 
     @Override
     public boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity) {
-        return false;
+        boolean returnValue =  vectorBetween.dot(toTarget) < 0;
+        if (returnValue) {
+            System.out.println("Not used");
+        }
+        return returnValue;
     }
 }

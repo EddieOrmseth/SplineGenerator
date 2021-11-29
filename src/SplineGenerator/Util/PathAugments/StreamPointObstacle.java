@@ -74,7 +74,7 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
 
         if (vectorBetween.getAngleBetween(realToTarget) >= Math.PI / 2.0) {
             PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, realToTarget, orth);
-            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -2)) * (vectorBetween.dot(realToTarget) / (vectorBetween.getMagnitude() * realToTarget.getMagnitude())) * streamDotCoefficient);
+            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1.5)) * (vectorBetween.dot(realToTarget) / (vectorBetween.getMagnitude() * realToTarget.getMagnitude())) * streamDotCoefficient);
 //            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * -streamDotCoefficient);
             effect.add(orth);
         }

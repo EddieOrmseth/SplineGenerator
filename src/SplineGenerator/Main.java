@@ -198,7 +198,8 @@ public class Main {
 //        pathFinder.addAugment(obstacle0);
 //        display.displayables.add(obstacle0);
 
-        double pointStreamCoefficient = -300;
+        double pointStreamCoefficient = -400;
+        double circleStreamCoefficient = -350;
 
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(10, 4), 200, -3, pointStreamCoefficient);
         pathFinder.addAugment(obstacle1);
@@ -284,14 +285,13 @@ public class Main {
         pathFinder.addAugment(obstacle21);
         display.displayables.add(obstacle21);
 //
-        StreamCircleObstacle circle1 = new StreamCircleObstacle(2, new DPoint(-10, 5), 2.5,200, -3, -250);
+        StreamCircleObstacle circle1 = new StreamCircleObstacle(2, new DPoint(-10, 5), 2.5,200, -3, circleStreamCoefficient);
         pathFinder.addAugment(circle1);
         display.displayables.add(circle1);
 //
-        StreamCircleObstacle circle2 = new StreamCircleObstacle(2, new DPoint(-48, -5), 4.5,200, -3, -250);
+        StreamCircleObstacle circle2 = new StreamCircleObstacle(2, new DPoint(-48, -5), 4.5,200, -3, circleStreamCoefficient);
         pathFinder.addAugment(circle2);
         display.displayables.add(circle2);
-
 
         int numLines = 50;
         Function<Integer, Color> colorFunction = i -> {

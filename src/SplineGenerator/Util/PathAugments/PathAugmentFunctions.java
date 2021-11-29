@@ -42,6 +42,28 @@ public final class PathAugmentFunctions {
 
         }
 
+        /**
+         * A method for getting the Vector between a point and an object
+         *
+         * @param point  The point that lies at the beginning of the vector
+         * @param object The object that lies at the end of the vector
+         * @param result The DVector to store the result in
+         * @return
+         */
+        public static DVector getVectorBetweenPointAndObject(DPoint point, DPoint object, DVector result) {
+            return result.set(point, object);
+        }
+
+        public static DVector getVectorBetweenCircularObjectAndObject(DPoint circleCenter, double radius, DPoint object, DVector result) {
+            result = getVectorBetweenPointAndObject(circleCenter, object, result);
+            if (result.getMagnitude() > radius) {
+                result.setMagnitude(result.getMagnitude() - radius);
+            } else {
+                result.setMagnitude(radius - result.getMagnitude());
+            }
+            return result;
+        }
+
     }
 
     /**
@@ -109,7 +131,7 @@ public final class PathAugmentFunctions {
          * @param power       The power to raise the given value to
          * @return The resulting DVector
          */
-        public static double getSingleTermPolynomialAmplifier(double value, double coefficient, double power) {
+        public static double getSingleTermPolynomialAmplification(double value, double coefficient, double power) {
             return coefficient * Math.pow(value, power);
         }
 

@@ -54,39 +54,25 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
         this.streamDotCoefficient = streamDotCoefficient;
     }
 
-    /**
-     * A method for displaying the target on the screen
-     *
-     * @param graphics The object to display on
-     */
-    @Override
-    public void display(SplineGraphics graphics) {
-        graphics.paintPoint(obstaclePosition.clone(), 0, 1, new Color(255, 0, 0), 10);
-    }
-
     @Override
     public boolean skipAugment(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
-        boolean returnValue = vectorBetween.dot(velocity) > 0;
-        if (returnValue) {
-            System.out.println("Skipped");
-        }
-        return returnValue;
-//        return false;
+        return false;
     }
 
     @Override
     public DVector getVectorBetween(DPoint point) {
-        return vectorBetween.set(obstaclePosition, point);
+        return PathAugmentFunctions.GetVectorBetween.getVectorBetweenPointAndObject(obstaclePosition, point, vectorBetween);
     }
 
     @Override
     public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
         effect.set(vectorBetween);
-        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplifier(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
+        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
 
-        if (vectorBetween.getAngleBetween(velocity) >= Math.PI / 4) {
+        if (vectorBetween.getAngleBetween(velocity) >= Math.PI / 2) {
             PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, velocity, orth);
             orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * (vectorBetween.dot(velocity) / (vectorBetween.getMagnitude() * velocity.getMagnitude())) * streamDotCoefficient);
+//            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * -streamDotCoefficient);
             effect.add(orth);
         }
 
@@ -95,10 +81,16 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
 
     @Override
     public boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity) {
-        boolean returnValue =  vectorBetween.dot(toTarget) < 0;
-        if (returnValue) {
-            System.out.println("Not used");
-        }
-        return returnValue;
+        return false;
+    }
+
+    /**
+     * A method for displaying the target on the screen
+     *
+     * @param graphics The object to display on
+     */
+    @Override
+    public void display(SplineGraphics graphics) {
+        graphics.paintPoint(obstaclePosition.clone(), 0, 1, new Color(255, 0, 0), 10);
     }
 }

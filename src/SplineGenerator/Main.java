@@ -3,13 +3,15 @@ package SplineGenerator;
 import SplineGenerator.Applied.PathFinderV2;
 import SplineGenerator.GUI.BallDirectionFollower;
 import SplineGenerator.GUI.KeyBoardListener;
+import SplineGenerator.GUI.LineOfLineDirectionFollowers;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
-import SplineGenerator.Util.PathAugments.StandardPointObstacle;
 import SplineGenerator.Util.PathAugments.StandardPointTarget;
 import SplineGenerator.Util.PathAugments.StreamPointObstacle;
+
+import java.awt.*;
 
 public class Main {
 
@@ -128,13 +130,13 @@ public class Main {
         // /* PathFinderV2
         PathFinderV2 pathFinder = new PathFinderV2(2);
 
-        StandardPointTarget target = new StandardPointTarget( 2, new DPoint(-15, -10), 4, 1);
+        StandardPointTarget target = new StandardPointTarget(2, new DPoint(-15, -10), 4, 1);
         pathFinder.setTarget(target);
         display.displayables.add(target);
 
-//        StandardPointObstacle obstacle1 = new StandardPointObstacle(2, new DPoint(0, 0), 200, -2);
-//        pathFinder.addAugment(obstacle1);
-//        display.displayables.add(obstacle1);
+//        StreamPointObstacle obstacle0 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, -200);
+//        pathFinder.addAugment(obstacle0);
+//        display.displayables.add(obstacle0);
 
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(2, 4), 200, -3, -200);
         pathFinder.addAugment(obstacle1);
@@ -144,17 +146,36 @@ public class Main {
         pathFinder.addAugment(obstacle2);
         display.displayables.add(obstacle2);
 
-        StreamPointObstacle obstacle3 = new StreamPointObstacle(2, new DPoint(-10, -7), 200, -3, -200);
+        StreamPointObstacle obstacle3 = new StreamPointObstacle(2, new DPoint(0, 3), 200, -3, -200);
         pathFinder.addAugment(obstacle3);
         display.displayables.add(obstacle3);
+//
+//        StreamCircleObstacle circle0 = new StreamCircleObstacle(2, new DPoint(0, 0), 3,200, -3, -250);
+//        pathFinder.addAugment(circle0);
+//        display.displayables.add(circle0);
 
         BallDirectionFollower ballDirectionFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(15, 10));
         display.displayables.add(ballDirectionFollower);
 
-//        display.onGridDisplayables.add(gridPoint -> {
-//
-//        });
+        int numLines = 10;
+        Function<Integer, Color> colorFunction = i -> {
+            double kB = i / 10.0;
+            double kR = 1 - kB;
+            return new Color((int) (kR * 255), 0, (int) (kB * 255));
+//            return new Color(255, 255, 255);
+        };
+        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(13, 12), new DPoint(17, 8), numLines, colorFunction, 3, .1, 0, 1);
+//        display.displayables.add(lines);
+
+
+         /*
+        display.onGridDisplayables.add(gridPoint -> {
+
+        });
         // */
+
+        ballDirectionFollower.start();
+//        lines.start();
 
         display.display();
 

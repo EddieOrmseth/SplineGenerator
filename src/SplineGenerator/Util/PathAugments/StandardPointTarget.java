@@ -58,13 +58,13 @@ public class StandardPointTarget extends PathAugment implements Displayable {
 
     @Override
     public DVector getVectorBetween(DPoint point) {
-        return vectorBetween.set(targetPosition, point);
+        return PathAugmentFunctions.GetVectorBetween.getVectorBetweenPointAndObject(targetPosition, point, vectorBetween);
     }
 
     @Override
     public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
         effect.set(vectorBetween);
-        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplifier(vectorBetween.getMagnitude(), coefficient, power));
+        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), coefficient, power));
         return effect;
     }
 

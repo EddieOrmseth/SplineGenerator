@@ -79,6 +79,16 @@ public class SplineGraphics {
     }
 
     /**
+     * A method for getting the translation of a given point
+     *
+     * @param point The point to be translated
+     * @return The translated point
+     */
+    public DPoint translate(DPoint point) {
+        return translate.get(point);
+    }
+
+    /**
      * A method for setting the translation
      *
      * @param translation The new translation
@@ -179,6 +189,58 @@ public class SplineGraphics {
         point = translate.get(point);
 
         graphics.fillOval((int) (point.get(xDim) - radius), (int) (point.get(yDim) - radius), (int) (2 * radius), (int) (2 * radius));
+    }
+
+    /**
+     * A method for drawing a circle on the screen
+     *
+     * @param center The center of the circle
+     * @param radius The radius of the circle
+     * @param xDim   The x dimension of the circle
+     * @param yDim   The y dimension of the circle
+     */
+    public void paintCircle(DPoint center, double radius, int xDim, int yDim, Color color) {
+        graphics.setColor(color);
+        DPoint upperLeft = center.clone();
+        upperLeft.add(0, -radius);
+        upperLeft.add(1, radius);
+        center = translate.get(center);
+        upperLeft = translate.get(upperLeft);
+        int scaledRadius = 2 * (int) (center.get(xDim) - upperLeft.get(xDim));
+
+        graphics.drawOval((int) (upperLeft.get(xDim)), (int) (upperLeft.get(yDim)), scaledRadius, scaledRadius);
+    }
+
+    /**
+     * A method for painting a line between two untranslated points
+     *
+     * @param p1    The first point
+     * @param p2    The second point
+     * @param width The width of the line
+     * @param color The color of the line
+     * @param xDim  The x dimension
+     * @param yDim  The y dimension
+     */
+    public void paintLine(DPoint p1, DPoint p2, float width, Color color, int xDim, int yDim) {
+        p1 = translate.get(p1);
+        p2 = translate.get(p2);
+        paintTranslatedLine(p1, p2, width, color, xDim, yDim);
+    }
+
+    /**
+     * A method for painting a line between two translated points
+     *
+     * @param p1    The first point
+     * @param p2    The second point
+     * @param width The width of the line
+     * @param color The color of the line
+     * @param xDim  The x dimension
+     * @param yDim  The y dimension
+     */
+    public void paintTranslatedLine(DPoint p1, DPoint p2, float width, Color color, int xDim, int yDim) {
+        graphics.setStroke(new BasicStroke(width));
+        graphics.setColor(color);
+        graphics.drawLine((int) p1.get(xDim), (int) p1.get(yDim), (int) p2.get(xDim), (int) p2.get(yDim));
     }
 
     /**

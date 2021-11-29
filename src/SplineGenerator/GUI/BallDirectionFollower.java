@@ -63,7 +63,7 @@ public class BallDirectionFollower implements Displayable {
      * @param graphics The object to display on
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
 
         long now = System.currentTimeMillis();
         long delta = now - lastTime;
@@ -117,7 +117,7 @@ public class BallDirectionFollower implements Displayable {
      *
      * @param graphics The object on which to paint
      */
-    public void paint(SplineGraphics graphics) {
+    public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone());
     }
 

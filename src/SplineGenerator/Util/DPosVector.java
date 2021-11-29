@@ -1,6 +1,6 @@
 package SplineGenerator.Util;
 
-import SplineGenerator.GUI.SplineGraphics;
+import SplineGenerator.GUI.DisplayGraphics;
 
 import java.util.Arrays;
 
@@ -106,7 +106,7 @@ public class DPosVector extends DVector {
      * @param graphics The object to display on
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
         graphics.paintVector(this);
     }
 

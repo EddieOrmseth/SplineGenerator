@@ -1,7 +1,7 @@
 package SplineGenerator.Util;
 
 import SplineGenerator.GUI.Displayable;
-import SplineGenerator.GUI.SplineGraphics;
+import SplineGenerator.GUI.DisplayGraphics;
 
 /**
  * A class for holding a multidimensional point
@@ -217,7 +217,7 @@ public class DPoint implements Displayable {
     }
 
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
         graphics.paintPoint(this);
     }
 

@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * A class for painting object on the spline
  */
-public class SplineGraphics {
+public class DisplayGraphics {
 
     /**
      * The Graphics2D object to be painted on
@@ -72,7 +72,7 @@ public class SplineGraphics {
      *
      * @param graphics The object to be painted on
      */
-    public SplineGraphics(Graphics2D graphics, SplineDisplay display) {
+    public DisplayGraphics(Graphics2D graphics, Display display) {
         this.graphics = graphics;
         xDim = display.xDim;
         yDim = display.yDim;

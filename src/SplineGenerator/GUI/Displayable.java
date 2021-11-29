@@ -11,5 +11,5 @@ public interface Displayable {
      *
      * @param graphics The object to display on
      */
-    void display(SplineGraphics graphics);
+    void display(DisplayGraphics graphics);
 }

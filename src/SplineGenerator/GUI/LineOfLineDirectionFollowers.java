@@ -99,7 +99,7 @@ public class LineOfLineDirectionFollowers implements Displayable {
      * @param graphics The object on which to paint
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
         for (int i = 0; i < followers.size(); i++) {
             followers.get(i).display(graphics);
         }

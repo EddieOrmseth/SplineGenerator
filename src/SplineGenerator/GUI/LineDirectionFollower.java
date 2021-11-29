@@ -77,7 +77,7 @@ public class LineDirectionFollower extends BallDirectionFollower {
      * @param graphics The object to display on
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
 
         long now = System.currentTimeMillis();
         long delta = now - lastTime;
@@ -137,7 +137,7 @@ public class LineDirectionFollower extends BallDirectionFollower {
      * @param graphics The object on which to paint
      */
     @Override
-    public void paint(SplineGraphics graphics) {
+    public void paint(DisplayGraphics graphics) {
 
         if (position.getDistance(pointList.get(pointList.size() - 1)) > intervalLength) {
             pointList.add(position.clone());
@@ -154,7 +154,7 @@ public class LineDirectionFollower extends BallDirectionFollower {
      * @param graphics  The object on which to paint
      * @param pointList The list of points
      */
-    public void paintPointList(SplineGraphics graphics, ArrayList<DPoint> pointList) {
+    public void paintPointList(DisplayGraphics graphics, ArrayList<DPoint> pointList) {
         DPoint prev;
         DPoint next;
 

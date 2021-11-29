@@ -1,6 +1,6 @@
 package SplineGenerator.Util;
 
-import SplineGenerator.GUI.SplineGraphics;
+import SplineGenerator.GUI.DisplayGraphics;
 
 /**
  * A class for holding a multidimensional vector
@@ -165,7 +165,7 @@ public class DVector extends DPoint {
      * @param graphics What to display the vector on
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
         graphics.paintVector(new DPosVector(values.length), this);
     }
 

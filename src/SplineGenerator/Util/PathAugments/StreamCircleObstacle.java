@@ -1,7 +1,7 @@
 package SplineGenerator.Util.PathAugments;
 
 import SplineGenerator.GUI.Displayable;
-import SplineGenerator.GUI.SplineGraphics;
+import SplineGenerator.GUI.DisplayGraphics;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -67,15 +67,14 @@ public class StreamCircleObstacle extends PathAugment implements Displayable {
     @Override
     public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
         effect.set(vectorBetween);
-//        if (obstacleCenter.getDistance(position) > radius) {
-            effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
-//        } else {
-//            effect.setMagnitude(100);
-//        }
+        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
 
-        if (vectorBetween.getAngleBetween(velocity) >= Math.PI / 2) {
-            PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, velocity, orthVector);
-            orthVector.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * (vectorBetween.dot(velocity) / (vectorBetween.getMagnitude() * velocity.getMagnitude())) * streamDotCoefficient);
+        DVector realToTarget = toTarget.clone();
+        realToTarget.multiplyAll(-1);
+
+        if (vectorBetween.getAngleBetween(realToTarget) >= Math.PI / 2) {
+            PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, realToTarget, orthVector);
+            orthVector.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1.5)) * (vectorBetween.dot(realToTarget) / (vectorBetween.getMagnitude() * realToTarget.getMagnitude())) * streamDotCoefficient);
             effect.add(orthVector);
         }
 
@@ -88,7 +87,7 @@ public class StreamCircleObstacle extends PathAugment implements Displayable {
     }
 
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
 //        graphics.paintPoint(position.clone(), 0, 1, new Color(0, 255, 0), 3);
         graphics.paintCircle(obstacleCenter.clone(), radius, 0, 1, new Color(0, 255, 0));
     }

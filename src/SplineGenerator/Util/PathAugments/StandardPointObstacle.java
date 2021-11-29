@@ -1,7 +1,7 @@
 package SplineGenerator.Util.PathAugments;
 
 import SplineGenerator.GUI.Displayable;
-import SplineGenerator.GUI.SplineGraphics;
+import SplineGenerator.GUI.DisplayGraphics;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -70,7 +70,7 @@ public class StandardPointObstacle extends PathAugment implements Displayable {
      * @param graphics The object to display on
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
         graphics.paintPoint(obstaclePosition.clone(), 0, 1, new Color(255, 0, 0), 10);
     }
 }

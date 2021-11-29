@@ -77,7 +77,6 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
             orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * (vectorBetween.dot(realToTarget) / (vectorBetween.getMagnitude() * realToTarget.getMagnitude())) * streamDotCoefficient);
 //            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * -streamDotCoefficient);
             effect.add(orth);
-            System.out.println("Using");
         }
 
         return effect;

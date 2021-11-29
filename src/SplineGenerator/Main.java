@@ -138,7 +138,7 @@ public class Main {
 //        StreamPointObstacle obstacle0 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, -200);
 //        pathFinder.addAugment(obstacle0);
 //        display.displayables.add(obstacle0);
-
+//
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(2, 4), 200, -3, -200);
         pathFinder.addAugment(obstacle1);
         display.displayables.add(obstacle1);
@@ -150,7 +150,7 @@ public class Main {
         StreamPointObstacle obstacle3 = new StreamPointObstacle(2, new DPoint(0, 3), 200, -3, -200);
         pathFinder.addAugment(obstacle3);
         display.displayables.add(obstacle3);
-//
+
 //        StreamCircleObstacle circle0 = new StreamCircleObstacle(2, new DPoint(0, 0), 3,200, -3, -250);
 //        pathFinder.addAugment(circle0);
 //        display.displayables.add(circle0);
@@ -158,15 +158,18 @@ public class Main {
 //        BallDirectionFollower ballDirectionFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(15, 10));
 //        display.displayables.add(ballDirectionFollower);
 
-        int numLines = 10;
+        int numLines = 50;
         Function<Integer, Color> colorFunction = i -> {
-            double kB = i / 10.0;
+            double kB = i / (double) numLines;
             double kR = 1 - kB;
             return new Color((int) (kR * 255), 0, (int) (kB * 255));
 //            return new Color(255, 255, 255);
         };
-        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(13, 12), new DPoint(17, 8), numLines, colorFunction, 3, .1, 0, 1);
-        display.displayables.add(lines);
+//        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(13, 12), new DPoint(17, 8), numLines, colorFunction, 3, .1, 0, 1);
+//        display.displayables.add(lines);
+
+        LineOfLineDirectionFollowers linesLots = new LineOfLineDirectionFollowers(pathFinder, new DPoint(4, 15), new DPoint(16, 3), numLines, colorFunction, 3, .1, 0, 1);
+        display.displayables.add(linesLots);
 
 
          /*
@@ -176,7 +179,8 @@ public class Main {
         // */
 
 //        ballDirectionFollower.start();
-        lines.start();
+//        lines.start();
+        linesLots.start();
 
         display.display();
 

@@ -65,11 +65,15 @@ public class BallDirectionFollower implements Displayable {
     @Override
     public void display(SplineGraphics graphics) {
 
-        if (!arrowPressed()) {
-            if (!KeyBoardListener.get(KeyEvent.VK_SHIFT)) {
+        long now = System.currentTimeMillis();
+        long delta = now - lastTime;
 
-                long now = System.currentTimeMillis();
-                long delta = now - lastTime;
+        if (!arrowPressed()) {
+            if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
+
+
+
+                System.out.println("Delta: " + delta);
 
                 controller.update(position.clone());
                 DDirection direction = controller.getDirection();
@@ -77,16 +81,12 @@ public class BallDirectionFollower implements Displayable {
                 movement.setMagnitude(movementLength * delta);
                 position.add(movement);
 
-                lastTime = now;
 
             } else {
                 lastTime = System.currentTimeMillis();
             }
 
         } else {
-
-            long now = System.currentTimeMillis();
-            long delta = now - lastTime;
 
             if (KeyBoardListener.get(KeyEvent.VK_LEFT)) {
                 position.add(graphics.xDim, -movementLength * delta);
@@ -101,8 +101,9 @@ public class BallDirectionFollower implements Displayable {
                 position.add(graphics.yDim, -movementLength * delta);
             }
 
-            lastTime = now;
         }
+
+        lastTime = now;
 
         if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
             position.set(initialPosition);

@@ -144,17 +144,20 @@ public final class PathAugmentFunctions {
          */
         public static DVector getOrthogonalVectorAccentuation(DVector v1, DVector v2, DVector result) {
             DVector v1Orig = v1.clone();
+
+            DVector usedV2 = v2.clone();
+
             double v1Mag = v1.getMagnitude();
             double projMag = v2.projectOnto(v1.clone()).getMagnitude();
 
-            v2.multiplyAll(v1Mag / projMag);
+            usedV2.multiplyAll(v1Mag / projMag);
 
             result.set(v1);
-            result.add(v2);
+            result.add(usedV2);
 
-//            if (Math.abs(v1Orig.dot(result)) > .1) {
-//                System.out.println("ERROR HERE");
-//            }
+            if (Math.abs(v1Orig.dot(result)) > .1) {
+                System.out.println("ERROR HERE");
+            }
 
             return result;
         }

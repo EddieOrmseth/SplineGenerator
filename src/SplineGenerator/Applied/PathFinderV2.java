@@ -167,9 +167,9 @@ public class PathFinderV2 implements Navigator {
          */
         @Override
         public void update(DPoint point) {
-            previousPosition = position.clone();
-            position = point;
-            velocity = new DVector(previousPosition, position);
+            previousPosition.set(position);
+            position.set(point);
+            velocity.set(previousPosition, position);
         }
 
         /**

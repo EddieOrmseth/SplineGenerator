@@ -69,11 +69,15 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
         effect.set(vectorBetween);
         effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
 
-        if (vectorBetween.getAngleBetween(velocity) >= Math.PI / 2) {
-            PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, velocity, orth);
-            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * (vectorBetween.dot(velocity) / (vectorBetween.getMagnitude() * velocity.getMagnitude())) * streamDotCoefficient);
+        DVector realToTarget = toTarget.clone();
+        realToTarget.multiplyAll(-1);
+
+        if (vectorBetween.getAngleBetween(realToTarget) >= Math.PI / 2.0) {
+            PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, realToTarget, orth);
+            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * (vectorBetween.dot(realToTarget) / (vectorBetween.getMagnitude() * realToTarget.getMagnitude())) * streamDotCoefficient);
 //            orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1)) * -streamDotCoefficient);
             effect.add(orth);
+            System.out.println("Using");
         }
 
         return effect;

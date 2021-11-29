@@ -9,6 +9,7 @@ import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 import SplineGenerator.Util.PathAugments.StandardPointTarget;
+import SplineGenerator.Util.PathAugments.StreamCircleObstacle;
 import SplineGenerator.Util.PathAugments.StreamPointObstacle;
 
 import java.awt.*;
@@ -154,8 +155,8 @@ public class Main {
 //        pathFinder.addAugment(circle0);
 //        display.displayables.add(circle0);
 
-        BallDirectionFollower ballDirectionFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(15, 10));
-        display.displayables.add(ballDirectionFollower);
+//        BallDirectionFollower ballDirectionFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(15, 10));
+//        display.displayables.add(ballDirectionFollower);
 
         int numLines = 10;
         Function<Integer, Color> colorFunction = i -> {
@@ -165,7 +166,7 @@ public class Main {
 //            return new Color(255, 255, 255);
         };
         LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(13, 12), new DPoint(17, 8), numLines, colorFunction, 3, .1, 0, 1);
-//        display.displayables.add(lines);
+        display.displayables.add(lines);
 
 
          /*
@@ -174,8 +175,8 @@ public class Main {
         });
         // */
 
-        ballDirectionFollower.start();
-//        lines.start();
+//        ballDirectionFollower.start();
+        lines.start();
 
         display.display();
 

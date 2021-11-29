@@ -79,19 +79,17 @@ public class LineDirectionFollower extends BallDirectionFollower {
     @Override
     public void display(SplineGraphics graphics) {
 
-        if (!arrowPressed()) {
-            if (!KeyBoardListener.get(KeyEvent.VK_SHIFT)) {
+        long now = System.currentTimeMillis();
+        long delta = now - lastTime;
 
-                long now = System.currentTimeMillis();
-                long delta = now - lastTime;
+        if (!arrowPressed()) {
+            if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
 
                 controller.update(position.clone());
                 DDirection direction = controller.getDirection();
                 DVector movement = direction.toVector();
                 movement.setMagnitude(movementLength * delta);
                 position.add(movement);
-
-                lastTime = now;
 
                 if (controlled) {
                     pointList.clear();
@@ -106,9 +104,6 @@ public class LineDirectionFollower extends BallDirectionFollower {
 
         } else {
 
-            long now = System.currentTimeMillis();
-            long delta = now - lastTime;
-
             if (KeyBoardListener.get(KeyEvent.VK_LEFT)) {
                 position.add(graphics.xDim, -movementLength * delta);
             }
@@ -122,9 +117,10 @@ public class LineDirectionFollower extends BallDirectionFollower {
                 position.add(graphics.yDim, -movementLength * delta);
             }
 
-            lastTime = now;
             controlled = true;
         }
+
+        lastTime = now;
 
         if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
             position.set(initialPosition);

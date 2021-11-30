@@ -57,6 +57,15 @@ public class Extrema {
     }
 
     /**
+     * A method for getting the dimensions of the Extrema object
+     *
+     * @return THe number of dimensions of the Extrema object
+     */
+    public int getDimensions() {
+        return lesserPoint.getDimensions();
+    }
+
+    /**
      * A method for cloning the Extrema object
      *
      * @return The new identical Extrema object

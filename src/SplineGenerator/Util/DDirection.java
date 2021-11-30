@@ -1,7 +1,5 @@
 package SplineGenerator.Util;
 
-import java.util.Arrays;
-
 /**
  * A class representing a multidimensional direction in the form of a unit vector
  */

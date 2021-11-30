@@ -188,7 +188,7 @@ public class Main {
 
         PathFinder pathFinder = new PathFinder(2);
 
-        StandardPointTarget target = new StandardPointTarget(2, new DPoint(-50, 0), 4, 1);
+        StandardPointTarget target = new StandardPointTarget(2, new DPoint(-45, 0), 4, 1);
         pathFinder.setTarget(target);
         display.displayables.add(target);
         display.addMouseListener(target);
@@ -204,7 +204,7 @@ public class Main {
         double circleStreamPower = -1.5;
 
         double lineStreamCoefficient = -1500;
-        double lineStreamPower = -1.5;
+        double lineStreamPower = -1.1;
 
          /* Big Mess 1
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(10, 4), 200, -3, pointStreamCoefficient, pointStreamPower);
@@ -357,7 +357,7 @@ public class Main {
 //
 //        lines.start();
 
-        BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(30, 1));
+        BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(20, 1));
         display.displayables.add(ballFollower);
 
         ballFollower.start();

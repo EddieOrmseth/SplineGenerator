@@ -64,7 +64,7 @@ public class StreamPointObstacle extends PathAugment implements Displayable {
 
     @Override
     public boolean skipAugment(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
-        return false;
+        return vectorBetween.getMagnitude() > toTarget.getMagnitude();
     }
 
     @Override

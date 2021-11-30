@@ -72,7 +72,7 @@ public class StandardPointTarget extends PathAugment implements Displayable, Mou
     @Override
     public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
         effect.set(vectorBetween);
-        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), coefficient, power));
+        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), coefficient, power) + PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), -20, -1));
         return effect;
     }
 

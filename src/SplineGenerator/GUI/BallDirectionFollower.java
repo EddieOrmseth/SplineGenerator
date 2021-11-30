@@ -30,7 +30,7 @@ public class BallDirectionFollower implements Displayable {
     /**
      * The distance to move the ball per millisecond
      */
-    protected double movementLength = .01;
+    protected double movementLength = .02;
 
     /**
      * The timestamp, in milliseconds, of the last update

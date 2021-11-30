@@ -4,9 +4,7 @@ import SplineGenerator.Applied.PathFinder;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Util.*;
-import SplineGenerator.Util.PathAugments.StandardPointTarget;
-import SplineGenerator.Util.PathAugments.StreamCircleObstacle;
-import SplineGenerator.Util.PathAugments.StreamPointObstacle;
+import SplineGenerator.Util.PathAugments.*;
 
 import java.awt.*;
 
@@ -190,7 +188,7 @@ public class Main {
 
         PathFinder pathFinder = new PathFinder(2);
 
-        StandardPointTarget target = new StandardPointTarget(2, new DPoint(-55, 0), 4, 1);
+        StandardPointTarget target = new StandardPointTarget(2, new DPoint(-50, 0), 4, 1);
         pathFinder.setTarget(target);
         display.displayables.add(target);
         display.addMouseListener(target);
@@ -199,7 +197,7 @@ public class Main {
 //        pathFinder.addAugment(obstacle0);
 //        display.displayables.add(obstacle0);
 
-        double pointStreamCoefficient = -400;
+        double pointStreamCoefficient = -800;
         double pointStreamPower = -1.5;
 
         double circleStreamCoefficient = -500;
@@ -208,6 +206,7 @@ public class Main {
         double lineStreamCoefficient = -1500;
         double lineStreamPower = -1.5;
 
+         /* Big Mess 1
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(10, 4), 200, -3, pointStreamCoefficient, pointStreamPower);
         pathFinder.addAugment(obstacle1);
         display.displayables.add(obstacle1);
@@ -299,26 +298,69 @@ public class Main {
         StreamCircleObstacle circle2 = new StreamCircleObstacle(2, new DPoint(-48, -5), 4.5,200, -3, circleStreamCoefficient, circleStreamPower);
         pathFinder.addAugment(circle2);
         display.displayables.add(circle2);
-//
+        // */ // End Big Mess 1
+
 //        StreamLineObstacle line1 = new StreamLineObstacle(new DPoint(0, 5), new DPoint(10, 0), 200, -3, lineStreamCoefficient, lineStreamPower);
 //        pathFinder.addAugment(line1);
 //        display.displayables.add(line1);
 
-        int numLines = 50;
-        Function<Integer, Color> colorFunction = i -> {
-            double kB = i / (double) numLines;
-            double kR = 1 - kB;
-            return new Color((int) (kR * 255), 0, (int) (kB * 255));
-        };
-        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(35, 20), new DPoint(35, -20), numLines, colorFunction, 3, .1, 0, 1);
-        display.displayables.add(lines);
+        // /* Field 1
+//        Extrema extrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20)); Size of place
+        DPoint cornerTL = new DPoint(-50, 18);
+        DPoint cornerTR = new DPoint(28, 18);
+        DPoint cornerBR = new DPoint(28, -18);
+        DPoint cornerBL = new DPoint(-50, -18);
 
-        lines.start();
+        // Box
+        StreamPolygonObstacle box = new StreamPolygonObstacle(2, 150, -3, 0, 0, cornerTL, cornerTR, cornerBR, cornerBL, cornerTL);
+        pathFinder.addAugment(box);
+        display.displayables.add(box);
+
+        // Center Thing
+
+//        StreamCircleObstacle c0 = new StreamCircleObstacle(2, new DPoint(-11, 0), .75,200, -3, circleStreamCoefficient, circleStreamPower);
+//        pathFinder.addAugment(c0);
+//        display.displayables.add(c0);
+
+        StreamCircleObstacle c1 = new StreamCircleObstacle(2, new DPoint(-19, -8), .75,200, -3, circleStreamCoefficient, circleStreamPower);
+        pathFinder.addAugment(c1);
+        display.displayables.add(c1);
+
+        StreamCircleObstacle c2 = new StreamCircleObstacle(2, new DPoint(-22, 3), .75,200, -3, circleStreamCoefficient, circleStreamPower);
+        pathFinder.addAugment(c2);
+        display.displayables.add(c2);
+
+//        StreamCircleObstacle c3 = new StreamCircleObstacle(2, new DPoint(-3, 8), .75,200, -3, circleStreamCoefficient, circleStreamPower);
+//        pathFinder.addAugment(c3);
+//        display.displayables.add(c3);
+
+        StreamCircleObstacle c4 = new StreamCircleObstacle(2, new DPoint(0, -3), .75,200, -3, circleStreamCoefficient, circleStreamPower);
+        pathFinder.addAugment(c4);
+        display.displayables.add(c4);
+
+        // Triangle Thing
+        StreamPolygonObstacle triangleThing = new StreamPolygonObstacle(2, 200, -3, lineStreamCoefficient, lineStreamPower, new DPoint(8, 18), new DPoint(-3, 8), new DPoint(-14, 18));
+        pathFinder.addAugment(triangleThing);
+        display.displayables.add(triangleThing);
+
+
+        // /* End Field 1
+
+//        int numLines = 50;
+//        Function<Integer, Color> colorFunction = i -> {
+//            double kB = i / (double) numLines;
+//            double kR = 1 - kB;
+//            return new Color((int) (kR * 255), 0, (int) (kB * 255));
+//        };
+//        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(35, 20), new DPoint(35, -20), numLines, colorFunction, 3, .1, 0, 1);
+//        display.displayables.add(lines);
 //
-//        BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(35, 1));
-//        display.displayables.add(ballFollower);
-//
-//        ballFollower.start();
+//        lines.start();
+
+        BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(30, 1));
+        display.displayables.add(ballFollower);
+
+        ballFollower.start();
 
          // */
 

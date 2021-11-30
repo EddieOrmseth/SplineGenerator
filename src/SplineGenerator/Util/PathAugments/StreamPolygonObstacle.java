@@ -2,29 +2,16 @@ package SplineGenerator.Util.PathAugments;
 
 import SplineGenerator.GUI.DisplayGraphics;
 import SplineGenerator.GUI.Displayable;
-import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
-public class StreamLineObstacle extends PathAugment implements Displayable {
+public class StreamPolygonObstacle extends PathAugment implements Displayable {
 
-    /**
-     * The point where the line begins
-     */
-    private DPoint p1;
-
-    /**
-     * The point where the line ends
-     */
-    private DPoint p2;
-
-    /**
-     * The DVector between the two given points p1 and p2
-     */
-    private DVector lineSegment;
+    private DPoint[] points;
+    private DVector[] lineSegments;
+    private DVector[] vectorsBetween;
 
     /**
      * The DVector orthogonal to the vectorBetween
@@ -61,16 +48,22 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
     /**
      * A simple constructor that initializes the necessary objects
      */
-    public StreamLineObstacle(DPoint p1, DPoint p2, double awayCoefficient, double awayPower, double streamCoefficient, double streamPower) {
-        super(p1.getDimensions());
-        this.p1 = p1;
-        this.p2 = p2;
-        lineSegment = new DVector(p1, p2);
+    public StreamPolygonObstacle(int dimensions, double awayCoefficient, double awayPower, double streamCoefficient, double streamPower, DPoint... points) {
+        super(dimensions);
         this.awayCoefficient = awayCoefficient;
         this.awayPower = awayPower;
         this.streamCoefficient = streamCoefficient;
         this.streamPower = streamPower;
-        orthVector = new DVector(p1.getDimensions());
+        orthVector = new DVector(dimensions);
+        this.points = points;
+        lineSegments = new DVector[points.length - 1];
+        for (int i = 1; i < points.length; i++) {
+            lineSegments[i - 1] = new DVector(points[i - 1], points[i]);
+        }
+        vectorsBetween = new DVector[points.length - 1];
+        for (int i = 0; i < vectorsBetween.length; i++) {
+            vectorsBetween[i] = new DVector(dimensions);
+        }
     }
 
     @Override
@@ -81,34 +74,21 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
     @Override
     public DVector getVectorBetween(DPoint point) {
 //        return PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(p1, p2, lineSegment, point, vectorBetween);
-
-
-        vectorBetween.set(p1, point);
-        double thetaP1 = lineSegment.getAngleBetween(vectorBetween);
-        if (thetaP1 > Math.PI / 2.0) {
-            useDot = true;
-            return vectorBetween;
+//        return vectorBetween;
+        for (int i = 1; i < points.length; i++) {
+            PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(points[i - 1], points[i], lineSegments[i - 1], point, vectorsBetween[i - 1]);
         }
 
-        vectorBetween.set(p2, point);
-        double thetaP2 = lineSegment.getAngleBetween(vectorBetween);
-        if (thetaP2 < Math.PI / 2.0) {
-            useDot = true;
-            return vectorBetween;
+        int minIndex = 0;
+        double minMagnitude = vectorsBetween[minIndex].getMagnitude();
+        for (int i = 0; i < vectorsBetween.length; i++) {
+            if (vectorsBetween[i].getMagnitude() < minMagnitude) {
+                minIndex = i;
+                minMagnitude = vectorsBetween[i].getMagnitude();
+            }
         }
 
-        useDot = false;
-
-        if (KeyBoardListener.get(KeyEvent.VK_F)) {
-            int cat = 12;
-        }
-
-        vectorBetween.projectOnto(lineSegment);
-        vectorBetween.set(lineSegment, vectorBetween);
-
-        lineSegment.set(p1, p2);
-
-        return vectorBetween;
+        return vectorsBetween[minIndex];
     }
 
     @Override
@@ -142,6 +122,9 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
 
     @Override
     public void display(DisplayGraphics graphics) {
-        graphics.paintLine(p1.clone(), p2.clone(), 3, color, 0, 1);
+//        graphics.paintLine(p1.clone(), p2.clone(), 3, color, 0, 1);
+        for (int i = 1; i < points.length; i++) {
+            graphics.paintLine(points[i - 1].clone(), points[i].clone(), 3, color, 0, 1);
+        }
     }
 }

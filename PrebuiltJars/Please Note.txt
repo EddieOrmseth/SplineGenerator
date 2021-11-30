@@ -6,6 +6,9 @@ Java must be installed to run them (I created them with OpenJDK 11).
 
 If double clicking them does note work navigate to the folder in a terminal and try the commmand "javaw.exe -jar <name of jar>"
 
+If the window does not pop up on the Navigator jars immediately do not worry, these jars involve a lot of brute force and precomputed math.
+Given some time they will open.
+
 The arrow keys can be used to control the ball.
 The ball will stop moving while the shift key is held.
 Pressing space will reset the ball.

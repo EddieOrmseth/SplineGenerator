@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * A new and improved PathFinder for smoother motion and better navigation
  */
-public class PathFinderV2 implements Navigator {
+public class PathFinder implements Navigator {
 
     /**
      * An ArrayList<PathObject> for holding the obstacles found in the given space
@@ -30,7 +30,7 @@ public class PathFinderV2 implements Navigator {
     /**
      * A simple constructor that requires to arguments
      */
-    public PathFinderV2(int dimensions) {
+    public PathFinder(int dimensions) {
         this.dimensions = dimensions;
         augments = new ArrayList<>();
     }
@@ -131,7 +131,7 @@ public class PathFinderV2 implements Navigator {
         /**
          * The PathFinder object to be followed
          */
-        private PathFinderV2 pathFinder;
+        private PathFinder pathFinder;
 
         /**
          * The position of the controlled object
@@ -153,7 +153,7 @@ public class PathFinderV2 implements Navigator {
          *
          * @param pathFinder
          */
-        public Controller(PathFinderV2 pathFinder) {
+        public Controller(PathFinder pathFinder) {
             this.pathFinder = pathFinder;
             position = new DPoint(pathFinder.getDimensions());
             previousPosition = new DPoint(pathFinder.getDimensions());

@@ -1,14 +1,11 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.PathFinderV2;
-import SplineGenerator.Applied.Segmenter;
+import SplineGenerator.Applied.PathFinder;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
-import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 import SplineGenerator.Util.PathAugments.StandardPointTarget;
 import SplineGenerator.Util.PathAugments.StreamCircleObstacle;
-import SplineGenerator.Util.PathAugments.StreamLineObstacle;
 import SplineGenerator.Util.PathAugments.StreamPointObstacle;
 
 import java.awt.*;
@@ -191,7 +188,7 @@ public class Main {
         Extrema extrema = new Extrema(new DPoint(-40, -20), new DPoint(35, 20));
         Display display = new Display(2, extrema, 0, 1, 1600, 700);
 
-        PathFinderV2 pathFinder = new PathFinderV2(2);
+        PathFinder pathFinder = new PathFinder(2);
 
         StandardPointTarget target = new StandardPointTarget(2, new DPoint(-55, 0), 4, 1);
         pathFinder.setTarget(target);

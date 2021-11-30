@@ -15,27 +15,46 @@ public class BallDirectionFollower implements Displayable {
     /**
      * The controller that provides the direction
      */
-    private Navigator.Controller controller;
+    protected Navigator.Controller controller;
 
     /**
      * The position of the ball
      */
-    private DPoint position;
+    protected DPoint position;
 
     /**
-     * The distance to move the ball each time display is called
+     * The initial point of the follower
      */
-    private double movementLength = .15;
+    protected DPoint initialPosition;
+
+    /**
+     * The distance to move the ball per millisecond
+     */
+    protected double movementLength = .01;
+
+    /**
+     * The timestamp, in milliseconds, of the last update
+     */
+    protected long lastTime = -1;
 
     /**
      * A simple constructor requiring the necessary components
      *
      * @param controller The controller that will provide directions
-     * @param position The initial position of the ball
+     * @param position   The initial position of the ball
      */
     public BallDirectionFollower(Navigator.Controller controller, DPoint position) {
         this.controller = controller;
         this.position = position;
+        initialPosition = new DPoint(position.getDimensions());
+        initialPosition.set(position);
+    }
+
+    /**
+     * A method for notifying the ball follower that it has started
+     */
+    public void start() {
+        lastTime = System.currentTimeMillis();
     }
 
     /**
@@ -44,31 +63,56 @@ public class BallDirectionFollower implements Displayable {
      * @param graphics The object to display on
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
+
+        long now = System.currentTimeMillis();
+        long delta = now - lastTime;
 
         if (!arrowPressed()) {
+            if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
 
-            controller.update(position.clone());
-            DDirection direction = controller.getDirection();
-            DVector movement = direction.toVector();
-            movement.setMagnitude(movementLength);
-            position.add(movement);
+                controller.update(position.clone());
+                DDirection direction = controller.getDirection();
+                DVector movement = direction.toVector();
+                movement.setMagnitude(movementLength * delta);
+                position.add(movement);
+
+            } else {
+                lastTime = System.currentTimeMillis();
+            }
 
         } else {
+
             if (KeyBoardListener.get(KeyEvent.VK_LEFT)) {
-                position.add(graphics.xDim, -movementLength);
+                position.add(graphics.xDim, -movementLength * delta);
             }
             if (KeyBoardListener.get(KeyEvent.VK_RIGHT)) {
-                position.add(graphics.xDim, movementLength);
+                position.add(graphics.xDim, movementLength * delta);
             }
             if (KeyBoardListener.get(KeyEvent.VK_UP)) {
-                position.add(graphics.yDim, movementLength);
+                position.add(graphics.yDim, movementLength * delta);
             }
             if (KeyBoardListener.get(KeyEvent.VK_DOWN)) {
-                position.add(graphics.yDim, -movementLength);
+                position.add(graphics.yDim, -movementLength * delta);
             }
+
         }
 
+        lastTime = now;
+
+        if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
+            position.set(initialPosition);
+        }
+
+        paint(graphics);
+    }
+
+    /**
+     * A method for painting the follower
+     *
+     * @param graphics The object on which to paint
+     */
+    public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone());
     }
 

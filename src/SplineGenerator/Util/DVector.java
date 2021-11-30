@@ -1,8 +1,6 @@
 package SplineGenerator.Util;
 
-import SplineGenerator.GUI.SplineGraphics;
-
-import java.util.Arrays;
+import SplineGenerator.GUI.DisplayGraphics;
 
 /**
  * A class for holding a multidimensional vector
@@ -34,12 +32,25 @@ public class DVector extends DPoint {
      * @param p2 The second point
      */
     public DVector(DPoint p1, DPoint p2) {
-        p1 = p1.clone();
-        p2 = p2.clone();
         values = new double[p1.getDimensions()];
         for (int n = 0; n < p1.getDimensions() && n < p2.getDimensions(); n++) {
             values[n] = p2.get(n) - p1.get(n);
         }
+    }
+
+    /**
+     * A method for a setting the vector so that it can lie between the two given points.
+     *
+     * @param p1 The first point
+     * @param p2 The second point
+     */
+    public DVector set(DPoint p1, DPoint p2) {
+//        values = new double[p1.getDimensions()];
+        for (int n = 0; n < p1.getDimensions() && n < p2.getDimensions(); n++) {
+            values[n] = p2.get(n) - p1.get(n);
+        }
+
+        return this;
     }
 
     /**
@@ -112,12 +123,49 @@ public class DVector extends DPoint {
     }
 
     /**
+     * A method for getting the dot product of two vectors
+     *
+     * @param vector The other vector to be used in the dot product
+     * @return The result of the dot product between the two vectors
+     */
+    public double dot(DVector vector) {
+        double total = 0;
+        for (int i = 0; i < values.length && i < vector.getDimensions(); i++) {
+            total += values[i] * vector.get(i);
+        }
+
+        return total;
+    }
+
+    /**
+     * A method for getting the angle between this vector and the given vector
+     *
+     * @param vector The given vector
+     * @return The angle, in radians, between the vectors
+     */
+    public double getAngleBetween(DVector vector) {
+        return Math.acos((dot(vector)) / (getMagnitude() * vector.getMagnitude()));
+    }
+
+    /**
+     * A method for projecting this vector onto a given vector
+     *
+     * @param vector The vector to project this onto
+     * @return The resulting vector
+     */
+    public DVector projectOnto(DVector vector) {
+        double scalar = (dot(vector)) / (vector.getMagnitude() * vector.getMagnitude());
+        vector.multiplyAll(scalar);
+        return vector;
+    }
+
+    /**
      * A method for displaying the vector
      *
      * @param graphics What to display the vector on
      */
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
         graphics.paintVector(new DPosVector(values.length), this);
     }
 

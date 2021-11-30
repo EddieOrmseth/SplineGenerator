@@ -1,9 +1,7 @@
 package SplineGenerator.Util;
 
 import SplineGenerator.GUI.Displayable;
-import SplineGenerator.GUI.SplineGraphics;
-
-import java.util.Arrays;
+import SplineGenerator.GUI.DisplayGraphics;
 
 /**
  * A class for holding a multidimensional point
@@ -77,7 +75,7 @@ public class DPoint implements Displayable {
     }
 
     /**
-     * A method for all the values of the DPoint
+     * A method for copying all the values of the DPoint
      *
      * @param point The new value that is set
      */
@@ -219,7 +217,7 @@ public class DPoint implements Displayable {
     }
 
     @Override
-    public void display(SplineGraphics graphics) {
+    public void display(DisplayGraphics graphics) {
         graphics.paintPoint(this);
     }
 

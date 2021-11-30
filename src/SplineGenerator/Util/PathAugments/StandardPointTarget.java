@@ -6,11 +6,13 @@ import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * A class representing a simple point target
  */
-public class StandardPointTarget extends PathAugment implements Displayable {
+public class StandardPointTarget extends PathAugment implements Displayable, MouseListener {
 
     /**
      * The point for the target to draw to
@@ -27,6 +29,11 @@ public class StandardPointTarget extends PathAugment implements Displayable {
      */
     private double power;
 
+    private double xScale = 0;
+    private double yScale = 0;
+    private DPoint mousePoint;
+    private boolean newMousePoint = false;
+
     /**
      * A simple constructor that requires the position of the target
      *
@@ -40,6 +47,7 @@ public class StandardPointTarget extends PathAugment implements Displayable {
         this.targetPosition = targetPosition;
         this.coefficient = -coefficient;
         this.power = power;
+        mousePoint = new DPoint(dimensions);
     }
 
     /**
@@ -80,7 +88,54 @@ public class StandardPointTarget extends PathAugment implements Displayable {
      */
     @Override
     public void display(DisplayGraphics graphics) {
+
+        if (xScale == 0 && yScale == 0) {
+            DPoint p1 = new DPoint(0, 0);
+            DPoint p2 = new DPoint(1, 1);
+
+            graphics.translate(p1);
+            graphics.translate(p2);
+
+            xScale = p2.get(0) - p1.get(0);
+            yScale = p2.get(1) - p1.get(1);
+        }
+
+        if (newMousePoint) {
+            newMousePoint = false;
+            DPoint currentPoint = graphics.translate(targetPosition.clone());
+            DVector between = new DVector(currentPoint, mousePoint);
+            between.multiply(0, 1.0 / xScale);
+            between.multiply(1, 1.0 / yScale);
+            targetPosition.add(between);
+        }
+
         graphics.paintPoint(targetPosition.clone(), 0, 1, new Color(0, 0, 255), 14);
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        newMousePoint = true;
+        mousePoint.set(0, e.getX());
+        mousePoint.set(1, e.getY());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

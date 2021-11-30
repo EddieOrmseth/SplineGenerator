@@ -35,7 +35,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
         // */
 
-        // /* Figure 8
+         /* Figure 8
         spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(-Math.cos(Math.PI / 4), Math.sin(-Math.PI / 4)), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(10, -10)));
         spline.addControlPoint(new DControlPoint(new DVector(20, 0)));
@@ -46,43 +46,43 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0)));
         // */
 
-        spline.setPolynomicOrder(5);
-        spline.closed = true;
-
-        InterpolationInfo c1 = new InterpolationInfo();
-        c1.interpolationType = Spline.InterpolationType.Linked;
-        c1.endBehavior = Spline.EndBehavior.Hermite;
-        spline.interpolationTypes.add(c1);
-
-        InterpolationInfo c2 = new InterpolationInfo();
-        c2.interpolationType = Spline.InterpolationType.Linked;
-        c2.endBehavior = Spline.EndBehavior.Hermite;
-        spline.interpolationTypes.add(c2);
-
-        InterpolationInfo c3 = new InterpolationInfo();
-        c3.interpolationType = Spline.InterpolationType.Linked;
-        c3.endBehavior = Spline.EndBehavior.None;
-        spline.interpolationTypes.add(c3);
-
-        InterpolationInfo c4 = new InterpolationInfo();
-        c4.interpolationType = Spline.InterpolationType.Linked;
-        c4.endBehavior = Spline.EndBehavior.None;
-        spline.interpolationTypes.add(c4);
-
-        long startTimeGenerate = System.currentTimeMillis();
-        spline.generate();
-        long endTimeGenerate = System.currentTimeMillis();
-
-        System.out.println("Time to Generate: " + (endTimeGenerate - startTimeGenerate) + " milliseconds");
-
-        spline.takeNextDerivative();
-        spline.takeNextDerivative();
-
-        SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
-        display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
+//        spline.setPolynomicOrder(5);
+//        spline.closed = true;
+//
+//        InterpolationInfo c1 = new InterpolationInfo();
+//        c1.interpolationType = Spline.InterpolationType.Linked;
+//        c1.endBehavior = Spline.EndBehavior.Hermite;
+//        spline.interpolationTypes.add(c1);
+//
+//        InterpolationInfo c2 = new InterpolationInfo();
+//        c2.interpolationType = Spline.InterpolationType.Linked;
+//        c2.endBehavior = Spline.EndBehavior.Hermite;
+//        spline.interpolationTypes.add(c2);
+//
+//        InterpolationInfo c3 = new InterpolationInfo();
+//        c3.interpolationType = Spline.InterpolationType.Linked;
+//        c3.endBehavior = Spline.EndBehavior.None;
+//        spline.interpolationTypes.add(c3);
+//
+//        InterpolationInfo c4 = new InterpolationInfo();
+//        c4.interpolationType = Spline.InterpolationType.Linked;
+//        c4.endBehavior = Spline.EndBehavior.None;
+//        spline.interpolationTypes.add(c4);
+//
+//        long startTimeGenerate = System.currentTimeMillis();
+//        spline.generate();
+//        long endTimeGenerate = System.currentTimeMillis();
+//
+//        System.out.println("Time to Generate: " + (endTimeGenerate - startTimeGenerate) + " milliseconds");
+//
+//        spline.takeNextDerivative();
+//        spline.takeNextDerivative();
+//
+//        SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
+//        display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
         // */
 
-        // /* Segmenter
+         /* Segmenter
         Function<DVector, DVector> distanceModifier = variable -> {
             variable.multiplyAll(6);
             return variable;
@@ -187,7 +187,7 @@ public class Main {
 
 
 
-         /* Big Path PathFinder
+        // /* Big Path PathFinder
         Extrema extrema = new Extrema(new DPoint(-40, -20), new DPoint(35, 20));
         Display display = new Display(2, extrema, 0, 1, 1600, 700);
 
@@ -196,6 +196,7 @@ public class Main {
         StandardPointTarget target = new StandardPointTarget(2, new DPoint(-55, 0), 4, 1);
         pathFinder.setTarget(target);
         display.displayables.add(target);
+        display.addMouseListener(target);
 
 //        StreamPointObstacle obstacle0 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, -400, -1.5);
 //        pathFinder.addAugment(obstacle0);
@@ -204,7 +205,7 @@ public class Main {
         double pointStreamCoefficient = -400;
         double pointStreamPower = -1.5;
 
-        double circleStreamCoefficient = -350;
+        double circleStreamCoefficient = -500;
         double circleStreamPower = -1.5;
 
         double lineStreamCoefficient = -1500;

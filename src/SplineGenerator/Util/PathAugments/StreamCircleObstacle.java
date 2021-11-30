@@ -37,20 +37,26 @@ public class StreamCircleObstacle extends PathAugment implements Displayable {
     /**
      * The number to multiple the dot product of the vectorBetween and velocity vectors when setting the magnitude of orth
      */
-    private double streamDotCoefficient;
+    private double streamCoefficient;
+
+    /**
+     * The number to raise the distance of the vectorBetween to when finding the force of the orthogonal vector
+     */
+    private double streamPower;
 
     /**
      * A simple constructor that initializes the necessary objects
      *
      * @param dimensions The number of dimensions the PathAugment exists in
      */
-    public StreamCircleObstacle(int dimensions, DPoint position, double radius, double awayCoefficient, double awayPower, double streamDotCoefficient) {
+    public StreamCircleObstacle(int dimensions, DPoint position, double radius, double awayCoefficient, double awayPower, double streamCoefficient, double streamPower) {
         super(dimensions);
         this.obstacleCenter = position;
         this.radius = radius;
         this.awayCoefficient = awayCoefficient;
         this.awayPower = awayPower;
-        this.streamDotCoefficient = streamDotCoefficient;
+        this.streamCoefficient = streamCoefficient;
+        this.streamPower = streamPower;
         orthVector = new DVector(dimensions);
     }
 
@@ -66,19 +72,20 @@ public class StreamCircleObstacle extends PathAugment implements Displayable {
 
     @Override
     public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
-        effect.set(vectorBetween);
-        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
-
-        DVector realToTarget = toTarget.clone();
-        realToTarget.multiplyAll(-1);
-
-        if (vectorBetween.getAngleBetween(realToTarget) >= Math.PI / 2) {
-            PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, realToTarget, orthVector);
-            orthVector.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1.5)) * (vectorBetween.dot(realToTarget) / (vectorBetween.getMagnitude() * realToTarget.getMagnitude())) * streamDotCoefficient);
-            effect.add(orthVector);
-        }
-
-        return effect;
+//        effect.set(vectorBetween);
+//        effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
+//
+//        DVector realToTarget = toTarget.clone();
+//        realToTarget.multiplyAll(-1);
+//
+//        if (vectorBetween.getAngleBetween(realToTarget) >= Math.PI / 2) {
+//            PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, realToTarget, orthVector);
+//            orthVector.setMagnitude((Math.pow(vectorBetween.getMagnitude(), -1.5)) * (vectorBetween.dot(realToTarget) / (vectorBetween.getMagnitude() * realToTarget.getMagnitude())) * streamCoefficient);
+//            effect.add(orthVector);
+//        }
+//
+//        return effect;
+        return PathAugmentFunctions.GetEffect.getEffectStandardStream(vectorBetween, toTarget, orthVector, effect, awayCoefficient, awayPower, streamCoefficient, streamPower);
     }
 
     @Override

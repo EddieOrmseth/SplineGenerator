@@ -1,8 +1,10 @@
 package SplineGenerator.Util.PathAugments;
 
+import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
-import SplineGenerator.Util.MultivariableFunctions.FourVariableFunction;
+
+import java.awt.event.KeyEvent;
 
 /**
  * A utility class for holding useful Functions
@@ -54,6 +56,15 @@ public final class PathAugmentFunctions {
             return result.set(point, object);
         }
 
+        /**
+         * A method for getting the vector between a point and a circular object
+         *
+         * @param circleCenter The center of the circle
+         * @param radius       The radius of the circle
+         * @param object       The position of the object
+         * @param result       The vector between the given object position and the circular object
+         * @return The result vector
+         */
         public static DVector getVectorBetweenCircularObjectAndObject(DPoint circleCenter, double radius, DPoint object, DVector result) {
             result = getVectorBetweenPointAndObject(circleCenter, object, result);
             if (result.getMagnitude() > radius) {
@@ -61,6 +72,42 @@ public final class PathAugmentFunctions {
             } else {
                 result.setMagnitude(radius - result.getMagnitude());
             }
+            return result;
+        }
+
+        /**
+         * A method for getting the vector between a line segment and a given object
+         *
+         * @param p1     The first point defining the line segment
+         * @param p2     The second point defining the line segment
+         * @param line   The vector from the first point to the second
+         * @param object The position at which to get the vector between
+         * @param result The vector between the point and the line
+         * @return The result vector
+         */
+        public static DVector getVectorBetweenLineSegmentAndObject(DPoint p1, DPoint p2, DVector line, DPoint object, DVector result) {
+
+            result.set(p1, object);
+            double thetaP1 = line.getAngleBetween(result);
+            if (thetaP1 > Math.PI / 2.0) {
+                return result;
+            }
+
+            result.set(p2, object);
+            double thetaP2 = line.getAngleBetween(result);
+            if (thetaP2 < Math.PI / 2.0) {
+                return result;
+            }
+
+            if (KeyBoardListener.get(KeyEvent.VK_F)) {
+                int cat = 12;
+            }
+
+            result.projectOnto(line);
+            result.set(line, result);
+
+            line.set(p1, p2);
+
             return result;
         }
 
@@ -86,13 +133,40 @@ public final class PathAugmentFunctions {
          * @param dimensions  The number of dimensions the obstacle is in
          * @return The resulting effect of the Function
          */
-        public static FourVariableFunction<DVector, DVector, DPoint, DVector, DVector> getDirectSingleTermPolynomialDistanceFunction(double coefficient, double power, int dimensions) {
-            DVector effect = new DVector(dimensions);
-            return (vectorBetween, toTarget, position, velocity) -> {
-                effect.set(vectorBetween);
-                effect.setMagnitude(coefficient * Math.pow(vectorBetween.getMagnitude(), power));
-                return effect;
-            };
+        public static DVector getEffectDirectSingleTermPolynomialDistanceFunction(DVector vectorBetween, DVector effect, double coefficient, double power, int dimensions) {
+            effect.set(vectorBetween);
+            effect.setMagnitude(coefficient * Math.pow(vectorBetween.getMagnitude(), power));
+            return effect;
+        }
+
+        /**
+         * A method for getting a the effect of a standard stream implementation from the given information
+         *
+         * @param vectorBetween        The vector between the objects
+         * @param toTarget             The vector pointing to the target
+         * @param orth                 The vector that will be used to hold the orthogonal vector
+         * @param effect               The final effect of the algorithm
+         * @param awayCoefficient      The coefficient used to find the directly away force
+         * @param awayPower            The power used to find the directly away force
+         * @param streamDotCoefficient The coefficient used to find the orthogonal force
+         * @param streamDistPower      The power used to find the orthogonal force
+         * @return The final effect of this stream implementation
+         */
+        public static DVector getEffectStandardStream(DVector vectorBetween, DVector toTarget, DVector orth, DVector effect, double awayCoefficient, double awayPower, double streamDotCoefficient, double streamDistPower) {
+            effect.set(vectorBetween);
+            effect.setMagnitude(PathAugmentFunctions.Util.getSingleTermPolynomialAmplification(vectorBetween.getMagnitude(), awayCoefficient, awayPower));
+
+            toTarget.multiplyAll(-1);
+
+            if (vectorBetween.getAngleBetween(toTarget) >= Math.PI / 2.0) {
+                PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, toTarget, orth);
+                orth.setMagnitude((Math.pow(vectorBetween.getMagnitude(), streamDistPower)) * (vectorBetween.dot(toTarget) / (vectorBetween.getMagnitude() * toTarget.getMagnitude())) * streamDotCoefficient);
+                effect.add(orth);
+            }
+
+            toTarget.multiplyAll(-1);
+
+            return effect;
         }
 
     }

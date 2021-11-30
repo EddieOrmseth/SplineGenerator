@@ -45,7 +45,7 @@ public class DVector extends DPoint {
      * @param p2 The second point
      */
     public DVector set(DPoint p1, DPoint p2) {
-        values = new double[p1.getDimensions()];
+//        values = new double[p1.getDimensions()];
         for (int n = 0; n < p1.getDimensions() && n < p2.getDimensions(); n++) {
             values[n] = p2.get(n) - p1.get(n);
         }

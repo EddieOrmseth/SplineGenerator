@@ -71,16 +71,11 @@ public class BallDirectionFollower implements Displayable {
         if (!arrowPressed()) {
             if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
 
-
-
-                System.out.println("Delta: " + delta);
-
                 controller.update(position.clone());
                 DDirection direction = controller.getDirection();
                 DVector movement = direction.toVector();
                 movement.setMagnitude(movementLength * delta);
                 position.add(movement);
-
 
             } else {
                 lastTime = System.currentTimeMillis();

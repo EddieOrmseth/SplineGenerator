@@ -204,7 +204,7 @@ public class Main {
         double circleStreamPower = -1.5;
 
         double lineStreamCoefficient = -1500;
-        double lineStreamPower = -1.1;
+        double lineStreamPower = -1.5;
 
          /* Big Mess 1
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(10, 4), 200, -3, pointStreamCoefficient, pointStreamPower);
@@ -342,7 +342,6 @@ public class Main {
         StreamPolygonObstacle triangleThing = new StreamPolygonObstacle(2, 200, -3, lineStreamCoefficient, lineStreamPower, new DPoint(8, 18), new DPoint(-3, 8), new DPoint(-14, 18));
         pathFinder.addAugment(triangleThing);
         display.displayables.add(triangleThing);
-
 
         // /* End Field 1
 

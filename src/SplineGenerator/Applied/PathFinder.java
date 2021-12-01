@@ -3,6 +3,7 @@ package SplineGenerator.Applied;
 import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
+import SplineGenerator.Util.Extrema;
 import SplineGenerator.Util.PathAugments.PathAugment;
 
 import java.util.ArrayList;
@@ -114,6 +115,21 @@ public class PathFinder implements Navigator {
      */
     public int getDimensions() {
         return dimensions;
+    }
+
+    public Space<DDirection> getPrecomputedField(Extrema bounds, double spaceStep) {
+        return getPrecomputedField(new Space<>(bounds, spaceStep));
+    }
+
+    public Space<DDirection> getPrecomputedField(Space<DDirection> space) {
+        DPoint point = new DPoint(space.getDimensions());
+        DVector velocity = new DVector(space.getDimensions());
+        for (int i = 0; i < space.size(); i++) {
+            point = space.indexToPoint(i, point);
+            space.set(i, getDirection(point, velocity));
+        }
+
+        return space;
     }
 
     /**

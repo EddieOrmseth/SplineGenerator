@@ -50,7 +50,7 @@ public class DisplayGraphics {
     /**
      * The length to draw each vector
      */
-    private double vectorLength = 25;
+    private double vectorLength = 20;
 
     /**
      * The ration from vectorLength to the desired arrow length
@@ -65,7 +65,7 @@ public class DisplayGraphics {
     /**
      * The width of the vector
      */
-    private int lineWidth = 3;
+    private int lineWidth = 2;
 
     /**
      * A simple constructor requiring the object to be painted on

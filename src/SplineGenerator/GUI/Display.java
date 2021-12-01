@@ -59,7 +59,7 @@ public class Display extends JFrame {
     /**
      * The amount to step by when drawing on the grid, in the scale of the spline
      */
-    protected double onGridStep = .748;
+    protected double onGridStep = 1.2;
 
     /**
      * The displayables that are dependant on the location in the plane

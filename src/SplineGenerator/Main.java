@@ -1,6 +1,7 @@
 package SplineGenerator;
 
 import SplineGenerator.Applied.PathFinder;
+import SplineGenerator.Applied.Space;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Util.*;
@@ -185,6 +186,7 @@ public class Main {
         // /* Big Path PathFinder
         Extrema extrema = new Extrema(new DPoint(-40, -20), new DPoint(35, 20));
         Display display = new Display(2, extrema, 0, 1, 1600, 700);
+        display.onGridBoundaries = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
 
         PathFinder pathFinder = new PathFinder(2);
 
@@ -192,6 +194,8 @@ public class Main {
         pathFinder.setTarget(target);
         display.displayables.add(target);
         display.addMouseListener(target);
+
+        // X: (-55, 35) Y: (-18, 18)
 
 //        StreamPointObstacle obstacle0 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, -400, -1.5);
 //        pathFinder.addAugment(obstacle0);
@@ -206,7 +210,7 @@ public class Main {
         double lineStreamCoefficient = -1500;
         double lineStreamPower = -1.5;
 
-         /* Big Mess 1
+        // /* Big Mess 1
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(10, 4), 200, -3, pointStreamCoefficient, pointStreamPower);
         pathFinder.addAugment(obstacle1);
         display.displayables.add(obstacle1);
@@ -304,7 +308,7 @@ public class Main {
 //        pathFinder.addAugment(line1);
 //        display.displayables.add(line1);
 
-        // /* Field 1
+         /* Field 1
 //        Extrema extrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20)); Size of place
         DPoint cornerTL = new DPoint(-50, 18);
         DPoint cornerTR = new DPoint(28, 18);
@@ -345,23 +349,40 @@ public class Main {
 
         // /* End Field 1
 
-//        int numLines = 50;
-//        Function<Integer, Color> colorFunction = i -> {
-//            double kB = i / (double) numLines;
-//            double kR = 1 - kB;
-//            return new Color((int) (kR * 255), 0, (int) (kB * 255));
-//        };
-//        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(35, 20), new DPoint(35, -20), numLines, colorFunction, 3, .1, 0, 1);
-//        display.displayables.add(lines);
-//
-//        lines.start();
+          */
+
+        int numLines = 50;
+        Function<Integer, Color> colorFunction = i -> {
+            double kB = i / (double) numLines;
+            double kR = 1 - kB;
+            return new Color((int) (kR * 255), 0, (int) (kB * 255));
+        };
+        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(35, 20), new DPoint(35, -20), numLines, colorFunction, 3, .1, 0, 1);
+        display.displayables.add(lines);
 
         BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(20, 1));
         display.displayables.add(ballFollower);
 
-        ballFollower.start();
 
-         // */
+        // X: (-55, 35) Y: (-18, 18)
+        Extrema preCompExtrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
+        Space<DDirection> space = pathFinder.getPrecomputedField(preCompExtrema, .1);
+
+        DVector velocity = new DVector(2);
+        display.onGridDisplayables.add(gridPoint -> {
+//            int cat = 12;
+//           if (!space.isOutOfBounds(gridPoint)) {
+//               return new DPosVector(gridPoint.clone(), space.get(gridPoint.clone()).clone());
+//           } else {
+//               return new DPosVector(gridPoint.clone(), new DVector(space.getDimensions()));
+//           }
+            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
+        });
+
+//        ballFollower.start();
+        lines.start();
+
+        // */
 
         display.display();
 

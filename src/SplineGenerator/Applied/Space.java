@@ -105,8 +105,16 @@ public class Space<T> {
      * @return The DPoint that the index represents
      */
     public DPoint indexToPoint(int index) {
-        DPoint point = new DPoint(bounds.getDimensions());
+        return indexToPoint(index, new DPoint(getDimensions()));
+    }
 
+    /**
+     * A method for getting the DPoint that an index represents
+     *
+     * @param index The index to find the DPoint for
+     * @return The DPoint that the index represents
+     */
+    public DPoint indexToPoint(int index, DPoint point) {
         int remaining = index;
 
         int subDimensionVolume;

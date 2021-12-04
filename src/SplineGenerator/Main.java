@@ -1,9 +1,11 @@
 package SplineGenerator;
 
 import SplineGenerator.Applied.PathFinder;
+import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.Applied.Space;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
+import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 import SplineGenerator.Util.PathAugments.*;
 
@@ -42,40 +44,41 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0)));
         // */
 
-//        spline.setPolynomicOrder(5);
-//        spline.closed = true;
-//
-//        InterpolationInfo c1 = new InterpolationInfo();
-//        c1.interpolationType = Spline.InterpolationType.Linked;
-//        c1.endBehavior = Spline.EndBehavior.Hermite;
-//        spline.interpolationTypes.add(c1);
-//
-//        InterpolationInfo c2 = new InterpolationInfo();
-//        c2.interpolationType = Spline.InterpolationType.Linked;
-//        c2.endBehavior = Spline.EndBehavior.Hermite;
-//        spline.interpolationTypes.add(c2);
-//
-//        InterpolationInfo c3 = new InterpolationInfo();
-//        c3.interpolationType = Spline.InterpolationType.Linked;
-//        c3.endBehavior = Spline.EndBehavior.None;
-//        spline.interpolationTypes.add(c3);
-//
-//        InterpolationInfo c4 = new InterpolationInfo();
-//        c4.interpolationType = Spline.InterpolationType.Linked;
-//        c4.endBehavior = Spline.EndBehavior.None;
-//        spline.interpolationTypes.add(c4);
-//
-//        long startTimeGenerate = System.currentTimeMillis();
-//        spline.generate();
-//        long endTimeGenerate = System.currentTimeMillis();
-//
-//        System.out.println("Time to Generate: " + (endTimeGenerate - startTimeGenerate) + " milliseconds");
-//
-//        spline.takeNextDerivative();
-//        spline.takeNextDerivative();
-//
-//        SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
-//        display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
+         /* Spline Stuff
+        spline.setPolynomicOrder(5);
+        spline.closed = true;
+
+        InterpolationInfo c1 = new InterpolationInfo();
+        c1.interpolationType = Spline.InterpolationType.Linked;
+        c1.endBehavior = Spline.EndBehavior.Hermite;
+        spline.interpolationTypes.add(c1);
+
+        InterpolationInfo c2 = new InterpolationInfo();
+        c2.interpolationType = Spline.InterpolationType.Linked;
+        c2.endBehavior = Spline.EndBehavior.Hermite;
+        spline.interpolationTypes.add(c2);
+
+        InterpolationInfo c3 = new InterpolationInfo();
+        c3.interpolationType = Spline.InterpolationType.Linked;
+        c3.endBehavior = Spline.EndBehavior.None;
+        spline.interpolationTypes.add(c3);
+
+        InterpolationInfo c4 = new InterpolationInfo();
+        c4.interpolationType = Spline.InterpolationType.Linked;
+        c4.endBehavior = Spline.EndBehavior.None;
+        spline.interpolationTypes.add(c4);
+
+        long startTimeGenerate = System.currentTimeMillis();
+        spline.generate();
+        long endTimeGenerate = System.currentTimeMillis();
+
+        System.out.println("Time to Generate: " + (endTimeGenerate - startTimeGenerate) + " milliseconds");
+
+        spline.takeNextDerivative();
+        spline.takeNextDerivative();
+
+        SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
+        display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
         // */
 
          /* Segmenter
@@ -126,63 +129,6 @@ public class Main {
         });
         // */
 
-         /* PathFinderV2
-        Extrema extrema = new Extrema(new DPoint(-12, -12), new DPoint(12, 12));
-        Display display = new Display(2, extrema, 0, 1, 1600, 700);
-        PathFinderV2 pathFinder = new PathFinderV2(2);
-
-        StandardPointTarget target = new StandardPointTarget(2, new DPoint(-15, -10), 4, 1);
-        pathFinder.setTarget(target);
-        display.displayables.add(target);
-
-//        StreamPointObstacle obstacle0 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, -200);
-//        pathFinder.addAugment(obstacle0);
-//        display.displayables.add(obstacle0);
-//
-        StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(2, 4), 200, -3, -200);
-        pathFinder.addAugment(obstacle1);
-        display.displayables.add(obstacle1);
-
-        StreamPointObstacle obstacle2 = new StreamPointObstacle(2, new DPoint(0, -1), 200, -3, -200);
-        pathFinder.addAugment(obstacle2);
-        display.displayables.add(obstacle2);
-
-        StreamPointObstacle obstacle3 = new StreamPointObstacle(2, new DPoint(0, 3), 200, -3, -200);
-        pathFinder.addAugment(obstacle3);
-        display.displayables.add(obstacle3);
-
-//        StreamCircleObstacle circle0 = new StreamCircleObstacle(2, new DPoint(0, 0), 3,200, -3, -250);
-//        pathFinder.addAugment(circle0);
-//        display.displayables.add(circle0);
-
-//        BallDirectionFollower ballDirectionFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(15, 10));
-//        display.displayables.add(ballDirectionFollower);
-
-        int numLines = 50;
-        Function<Integer, Color> colorFunction = i -> {
-            double kB = i / (double) numLines;
-            double kR = 1 - kB;
-            return new Color((int) (kR * 255), 0, (int) (kB * 255));
-//            return new Color(255, 255, 255);
-        };
-//        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(13, 12), new DPoint(17, 8), numLines, colorFunction, 3, .1, 0, 1);
-//        display.displayables.add(lines);
-
-        LineOfLineDirectionFollowers linesLots = new LineOfLineDirectionFollowers(pathFinder, new DPoint(4, 15), new DPoint(16, 3), numLines, colorFunction, 3, .1, 0, 1);
-        display.displayables.add(linesLots);
-
-         /*
-        display.onGridDisplayables.add(gridPoint -> {
-
-        });
-        // */
-
-//        ballDirectionFollower.start();
-//        lines.start();
-//        linesLots.start();
-
-
-
         // /* Big Path PathFinder
         Extrema extrema = new Extrema(new DPoint(-40, -20), new DPoint(35, 20));
         Display display = new Display(2, extrema, 0, 1, 1600, 700);
@@ -194,6 +140,7 @@ public class Main {
         pathFinder.setTarget(target);
         display.displayables.add(target);
         display.addMouseListener(target);
+        // */
 
         // X: (-55, 35) Y: (-18, 18)
 
@@ -207,10 +154,10 @@ public class Main {
         double circleStreamCoefficient = -500;
         double circleStreamPower = -1.5;
 
-        double lineStreamCoefficient = -1500;
+        double lineStreamCoefficient = -800;
         double lineStreamPower = -1.5;
 
-        // /* Big Mess 1
+         /* Big Mess 1
         StreamPointObstacle obstacle1 = new StreamPointObstacle(2, new DPoint(10, 4), 200, -3, pointStreamCoefficient, pointStreamPower);
         pathFinder.addAugment(obstacle1);
         display.displayables.add(obstacle1);
@@ -321,11 +268,6 @@ public class Main {
         display.displayables.add(box);
 
         // Center Thing
-
-//        StreamCircleObstacle c0 = new StreamCircleObstacle(2, new DPoint(-11, 0), .75,200, -3, circleStreamCoefficient, circleStreamPower);
-//        pathFinder.addAugment(c0);
-//        display.displayables.add(c0);
-
         StreamCircleObstacle c1 = new StreamCircleObstacle(2, new DPoint(-19, -8), .75,200, -3, circleStreamCoefficient, circleStreamPower);
         pathFinder.addAugment(c1);
         display.displayables.add(c1);
@@ -333,10 +275,6 @@ public class Main {
         StreamCircleObstacle c2 = new StreamCircleObstacle(2, new DPoint(-22, 3), .75,200, -3, circleStreamCoefficient, circleStreamPower);
         pathFinder.addAugment(c2);
         display.displayables.add(c2);
-
-//        StreamCircleObstacle c3 = new StreamCircleObstacle(2, new DPoint(-3, 8), .75,200, -3, circleStreamCoefficient, circleStreamPower);
-//        pathFinder.addAugment(c3);
-//        display.displayables.add(c3);
 
         StreamCircleObstacle c4 = new StreamCircleObstacle(2, new DPoint(0, -3), .75,200, -3, circleStreamCoefficient, circleStreamPower);
         pathFinder.addAugment(c4);
@@ -346,11 +284,9 @@ public class Main {
         StreamPolygonObstacle triangleThing = new StreamPolygonObstacle(2, 200, -3, lineStreamCoefficient, lineStreamPower, new DPoint(8, 18), new DPoint(-3, 8), new DPoint(-14, 18));
         pathFinder.addAugment(triangleThing);
         display.displayables.add(triangleThing);
+        // */ // End Field 1
 
-        // /* End Field 1
-
-          */
-
+         /* LineOfLineDirectionFollowers
         int numLines = 50;
         Function<Integer, Color> colorFunction = i -> {
             double kB = i / (double) numLines;
@@ -359,30 +295,39 @@ public class Main {
         };
         LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(35, 20), new DPoint(35, -20), numLines, colorFunction, 3, .1, 0, 1);
         display.displayables.add(lines);
+        // */ // End LineOfLineDirectionFollowers
 
+        // /* Line Motion Testing
+        StreamLineObstacle basicLine = new StreamLineObstacle(new DPoint(-20, 8), new DPoint(-2, -8),200, -3, lineStreamCoefficient, lineStreamPower);
+        pathFinder.addAugment(basicLine);
+        display.displayables.add(basicLine);
+        // */ //
+
+        // /* // BallDirectionFollower
         BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(20, 1));
         display.displayables.add(ballFollower);
+        // */ // End BallDirectionFollower
 
 
+        // /* Display Of PathFinder
         // X: (-55, 35) Y: (-18, 18)
         Extrema preCompExtrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
-        Space<DDirection> space = pathFinder.getPrecomputedField(preCompExtrema, .1);
+        Space<DVector> space = pathFinder.getPrecomputedField(preCompExtrema, .1);
 
         DVector velocity = new DVector(2);
-        display.onGridDisplayables.add(gridPoint -> {
-//            int cat = 12;
+//        display.onGridDisplayables.add(gridPoint -> {
 //           if (!space.isOutOfBounds(gridPoint)) {
 //               return new DPosVector(gridPoint.clone(), space.get(gridPoint.clone()).clone());
 //           } else {
 //               return new DPosVector(gridPoint.clone(), new DVector(space.getDimensions()));
 //           }
-            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
-        });
+//            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
+//        });
+        // */ // End Display Of PathFinder
 
-//        ballFollower.start();
-        lines.start();
+//        lines.start();
+        ballFollower.start();
 
-        // */
 
         display.display();
 

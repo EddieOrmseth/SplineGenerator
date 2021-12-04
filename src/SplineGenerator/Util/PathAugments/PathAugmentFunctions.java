@@ -111,10 +111,43 @@ public final class PathAugmentFunctions {
             return result;
         }
 
+        /**
+         * A method for getting the vector between a line segment and a given object
+         *
+         * @param p1     The first point defining the line segment
+         * @param p2     The second point defining the line segment
+         * @param line   The vector from the first point to the second
+         * @param object The position at which to get the vector between
+         * @param result The vector between the point and the line
+         * @return The result vector
+         */
+        public static boolean getVectorBetweenLineSegmentAndObject(DPoint p1, DPoint p2, DVector line, DPoint object, DVector result, boolean between) {
+
+            result.set(p1, object);
+            if (line.dot(result) < 0) {
+//                return result;
+                return false;
+            }
+
+            result.set(p2, object);
+            if (line.dot(result) > 0) {
+//                return result;
+                return false;
+            }
+
+            result.projectOnto(line);
+            result.set(line, result);
+
+            line.set(p1, p2);
+
+//            return result;
+            return true;
+        }
+
     }
 
     /**
-     * A class for holding teh getEffect Functions
+     * A class for holding the getEffect Functions
      */
     public static final class GetEffect {
 

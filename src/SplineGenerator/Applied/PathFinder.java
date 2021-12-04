@@ -81,7 +81,7 @@ public class PathFinder implements Navigator {
      * @param velocity The velocity of the object
      * @return The DVector caused by the position, velocity, and PathAugments
      */
-    public DDirection getDirection(DPoint position, DVector velocity) {
+    public DVector getDirection(DPoint position, DVector velocity) {
         DVector finalEffect = new DVector(position.getDimensions());
         DVector toTarget = target.getVectorBetween(position);
         toTarget.multiplyAll(-1);
@@ -117,11 +117,11 @@ public class PathFinder implements Navigator {
         return dimensions;
     }
 
-    public Space<DDirection> getPrecomputedField(Extrema bounds, double spaceStep) {
+    public Space<DVector> getPrecomputedField(Extrema bounds, double spaceStep) {
         return getPrecomputedField(new Space<>(bounds, spaceStep));
     }
 
-    public Space<DDirection> getPrecomputedField(Space<DDirection> space) {
+    public Space<DVector> getPrecomputedField(Space<DVector> space) {
         DPoint point = new DPoint(space.getDimensions());
         DVector velocity = new DVector(space.getDimensions());
         for (int i = 0; i < space.size(); i++) {
@@ -194,7 +194,7 @@ public class PathFinder implements Navigator {
          * @return The direction to be followed
          */
         @Override
-        public DDirection getDirection() {
+        public DVector getVector() {
             return pathFinder.getDirection(position, velocity);
         }
     }

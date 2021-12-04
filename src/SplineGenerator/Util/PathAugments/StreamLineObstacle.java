@@ -80,35 +80,36 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
 
     @Override
     public DVector getVectorBetween(DPoint point) {
-//        return PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(p1, p2, lineSegment, point, vectorBetween);
-
-
-        vectorBetween.set(p1, point);
-        double thetaP1 = lineSegment.getAngleBetween(vectorBetween);
-        if (thetaP1 > Math.PI / 2.0) {
-            useDot = true;
-            return vectorBetween;
-        }
-
-        vectorBetween.set(p2, point);
-        double thetaP2 = lineSegment.getAngleBetween(vectorBetween);
-        if (thetaP2 < Math.PI / 2.0) {
-            useDot = true;
-            return vectorBetween;
-        }
-
-        useDot = false;
-
-        if (KeyBoardListener.get(KeyEvent.VK_F)) {
-            int cat = 12;
-        }
-
-        vectorBetween.projectOnto(lineSegment);
-        vectorBetween.set(lineSegment, vectorBetween);
-
-        lineSegment.set(p1, p2);
-
+        useDot = PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(p1, p2, lineSegment, point, vectorBetween, useDot);
+        System.out.println(point + "\n" + useDot);
         return vectorBetween;
+
+//        vectorBetween.set(p1, point);
+//        double thetaP1 = lineSegment.getAngleBetween(vectorBetween);
+//        if (thetaP1 > Math.PI / 2.0) {
+//            useDot = true;
+//            return vectorBetween;
+//        }
+//
+//        vectorBetween.set(p2, point);
+//        double thetaP2 = lineSegment.getAngleBetween(vectorBetween);
+//        if (thetaP2 < Math.PI / 2.0) {
+//            useDot = true;
+//            return vectorBetween;
+//        }
+//
+//        useDot = false;
+//
+//        if (KeyBoardListener.get(KeyEvent.VK_F)) {
+//            int cat = 12;
+//        }
+//
+//        vectorBetween.projectOnto(lineSegment);
+//        vectorBetween.set(lineSegment, vectorBetween);
+//
+//        lineSegment.set(p1, p2);
+//
+//        return vectorBetween;
     }
 
     @Override
@@ -143,5 +144,10 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
     @Override
     public void display(DisplayGraphics graphics) {
         graphics.paintLine(p1.clone(), p2.clone(), 3, color, 0, 1);
+        if (useDot) {
+            graphics.getGraphics().drawString("Using Dot Product: true", 100, 100);
+        } else {
+            graphics.getGraphics().drawString("Using Dot Product: false", 100, 100);
+        }
     }
 }

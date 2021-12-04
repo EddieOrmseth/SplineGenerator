@@ -26,7 +26,7 @@ public class FollowerGradient implements Navigator {
     /**
      * A DDirection[] for holding the directions at each point in the space that the spline exists in
      */
-    private DDirection[] followerGradient;
+    private DVector[] followerGradient;
 
     /**
      * The Extrema object for holding the bounds of the GradientFollower
@@ -146,7 +146,7 @@ public class FollowerGradient implements Navigator {
             totalPoints *= (int) arrayLengths.get(n);
         }
 
-        followerGradient = new DDirection[totalPoints];
+        followerGradient = new DVector[totalPoints];
     }
 
     /**
@@ -213,9 +213,9 @@ public class FollowerGradient implements Navigator {
      * @param point The point at which to get the DDirection
      * @return The DDirection at the given point
      */
-    public DDirection getDirection(DPoint point) {
+    public DVector getDirection(DPoint point) {
         if (isOutOfBounds(point)) {
-            return new DDirection(spline.getDimensions());
+            return new DVector(spline.getDimensions());
         }
         return followerGradient[pointToIndex(point)];
     }
@@ -280,7 +280,7 @@ public class FollowerGradient implements Navigator {
          * @return The DDirection at the specified point
          */
         @Override
-        public DDirection getDirection() {
+        public DVector getVector() {
             return followerGradient.getDirection(point.clone());
         }
 

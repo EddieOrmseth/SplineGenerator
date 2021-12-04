@@ -44,6 +44,13 @@ public interface Navigator {
             return 0;
         }
 
+        /**
+         * A method that can be used to tell if the controller has completed the navigation
+         *
+         * @return Whether or not the controlled object has reached the end of the navigation
+         */
+        public abstract boolean isFinished();
+
     }
 
 }

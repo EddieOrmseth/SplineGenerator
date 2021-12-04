@@ -100,7 +100,7 @@ public class StreamPolygonObstacle extends PathAugment implements Displayable {
         toTarget.multiplyAll(-1);
 
         if (vectorBetween.getAngleBetween(toTarget) >= Math.PI / 2.0) {
-            System.out.println("useDot: " + useDot);
+//            System.out.println("useDot: " + useDot);
             PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, toTarget, orthVector);
             if (useDot) {
                 orthVector.setMagnitude((Math.pow(vectorBetween.getMagnitude(), streamPower)) * (vectorBetween.dot(toTarget) / (vectorBetween.getMagnitude() * toTarget.getMagnitude())) * streamCoefficient);

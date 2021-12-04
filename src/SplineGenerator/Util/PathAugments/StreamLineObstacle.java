@@ -81,7 +81,7 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
     @Override
     public DVector getVectorBetween(DPoint point) {
         useDot = PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(p1, p2, lineSegment, point, vectorBetween, useDot);
-        System.out.println(point + "\n" + useDot);
+//        System.out.println(point + "\n" + useDot);
         return vectorBetween;
 
 //        vectorBetween.set(p1, point);

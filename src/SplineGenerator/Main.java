@@ -308,21 +308,20 @@ public class Main {
         display.displayables.add(ballFollower);
         // */ // End BallDirectionFollower
 
-
         // /* Display Of PathFinder
         // X: (-55, 35) Y: (-18, 18)
         Extrema preCompExtrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
         Space<DVector> space = pathFinder.getPrecomputedField(preCompExtrema, .1);
 
         DVector velocity = new DVector(2);
-//        display.onGridDisplayables.add(gridPoint -> {
+        display.onGridDisplayables.add(gridPoint -> {
 //           if (!space.isOutOfBounds(gridPoint)) {
 //               return new DPosVector(gridPoint.clone(), space.get(gridPoint.clone()).clone());
 //           } else {
 //               return new DPosVector(gridPoint.clone(), new DVector(space.getDimensions()));
 //           }
-//            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
-//        });
+            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
+        });
         // */ // End Display Of PathFinder
 
 //        lines.start();

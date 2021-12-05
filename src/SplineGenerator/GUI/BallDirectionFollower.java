@@ -1,6 +1,7 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Applied.Navigator;
+import SplineGenerator.Applied.VelocityController;
 import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
@@ -36,6 +37,8 @@ public class BallDirectionFollower implements Displayable {
      * The timestamp, in milliseconds, of the last update
      */
     protected long lastTime = -1;
+
+    public VelocityController velocityController;
 
     /**
      * A simple constructor requiring the necessary components
@@ -73,8 +76,10 @@ public class BallDirectionFollower implements Displayable {
 
                 controller.update(position.clone());
                 DVector direction = controller.getVector();
+//                velocityController.update(direction.toDirection());
                 DVector movement = direction.toVector();
                 movement.setMagnitude(movementLength * delta);
+//                movement.setMagnitude(velocityController.getVelocity());
                 position.add(movement);
 
             } else {

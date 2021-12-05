@@ -3,6 +3,7 @@ package SplineGenerator;
 import SplineGenerator.Applied.PathFinder;
 import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.Applied.Space;
+import SplineGenerator.Applied.VelocityController;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
@@ -17,9 +18,26 @@ public class Main {
 
         KeyBoardListener.initialize();
 
+//        DVector translation = new DVector(3, -2);
+//        System.out.println("Initial Translation: " + translation);
+//
+//        DVector TLRotation = new DVector(-1, -1);
+//        DVector TRRotation = new DVector(-1, 1);
+//        DVector BRRotation = new DVector(1, 1);
+//        DVector BLRotation = new DVector(1, -1);
+//
+//        TLRotation.add(translation);
+//        TRRotation.add(translation);
+//        BRRotation.add(translation);
+//        BLRotation.add(translation);
+//
+//        DVector result = new DVector(0, 0);
+//        result.add(TLRotation).add(TRRotation).add(BRRotation).add(BLRotation).multiplyAll(.25);
+//        System.out.println("Result: " + result);
+
         PolynomicSpline spline = new PolynomicSpline(2);
 
-         /* Crazy Shit
+        // /* Crazy Shit
         spline.addControlPoint(new DControlPoint(new DVector(9, 1), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(3, 3)));
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10)));
@@ -44,7 +62,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0)));
         // */
 
-         /* Spline Stuff
+        // /* Spline Stuff
         spline.setPolynomicOrder(5);
         spline.closed = true;
 
@@ -81,7 +99,7 @@ public class Main {
         display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
         // */
 
-         /* Segmenter
+        // /* Segmenter
         Function<DVector, DVector> distanceModifier = variable -> {
             variable.multiplyAll(6);
             return variable;
@@ -102,7 +120,9 @@ public class Main {
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
         Segmenter.Controller ballController = resolver.getController();
+//        VelocityController velocityController = new VelocityController(2, null, .02,.005, .001, 0);
         BallDirectionFollower ball = new BallDirectionFollower(ballController, new DPoint(0, 0));
+//        ball.velocityController = velocityController;
         display.displayables.add(ball);
 
         display.onGridDisplayables.add(gridPoint -> {
@@ -121,7 +141,7 @@ public class Main {
         ball.start();
         // */
 
-         /* Display the derivative on the spline
+        // /* Display the derivative on the spline
         display.onSplineDisplayables.add(tValue -> {
             DPoint point = spline.get(tValue);
             DVector derivative = spline.evaluateDerivative(tValue, 1);
@@ -129,7 +149,7 @@ public class Main {
         });
         // */
 
-        // /* Big Path PathFinder
+         /* Big Path PathFinder
         Extrema extrema = new Extrema(new DPoint(-40, -20), new DPoint(35, 20));
         Display display = new Display(2, extrema, 0, 1, 1600, 700);
         display.onGridBoundaries = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
@@ -297,36 +317,37 @@ public class Main {
         display.displayables.add(lines);
         // */ // End LineOfLineDirectionFollowers
 
-        // /* Line Motion Testing
+         /* Line Motion Testing
         StreamLineObstacle basicLine = new StreamLineObstacle(new DPoint(-20, 8), new DPoint(-2, -8),200, -3, lineStreamCoefficient, lineStreamPower);
         pathFinder.addAugment(basicLine);
         display.displayables.add(basicLine);
         // */ //
 
-        // /* // BallDirectionFollower
-        BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(20, 1));
+         /* // BallDirectionFollower
+        VelocityController velocityController = new VelocityController(2, null, .2,.05, .01, 0);
+        BallDirectionFollower ballFollower = new BallDirectionFollower(resolver.getController(), new DPoint(20, 1));
+        ballFollower.velocityController = velocityController;
         display.displayables.add(ballFollower);
         // */ // End BallDirectionFollower
 
         // /* Display Of PathFinder
         // X: (-55, 35) Y: (-18, 18)
-        Extrema preCompExtrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
-        Space<DVector> space = pathFinder.getPrecomputedField(preCompExtrema, .1);
+//        Extrema preCompExtrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
+//        Space<DVector> space = pathFinder.getPrecomputedField(preCompExtrema, .1);
 
-        DVector velocity = new DVector(2);
-        display.onGridDisplayables.add(gridPoint -> {
+//        DVector velocity = new DVector(2);
+//        display.onGridDisplayables.add(gridPoint -> {
 //           if (!space.isOutOfBounds(gridPoint)) {
 //               return new DPosVector(gridPoint.clone(), space.get(gridPoint.clone()).clone());
 //           } else {
 //               return new DPosVector(gridPoint.clone(), new DVector(space.getDimensions()));
 //           }
-            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
-        });
+//            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
+//        });
         // */ // End Display Of PathFinder
 
 //        lines.start();
-        ballFollower.start();
-
+        ball.start();
 
         display.display();
 

@@ -18,22 +18,24 @@ public class Main {
 
         KeyBoardListener.initialize();
 
-//        DVector translation = new DVector(3, -2);
-//        System.out.println("Initial Translation: " + translation);
-//
-//        DVector TLRotation = new DVector(-1, -1);
-//        DVector TRRotation = new DVector(-1, 1);
-//        DVector BRRotation = new DVector(1, 1);
-//        DVector BLRotation = new DVector(1, -1);
-//
-//        TLRotation.add(translation);
-//        TRRotation.add(translation);
-//        BRRotation.add(translation);
-//        BLRotation.add(translation);
-//
-//        DVector result = new DVector(0, 0);
-//        result.add(TLRotation).add(TRRotation).add(BRRotation).add(BLRotation).multiplyAll(.25);
-//        System.out.println("Result: " + result);
+        DVector translation = new DVector(3, -2);
+        System.out.println("Initial Translation: " + translation);
+
+        DVector TLRotation = new DVector(-1, -1);
+        DVector TRRotation = new DVector(-1, 1);
+        DVector BRRotation = new DVector(1, 1);
+        DVector BLRotation = new DVector(1, -1);
+
+        TLRotation.add(translation);
+        TRRotation.add(translation);
+        BRRotation.add(translation);
+        BLRotation.add(translation);
+
+        DVector result = new DVector(0, 0);
+        result.add(TLRotation).add(TRRotation).add(BRRotation).add(BLRotation).multiplyAll(.25);
+        System.out.println("Result: " + result);
+
+        int cat = 120;
 
         PolynomicSpline spline = new PolynomicSpline(2);
 
@@ -120,9 +122,9 @@ public class Main {
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
         Segmenter.Controller ballController = resolver.getController();
-//        VelocityController velocityController = new VelocityController(2, null, .02,.005, .001, 0);
+        VelocityController velocityController = new VelocityController(2, null, .3,.05, .01, 0);
         BallDirectionFollower ball = new BallDirectionFollower(ballController, new DPoint(0, 0));
-//        ball.velocityController = velocityController;
+        ball.velocityController = velocityController;
         display.displayables.add(ball);
 
         display.onGridDisplayables.add(gridPoint -> {
@@ -353,6 +355,11 @@ public class Main {
 
         while (true) {
             display.repaint();
+            try {
+                Thread.sleep(5);
+            } catch (Exception e) {
+
+            }
         }
     }
 

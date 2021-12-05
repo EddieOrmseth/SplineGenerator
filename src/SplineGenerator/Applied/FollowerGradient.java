@@ -26,7 +26,7 @@ public class FollowerGradient implements Navigator {
     /**
      * A DDirection[] for holding the directions at each point in the space that the spline exists in
      */
-    private DVector[] followerGradient;
+    private DDirection[] followerGradient;
 
     /**
      * The Extrema object for holding the bounds of the GradientFollower
@@ -146,7 +146,7 @@ public class FollowerGradient implements Navigator {
             totalPoints *= (int) arrayLengths.get(n);
         }
 
-        followerGradient = new DVector[totalPoints];
+        followerGradient = new DDirection[totalPoints];
     }
 
     /**
@@ -213,9 +213,9 @@ public class FollowerGradient implements Navigator {
      * @param point The point at which to get the DDirection
      * @return The DDirection at the given point
      */
-    public DVector getDirection(DPoint point) {
+    public DDirection getDirection(DPoint point) {
         if (isOutOfBounds(point)) {
-            return new DVector(spline.getDimensions());
+            return new DDirection(spline.getDimensions());
         }
         return followerGradient[pointToIndex(point)];
     }
@@ -280,18 +280,8 @@ public class FollowerGradient implements Navigator {
          * @return The DDirection at the specified point
          */
         @Override
-        public DVector getVector() {
+        public DDirection getDirection() {
             return followerGradient.getDirection(point.clone());
-        }
-
-        /**
-         * A method that can be used to tell if the controller has completed the navigation
-         *
-         * @return Whether or not the controlled object has reached the end of the navigation
-         */
-        @Override
-        public boolean isFinished() {
-            return false;
         }
 
     }

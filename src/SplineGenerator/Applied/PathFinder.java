@@ -165,11 +165,6 @@ public class PathFinder implements Navigator {
         public DVector velocity;
 
         /**
-         * The threshold for the object to be considered at the end of the path
-         */
-        private double distThreshForFinish;
-
-        /**
          * A simple constructor for a controller that follows the pathfinder
          *
          * @param pathFinder
@@ -179,7 +174,6 @@ public class PathFinder implements Navigator {
             position = new DPoint(pathFinder.getDimensions());
             previousPosition = new DPoint(pathFinder.getDimensions());
             velocity = new DVector(pathFinder.getDimensions());
-            distThreshForFinish = 1;
         }
 
         /**
@@ -200,28 +194,9 @@ public class PathFinder implements Navigator {
          * @return The direction to be followed
          */
         @Override
-        public DVector getVector() {
-            return pathFinder.getDirection(position, velocity);
+        public DDirection getDirection() {
+            return pathFinder.getDirection(position, velocity).toDirection();
         }
-
-        /**
-         * A method that can be used to tell if the controller has completed the navigation
-         *
-         * @return Whether or not the controlled object has reached the end of the navigation
-         */
-        public boolean isFinished() {
-            return pathFinder.getTarget().getVectorBetween(position).getMagnitude() < distThreshForFinish;
-        }
-
-        /**
-         * A method for setting the distance threshold for the navigation being complete
-         *
-         * @param distThreshForFinish The new threshold
-         */
-        public void setDistThreshForFinish(double distThreshForFinish) {
-            this.distThreshForFinish = distThreshForFinish;
-        }
-
     }
 
 }

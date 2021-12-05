@@ -1,7 +1,7 @@
 package SplineGenerator.Applied;
 
+import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.DVector;
 
 /**
  * An interface for things that can provide navigation
@@ -32,7 +32,7 @@ public interface Navigator {
          *
          * @return The direction in the form a unit vector
          */
-        public abstract DVector getVector();
+        public abstract DDirection getDirection();
 
         /**
          * The velocity at that specified point
@@ -42,13 +42,6 @@ public interface Navigator {
         public double getVelocity() {
             return 0;
         }
-
-        /**
-         * A method that can be used to tell if the controller has completed the navigation
-         *
-         * @return Whether or not the controlled object has reached the end of the navigation
-         */
-        public abstract boolean isFinished();
 
     }
 

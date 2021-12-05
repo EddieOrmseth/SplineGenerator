@@ -276,7 +276,7 @@ public class Segmenter implements Navigator {
      * @param point The point in space INCLUDING the time as the last dimension
      * @return The point in space, the final dimension will be the time
      */
-    public DVector getDirection(DPoint point) {
+    public DDirection getDirection(DPoint point) {
         DPoint position = point.clone();
         position.removeDimension(position.getDimensions() - 1);
 
@@ -299,11 +299,11 @@ public class Segmenter implements Navigator {
         DVector derivative = gradientModifier.get(spline.evaluateDerivative(timeDirection.times[segment], 1));
         distance.add(derivative);
 
-        DVector vector = distance.toDirection();
-        vector.addDimensions(1);
-        vector.set(vector.getDimensions() - 1, timeDirection.times[segment]);
+        DDirection direction = distance.toDirection();
+        direction.addDimensions(1);
+        direction.forceSet(direction.getDimensions() - 1, timeDirection.times[segment]);
 
-        return vector;
+        return direction;
     }
 
     /**
@@ -366,11 +366,6 @@ public class Segmenter implements Navigator {
         public int segment;
 
         /**
-         * The threshold for the object to be considered at the end of the path
-         */
-        private double distThreshForFinish;
-
-        /**
          * A constructor, all the Controller needs is the Segmenter to follow
          *
          * @param segmenter The Segmenter to follow
@@ -378,7 +373,6 @@ public class Segmenter implements Navigator {
         private Controller(Segmenter segmenter) {
             this.segmenter = segmenter;
             segmentGetter = segmenter.getTimeDirection();
-            distThreshForFinish = 1;
         }
 
         /**
@@ -400,12 +394,12 @@ public class Segmenter implements Navigator {
          * @return The DDirection at the specified point
          */
         @Override
-        public DVector getVector() {
+        public DDirection getDirection() {
             DPoint timePoint = point.clone();
             timePoint.addDimensions(1);
             timePoint.set(timePoint.getDimensions() - 1, tValue);
 
-            DVector direction = segmenter.getDirection(timePoint);
+            DDirection direction = segmenter.getDirection(timePoint);
 
             tValue = direction.get(direction.getDimensions() - 1);
             segment = segmentGetter.tToSegment(tValue);
@@ -413,28 +407,6 @@ public class Segmenter implements Navigator {
             direction.removeDimension(direction.getDimensions() - 1);
             return direction;
         }
-
-        /**
-         * A method that can be used to tell if the controller has completed the navigation
-         *
-         * @return Whether or not the controlled object has reached the end of the navigation
-         */
-        @Override
-        public boolean isFinished() {
-            boolean splineDist = Math.abs(tValue - spline.getNumPieces()) < .1;
-            boolean planeDist = (spline.isClosed() ? spline.controlPoints.get(0) : spline.controlPoints.get(spline.controlPoints.size() - 1)).values.get(0).getDistance(point) < distThreshForFinish;
-            return splineDist && planeDist;
-        }
-
-        /**
-         * A method for setting the distance threshold for the navigation being complete
-         *
-         * @param distThreshForFinish The new threshold
-         */
-        public void setDistThreshForFinish(double distThreshForFinish) {
-            this.distThreshForFinish = distThreshForFinish;
-        }
-
     }
 
 }

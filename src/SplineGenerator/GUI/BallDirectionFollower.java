@@ -75,11 +75,11 @@ public class BallDirectionFollower implements Displayable {
             if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
 
                 controller.update(position.clone());
-                DVector direction = controller.getVector();
-//                velocityController.update(direction.toDirection());
-                DVector movement = direction.toVector();
-                movement.setMagnitude(movementLength * delta);
-//                movement.setMagnitude(velocityController.getVelocity());
+                DVector direction = controller.getDirection();
+                velocityController.update(direction);
+                DVector movement = direction.clone();
+//                movement.setMagnitude(movementLength * delta);
+                movement.setMagnitude(velocityController.getVelocity() * .5);
                 position.add(movement);
 
             } else {
@@ -119,6 +119,9 @@ public class BallDirectionFollower implements Displayable {
      */
     public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone());
+        graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
+        graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
+        graphics.getGraphics().drawString("Angle: " + velocityController.getAngle(), 100, 200);
     }
 
     /**

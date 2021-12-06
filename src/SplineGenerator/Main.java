@@ -39,7 +39,7 @@ public class Main {
 
         PolynomicSpline spline = new PolynomicSpline(2);
 
-        // /* Crazy Shit
+         /* Crazy Shit
         spline.addControlPoint(new DControlPoint(new DVector(9, 1), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(3, 3)));
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10)));
@@ -64,7 +64,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0)));
         // */
 
-        // /* Spline Stuff
+         /* Spline Stuff
         spline.setPolynomicOrder(5);
         spline.closed = true;
 
@@ -101,7 +101,7 @@ public class Main {
         display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
         // */
 
-        // /* Segmenter
+         /* Segmenter
         Function<DVector, DVector> distanceModifier = variable -> {
             variable.multiplyAll(6);
             return variable;
@@ -143,7 +143,7 @@ public class Main {
         ball.start();
         // */
 
-        // /* Display the derivative on the spline
+         /* Display the derivative on the spline
         display.onSplineDisplayables.add(tValue -> {
             DPoint point = spline.get(tValue);
             DVector derivative = spline.evaluateDerivative(tValue, 1);
@@ -151,7 +151,7 @@ public class Main {
         });
         // */
 
-         /* Big Path PathFinder
+        // /* Big Path PathFinder
         Extrema extrema = new Extrema(new DPoint(-40, -20), new DPoint(35, 20));
         Display display = new Display(2, extrema, 0, 1, 1600, 700);
         display.onGridBoundaries = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
@@ -277,7 +277,7 @@ public class Main {
 //        pathFinder.addAugment(line1);
 //        display.displayables.add(line1);
 
-         /* Field 1
+        // /* Field 1
 //        Extrema extrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20)); Size of place
         DPoint cornerTL = new DPoint(-50, 18);
         DPoint cornerTR = new DPoint(28, 18);
@@ -325,9 +325,9 @@ public class Main {
         display.displayables.add(basicLine);
         // */ //
 
-         /* // BallDirectionFollower
-        VelocityController velocityController = new VelocityController(2, null, .2,.05, .01, 0);
-        BallDirectionFollower ballFollower = new BallDirectionFollower(resolver.getController(), new DPoint(20, 1));
+        // /* // BallDirectionFollower
+        VelocityController velocityController = new VelocityController(2, null, .3,.05, .01, 0);
+        BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(20, 1));
         ballFollower.velocityController = velocityController;
         display.displayables.add(ballFollower);
         // */ // End BallDirectionFollower
@@ -349,7 +349,7 @@ public class Main {
         // */ // End Display Of PathFinder
 
 //        lines.start();
-        ball.start();
+        ballFollower.start();
 
         display.display();
 

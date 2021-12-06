@@ -35,9 +35,9 @@ public class VelocityController {
 
     public void update(DVector currentDirection) {
 
-//        if (currentDirection.equals(lastDirection)) {
-//            return;
-//        }
+        if (currentDirection.equals(lastDirection)) {
+            return;
+        }
 //
 //        if (KeyBoardListener.get(KeyEvent.VK_F)) {
 //            int cat = 12;
@@ -65,8 +65,17 @@ public class VelocityController {
 //        lastDirection.set(currentDirection);
 
         double diff = currentDirection.getMagnitude() - lastDirection.getMagnitude();
-        currentVelocity += diff * 100;
+        currentVelocity += diff * 10;
+        if (diff < 0) {
+            System.out.println("\n\n\nSlowing Down\n\n\n");
+            accelerating = false;
+        } else {
+            accelerating = true;
+        }
+
         lastDirection.set(currentDirection);
+
+        accelerating = diff > 0;
 
         if (currentVelocity >= maximumVelocity) {
             currentVelocity = maximumVelocity;

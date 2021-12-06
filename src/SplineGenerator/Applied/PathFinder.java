@@ -105,7 +105,7 @@ public class PathFinder implements Navigator {
             }
         }
 
-        return finalEffect.toDirection();
+        return finalEffect;
     }
 
     /**
@@ -194,8 +194,8 @@ public class PathFinder implements Navigator {
          * @return The direction to be followed
          */
         @Override
-        public DDirection getDirection() {
-            return pathFinder.getDirection(position, velocity).toDirection();
+        public DVector getDirection() {
+            return pathFinder.getDirection(position, velocity);
         }
     }
 

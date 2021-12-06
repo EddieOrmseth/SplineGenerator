@@ -276,7 +276,7 @@ public class Segmenter implements Navigator {
      * @param point The point in space INCLUDING the time as the last dimension
      * @return The point in space, the final dimension will be the time
      */
-    public DDirection getDirection(DPoint point) {
+    public DVector getDirection(DPoint point) {
         DPoint position = point.clone();
         position.removeDimension(position.getDimensions() - 1);
 
@@ -299,9 +299,9 @@ public class Segmenter implements Navigator {
         DVector derivative = gradientModifier.get(spline.evaluateDerivative(timeDirection.times[segment], 1));
         distance.add(derivative);
 
-        DDirection direction = distance.toDirection();
+        DVector direction = distance.clone();
         direction.addDimensions(1);
-        direction.forceSet(direction.getDimensions() - 1, timeDirection.times[segment]);
+        direction.set(direction.getDimensions() - 1, timeDirection.times[segment]);
 
         return direction;
     }
@@ -394,17 +394,18 @@ public class Segmenter implements Navigator {
          * @return The DDirection at the specified point
          */
         @Override
-        public DDirection getDirection() {
+        public DVector getDirection() {
             DPoint timePoint = point.clone();
             timePoint.addDimensions(1);
             timePoint.set(timePoint.getDimensions() - 1, tValue);
 
-            DDirection direction = segmenter.getDirection(timePoint);
+            DVector direction = segmenter.getDirection(timePoint);
 
             tValue = direction.get(direction.getDimensions() - 1);
             segment = segmentGetter.tToSegment(tValue);
 
             direction.removeDimension(direction.getDimensions() - 1);
+
             return direction;
         }
     }

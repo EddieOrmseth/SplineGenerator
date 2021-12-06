@@ -39,6 +39,7 @@ public class BallDirectionFollower implements Displayable {
     protected long lastTime = -1;
 
     public VelocityController velocityController;
+    private DVector lastMovement;
 
     /**
      * A simple constructor requiring the necessary components
@@ -51,6 +52,7 @@ public class BallDirectionFollower implements Displayable {
         this.position = position;
         initialPosition = new DPoint(position.getDimensions());
         initialPosition.set(position);
+        lastMovement = new DVector(position.getDimensions());
     }
 
     /**
@@ -76,6 +78,10 @@ public class BallDirectionFollower implements Displayable {
 
                 controller.update(position.clone());
                 DVector direction = controller.getDirection();
+                lastMovement.set(direction);
+
+                System.out.println("Magnitude: " + direction.getMagnitude());
+
                 velocityController.update(direction);
                 DVector movement = direction.clone();
 //                movement.setMagnitude(movementLength * delta);
@@ -119,6 +125,7 @@ public class BallDirectionFollower implements Displayable {
      */
     public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone());
+        graphics.paintVector(position.clone(), lastMovement);
         graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
         graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
         graphics.getGraphics().drawString("Angle: " + velocityController.getAngle(), 100, 200);

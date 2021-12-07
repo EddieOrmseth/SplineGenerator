@@ -1,16 +1,13 @@
 package SplineGenerator.Applied;
 
-import SplineGenerator.GUI.KeyBoardListener;
+import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.DDirection;
-import SplineGenerator.Util.DPosVector;
 import SplineGenerator.Util.DVector;
-
-import java.awt.event.KeyEvent;
 
 public class VelocityController {
 
     private int dimensions;
-    private Navigator.Controller controller;
+    private Segmenter.Controller controller;
 
     private double maximumVelocity;
     private double minimumVelocity;
@@ -23,7 +20,20 @@ public class VelocityController {
 
     private DVector lastDirection;
 
-    public VelocityController(int dimensions, Navigator.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
+    private double prevMag = 0;
+
+    private double maxDerivMag;
+    private double minDerivMag;
+
+    private double multiplier;
+
+    private double maxPercentBound = .3;
+    private double minPercentBound = .2;
+
+    private double percentMaxDerivMag;
+    private double percentMinDerivMag;
+
+    public VelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
         this.dimensions = dimensions;
         this.controller = controller;
         this.maximumVelocity = maximumVelocity;
@@ -31,6 +41,26 @@ public class VelocityController {
         this.maximumAcceleration = maximumAcceleration;
         this.currentVelocity = currentVelocity;
         lastDirection = new DDirection(dimensions);
+
+        Spline spline = controller.getSpline();
+
+        maxDerivMag = Double.MIN_VALUE;
+        minDerivMag = Double.MAX_VALUE;
+        double value;
+
+        for (double i = 0; i < spline.getNumPieces(); i += .01) {
+            value = spline.evaluateDerivative(i, 1).getMagnitude();
+            if (value > maxDerivMag) {
+                maxDerivMag = value;
+            } else if (value < minDerivMag) {
+                minDerivMag = value;
+            }
+        }
+
+        double velDiff = maximumVelocity - minimumVelocity;
+        double derivDiff = maxDerivMag - minDerivMag;
+        multiplier = velDiff / derivDiff;
+
     }
 
     public void update(DVector currentDirection) {
@@ -38,44 +68,26 @@ public class VelocityController {
         if (currentDirection.equals(lastDirection)) {
             return;
         }
-//
-//        if (KeyBoardListener.get(KeyEvent.VK_F)) {
-//            int cat = 12;
-//        }
-//
-//        double acceleration = lastDirection.dot(currentDirection) - accelerateThresh;
-//        newAngle = lastDirection.getAngleBetween(currentDirection);
-//        if (acceleration > 0) {
-//            acceleration = acceleration / (1.0 - accelerateThresh);
+
+        // Works Okay
+//        double mag = controller.getSpline().evaluateDerivative(controller.getTValue(), 1).getMagnitude();
+//        if (mag > prevMag) {
+//            currentVelocity += maximumAcceleration * 1.8 * (Math.abs(mag - prevMag));
 //            accelerating = true;
 //        } else {
-//            acceleration = acceleration / accelerateThresh * 30;
+//            currentVelocity -= maximumAcceleration * .9 * (Math.abs(mag - prevMag));
 //            accelerating = false;
 //        }
-//        acceleration *= maximumAcceleration;
-//        if (acceleration > maximumAcceleration) {
-//            acceleration = maximumAcceleration;
-//        }
-//        currentVelocity += acceleration;
+//        prevMag = mag;
+//
 //        if (currentVelocity >= maximumVelocity) {
 //            currentVelocity = maximumVelocity;
 //        } else if (currentVelocity < minimumVelocity) {
 //            currentVelocity = minimumVelocity;
 //        }
-//        lastDirection.set(currentDirection);
 
-        double diff = currentDirection.getMagnitude() - lastDirection.getMagnitude();
-        currentVelocity += diff * 10;
-        if (diff < 0) {
-            System.out.println("\n\n\nSlowing Down\n\n\n");
-            accelerating = false;
-        } else {
-            accelerating = true;
-        }
-
-        lastDirection.set(currentDirection);
-
-        accelerating = diff > 0;
+        double deriv = controller.getSpline().evaluateDerivative(controller.getTValue(),1).getMagnitude();
+        currentVelocity = minimumVelocity + deriv * multiplier;
 
         if (currentVelocity >= maximumVelocity) {
             currentVelocity = maximumVelocity;

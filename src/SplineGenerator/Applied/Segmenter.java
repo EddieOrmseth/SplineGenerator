@@ -408,6 +408,15 @@ public class Segmenter implements Navigator {
 
             return direction;
         }
+
+        public double getTValue() {
+            return tValue;
+        }
+
+        public Spline getSpline() {
+            return segmenter.spline;
+        }
+
     }
 
 }

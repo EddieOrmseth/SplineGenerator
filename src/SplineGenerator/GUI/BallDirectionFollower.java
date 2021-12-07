@@ -128,7 +128,6 @@ public class BallDirectionFollower implements Displayable {
         graphics.paintVector(position.clone(), lastMovement);
         graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
         graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
-        graphics.getGraphics().drawString("Angle: " + velocityController.getAngle(), 100, 200);
     }
 
     /**

@@ -4,7 +4,7 @@ import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DVector;
 
-public class SimpleVelocityController implements VelocityController {
+public class ComplexVelocityController implements VelocityController {
 
     private int dimensions;
     private Segmenter.Controller controller;
@@ -23,7 +23,13 @@ public class SimpleVelocityController implements VelocityController {
 
     private double multiplier;
 
-    public SimpleVelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
+    private double maxPercentBound = 0.4;
+    private double minPercentBound = 0.1;
+
+    private double percentMaxDerivMag;
+    private double percentMinDerivMag;
+
+    public ComplexVelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
         this.dimensions = dimensions;
         this.controller = controller;
         this.maximumVelocity = maximumVelocity;
@@ -48,8 +54,15 @@ public class SimpleVelocityController implements VelocityController {
         }
 
         double velDiff = maximumVelocity - minimumVelocity;
+
         double derivDiff = maxDerivMag - minDerivMag;
-        multiplier = velDiff / derivDiff;
+        percentMaxDerivMag = maxDerivMag - derivDiff * maxPercentBound;
+        percentMinDerivMag = minDerivMag + derivDiff * minPercentBound;
+
+//        double derivDiff = maxDerivMag - minDerivMag;
+        double percentDerivDiff = percentMaxDerivMag - percentMinDerivMag;
+
+        multiplier = velDiff / percentDerivDiff;
 
         System.out.println("Max Deriv Mag: " + maxDerivMag);
         System.out.println("Min Deriv Mag: " + minDerivMag);
@@ -64,7 +77,7 @@ public class SimpleVelocityController implements VelocityController {
         }
 
         double deriv = controller.getSpline().evaluateDerivative(controller.getTValue(),1).getMagnitude();
-        currentVelocity = minimumVelocity + (deriv - minDerivMag) * multiplier;
+        currentVelocity = minimumVelocity + (deriv - percentMinDerivMag) * multiplier;
 
         if (currentVelocity >= maximumVelocity) {
             currentVelocity = maximumVelocity;

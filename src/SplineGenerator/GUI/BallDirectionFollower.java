@@ -2,9 +2,11 @@ package SplineGenerator.GUI;
 
 import SplineGenerator.Applied.Navigator;
 import SplineGenerator.Applied.SimpleVelocityController;
+import SplineGenerator.Applied.VelocityController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
@@ -37,7 +39,9 @@ public class BallDirectionFollower implements Displayable {
      */
     protected long lastTime = -1;
 
-    public SimpleVelocityController velocityController;
+    public Color color = new Color(255, 255, 255);
+
+    public VelocityController velocityController;
     private DVector lastMovement;
 
     /**
@@ -84,7 +88,7 @@ public class BallDirectionFollower implements Displayable {
                 velocityController.update(direction);
                 DVector movement = direction.clone();
 //                movement.setMagnitude(movementLength * delta);
-                movement.setMagnitude(velocityController.getVelocity() * .5);
+                movement.setMagnitude(velocityController.getVelocity() * delta);
                 position.add(movement);
 
             } else {
@@ -123,10 +127,10 @@ public class BallDirectionFollower implements Displayable {
      * @param graphics The object on which to paint
      */
     public void paint(DisplayGraphics graphics) {
-        graphics.paintPoint(position.clone());
+        graphics.paintPoint(position.clone(), 0, 1, color);
         graphics.paintVector(position.clone(), lastMovement);
         graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
-        graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
+//        graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
     }
 
     /**

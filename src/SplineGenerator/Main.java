@@ -2,10 +2,13 @@ package SplineGenerator;
 
 import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.Applied.SimpleVelocityController;
+import SplineGenerator.Applied.ComplexVelocityController;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
+
+import java.awt.*;
 
 public class Main {
 
@@ -46,6 +49,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 5)));
         spline.addControlPoint(new DControlPoint(new DVector(-7, 9)));
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
+//        spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(0, 0), new DDirection(Math.cos(0), Math.sin(0))));
         // */
 
          /* Figure 8
@@ -116,14 +120,35 @@ public class Main {
 
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
-        Segmenter.Controller ballController = resolver.getController();
-        SimpleVelocityController velocityController = new SimpleVelocityController(2, ballController, .3,.05, .01, 0);
-        BallDirectionFollower ballFollower = new BallDirectionFollower(ballController, new DPoint(0, 0));
-        ballFollower.velocityController = velocityController;
-        display.displayables.add(ballFollower);
+        Segmenter.Controller ballController0 = resolver.getController();
+        SimpleVelocityController velocityController0 = new SimpleVelocityController(2, ballController0, .015,.005, .01, 0);
+        BallDirectionFollower ballFollower0 = new BallDirectionFollower(ballController0, new DPoint(0, 0));
+        ballFollower0.color = new Color(193, 98, 98);
+        ballFollower0.velocityController = velocityController0;
+        display.displayables.add(ballFollower0);
+
+        Segmenter.Controller ballController1 = resolver.getController();
+        ComplexVelocityController velocityController1 = new ComplexVelocityController(2, ballController1, .015,.005, .01, 0);
+        BallDirectionFollower ballFollower1 = new BallDirectionFollower(ballController1, new DPoint(0, 0));
+        ballFollower1.color = new Color(105, 105, 239);
+        ballFollower1.velocityController = velocityController1;
+        display.displayables.add(ballFollower1);
 
         display.onGridDisplayables.add(gridPoint -> {
-            int segment = ballController.segment;
+            int segment = ballController0.segment;
+            if (segment != -1) {
+                DVector vector = resolver.get(gridPoint.clone()).get(segment);
+                if (vector != null) {
+                    return new DPosVector(gridPoint.clone(), vector);
+                } else {
+                    return new DVector(gridPoint.getDimensions());
+                }
+            }
+            return new DVector(gridPoint.getDimensions());
+        });
+
+        display.onGridDisplayables.add(gridPoint -> {
+            int segment = ballController1.segment;
             if (segment != -1) {
                 DVector vector = resolver.get(gridPoint.clone()).get(segment);
                 if (vector != null) {
@@ -343,7 +368,8 @@ public class Main {
         // */ // End Display Of PathFinder
 
 //        lines.start();
-        ballFollower.start();
+        ballFollower0.start();
+        ballFollower1.start();
 
         display.display();
 

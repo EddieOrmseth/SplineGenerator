@@ -4,7 +4,7 @@ import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DVector;
 
-public class VelocityController {
+public class SimpleVelocityController {
 
     private int dimensions;
     private Segmenter.Controller controller;
@@ -14,26 +14,16 @@ public class VelocityController {
     private double maximumAcceleration;
     private double currentVelocity;
 
-    private double accelerateThresh = .999999999999999999999;
     private boolean accelerating = false;
-    private double newAngle;
 
     private DVector lastDirection;
-
-    private double prevMag = 0;
 
     private double maxDerivMag;
     private double minDerivMag;
 
     private double multiplier;
 
-    private double maxPercentBound = .3;
-    private double minPercentBound = .2;
-
-    private double percentMaxDerivMag;
-    private double percentMinDerivMag;
-
-    public VelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
+    public SimpleVelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
         this.dimensions = dimensions;
         this.controller = controller;
         this.maximumVelocity = maximumVelocity;
@@ -102,10 +92,6 @@ public class VelocityController {
 
     public boolean isAccelerating() {
         return accelerating;
-    }
-
-    public double getAngle() {
-        return newAngle;
     }
 
     public void setVelocity(double velocity) {

@@ -1,8 +1,7 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Applied.Navigator;
-import SplineGenerator.Applied.VelocityController;
-import SplineGenerator.Util.DDirection;
+import SplineGenerator.Applied.SimpleVelocityController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -38,7 +37,7 @@ public class BallDirectionFollower implements Displayable {
      */
     protected long lastTime = -1;
 
-    public VelocityController velocityController;
+    public SimpleVelocityController velocityController;
     private DVector lastMovement;
 
     /**

@@ -1,16 +1,11 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.PathFinder;
 import SplineGenerator.Applied.Segmenter;
-import SplineGenerator.Applied.Space;
-import SplineGenerator.Applied.VelocityController;
+import SplineGenerator.Applied.SimpleVelocityController;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
-import SplineGenerator.Util.PathAugments.*;
-
-import java.awt.*;
 
 public class Main {
 
@@ -122,7 +117,7 @@ public class Main {
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
         Segmenter.Controller ballController = resolver.getController();
-        VelocityController velocityController = new VelocityController(2, ballController, .3,.05, .01, 0);
+        SimpleVelocityController velocityController = new SimpleVelocityController(2, ballController, .3,.05, .01, 0);
         BallDirectionFollower ballFollower = new BallDirectionFollower(ballController, new DPoint(0, 0));
         ballFollower.velocityController = velocityController;
         display.displayables.add(ballFollower);

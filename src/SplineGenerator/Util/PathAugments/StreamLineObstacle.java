@@ -9,6 +9,9 @@ import SplineGenerator.Util.DVector;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+/**
+ * A class for representing a line that can be smoothly moved around
+ */
 public class StreamLineObstacle extends PathAugment implements Displayable {
 
     /**
@@ -73,11 +76,25 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
         orthVector = new DVector(p1.getDimensions());
     }
 
+    /**
+     * A method for determining weather or not to use this PathAugment
+     *
+     * @param toTarget The vector pointing from the object to the target
+     * @param position The position of the object
+     * @param velocity The velocity of the object
+     * @return true if this PathAugment should be used, false otherwise
+     */
     @Override
     public boolean skipAugment(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
         return vectorBetween.getMagnitude() > toTarget.getMagnitude();
     }
 
+    /**
+     * A method for getting the vector between the given DPoint and PathAugment. The vector shall point form the PathAugment to the DPoint
+     *
+     * @param point The given point
+     * @return The DVector between the PathAugment and the given point
+     */
     @Override
     public DVector getVectorBetween(DPoint point) {
         useDot = PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(p1, p2, lineSegment, point, vectorBetween, useDot);
@@ -112,6 +129,15 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
 //        return vectorBetween;
     }
 
+    /**
+     * A method for getting the effect of the PathAugment
+     *
+     * @param vectorBetween The vector from the PathAugment to the object
+     * @param toTarget      The vector form the object to the target
+     * @param position      The position of the object
+     * @param velocity      The velocity of the object
+     * @return The effect of the PathAugment on the object
+     */
     @Override
     public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
 //        return PathAugmentFunctions.GetEffect.getEffectStandardStream(vectorBetween, toTarget, orthVector, effect, awayCoefficient, awayPower, streamCoefficient, streamPower);
@@ -136,11 +162,26 @@ public class StreamLineObstacle extends PathAugment implements Displayable {
         return effect;
     }
 
+    /**
+     * A method for determining weather or not to use the effect of this PathAugment
+     *
+     * @param vectorBetween The vector from the PathAugment to object
+     * @param toTarget      The vector from the object to the target
+     * @param effect        The effect of the PathAugment
+     * @param position      The position of the object
+     * @param velocity      The velocity of the object
+     * @return true if the effect should be used, false otherwise
+     */
     @Override
     public boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity) {
         return false;
     }
 
+    /**
+     * A method for displaying the target on the screen
+     *
+     * @param graphics The object to display on
+     */
     @Override
     public void display(DisplayGraphics graphics) {
         graphics.paintLine(p1.clone(), p2.clone(), 3, color, 0, 1);

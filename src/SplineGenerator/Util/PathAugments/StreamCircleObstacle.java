@@ -7,6 +7,9 @@ import SplineGenerator.Util.DVector;
 
 import java.awt.*;
 
+/**
+ * A class representing a circle that can be effectively moved around
+ */
 public class StreamCircleObstacle extends PathAugment implements Displayable {
 
     /**
@@ -60,16 +63,39 @@ public class StreamCircleObstacle extends PathAugment implements Displayable {
         orthVector = new DVector(dimensions);
     }
 
+    /**
+     * A method for determining weather or not to use this PathAugment
+     *
+     * @param toTarget The vector pointing from the object to the target
+     * @param position The position of the object
+     * @param velocity The velocity of the object
+     * @return true if this PathAugment should be used, false otherwise
+     */
     @Override
     public boolean skipAugment(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
         return vectorBetween.getMagnitude() > toTarget.getMagnitude();
     }
 
+    /**
+     * A method for getting the vector between the given DPoint and PathAugment. The vector shall point form the PathAugment to the DPoint
+     *
+     * @param point The given point
+     * @return The DVector between the PathAugment and the given point
+     */
     @Override
     public DVector getVectorBetween(DPoint point) {
         return PathAugmentFunctions.GetVectorBetween.getVectorBetweenCircularObjectAndObject(obstacleCenter, radius, point, vectorBetween);
     }
 
+    /**
+     * A method for getting the effect of the PathAugment
+     *
+     * @param vectorBetween The vector from the PathAugment to the object
+     * @param toTarget      The vector form the object to the target
+     * @param position      The position of the object
+     * @param velocity      The velocity of the object
+     * @return The effect of the PathAugment on the object
+     */
     @Override
     public DVector getEffect(DVector vectorBetween, DVector toTarget, DPoint position, DVector velocity) {
 //        effect.set(vectorBetween);
@@ -88,11 +114,26 @@ public class StreamCircleObstacle extends PathAugment implements Displayable {
         return PathAugmentFunctions.GetEffect.getEffectStandardStream(vectorBetween, toTarget, orthVector, effect, awayCoefficient, awayPower, streamCoefficient, streamPower);
     }
 
+    /**
+     * A method for determining weather or not to use the effect of this PathAugment
+     *
+     * @param vectorBetween The vector from the PathAugment to object
+     * @param toTarget      The vector from the object to the target
+     * @param effect        The effect of the PathAugment
+     * @param position      The position of the object
+     * @param velocity      The velocity of the object
+     * @return true if the effect should be used, false otherwise
+     */
     @Override
     public boolean skipEffect(DVector vectorBetween, DVector toTarget, DVector effect, DPoint position, DVector velocity) {
         return false;
     }
 
+    /**
+     * A method for displaying the target on the screen
+     *
+     * @param graphics The object to display on
+     */
     @Override
     public void display(DisplayGraphics graphics) {
 //        graphics.paintPoint(position.clone(), 0, 1, new Color(0, 255, 0), 3);

@@ -1,6 +1,5 @@
 package SplineGenerator.Applied;
 
-import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 

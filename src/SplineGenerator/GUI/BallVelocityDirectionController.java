@@ -7,10 +7,19 @@ import SplineGenerator.Util.DVector;
 
 import java.awt.event.KeyEvent;
 
+/**
+ * A class representing a Follower that can be configured to move at a specific velocity
+ */
 public class BallVelocityDirectionController extends BallDirectionFollower {
 
+    /**
+     * The velocity controller for velocity
+     */
     public VelocityController velocityController;
 
+    /**
+     * The previous movement of the object
+     */
     private DVector lastMovement;
 
     /**

@@ -1,8 +1,6 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Applied.Navigator;
-import SplineGenerator.Applied.SimpleVelocityController;
-import SplineGenerator.Applied.VelocityController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -39,6 +37,9 @@ public class BallDirectionFollower implements Displayable {
      */
     protected long lastTime = -1;
 
+    /**
+     * The color to paint the ball
+     */
     public Color color = new Color(255, 255, 255);
 
     /**

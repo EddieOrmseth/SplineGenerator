@@ -409,10 +409,20 @@ public class Segmenter implements Navigator {
             return direction;
         }
 
+        /**
+         * A method for getting the tValue of the controller
+         *
+         * @return The tValue of the controller
+         */
         public double getTValue() {
             return tValue;
         }
 
+        /**
+         * A method for getting the spline that is followed by the controller
+         *
+         * @return The spline the controller follows
+         */
         public Spline getSpline() {
             return segmenter.spline;
         }

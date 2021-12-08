@@ -1,10 +1,7 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.PathFinder;
 import SplineGenerator.Applied.Segmenter;
-import SplineGenerator.Applied.Segmenter;
-import SplineGenerator.Applied.SimpleVelocityController;
-import SplineGenerator.Applied.ComplexVelocityController;
+import SplineGenerator.Applied.SegmenterComplexVelocityController;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
@@ -130,14 +127,14 @@ public class Main {
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
 //        Segmenter.Controller ballController0 = resolver.getController();
-//        SimpleVelocityController velocityController0 = new SimpleVelocityController(2, ballController0, .015,.005, .01);
+//        SimpleVelocityController velocityController0 = new SimpleVelocityController(ballController0, .015,.005, .01);
 //        BallVelocityDirectionController ballFollower0 = new BallVelocityDirectionController(ballController0, new DPoint(0, 0));
 //        ballFollower0.color = new Color(193, 98, 98);
 //        ballFollower0.velocityController = velocityController0;
 //        display.displayables.add(ballFollower0);
 
         Segmenter.Controller ballController1 = resolver.getController();
-        ComplexVelocityController velocityController1 = new ComplexVelocityController(2, ballController1, .015,.005, .01);
+        SegmenterComplexVelocityController velocityController1 = new SegmenterComplexVelocityController(ballController1, .015,.005, .01, .4, .1);
         BallVelocityDirectionController ballFollower1 = new BallVelocityDirectionController(ballController1, new DPoint(0, 0));
         ballFollower1.color = new Color(105, 105, 239);
         ballFollower1.velocityController = velocityController1;

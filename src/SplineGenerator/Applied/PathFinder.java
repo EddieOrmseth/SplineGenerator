@@ -117,10 +117,23 @@ public class PathFinder implements Navigator {
         return dimensions;
     }
 
+    /**
+     * The precomputed Space object representing the PathFinder
+     *
+     * @param bounds The bounds of the space object
+     * @param spaceStep The resolution of the space object
+     * @return The precomputed field
+     */
     public Space<DVector> getPrecomputedField(Extrema bounds, double spaceStep) {
         return getPrecomputedField(new Space<>(bounds, spaceStep));
     }
 
+    /**
+     * The precomputed Space object representing the PathFinder
+     *
+     * @param space The space object to put the precomputed field in
+     * @return The precomputed field
+     */
     public Space<DVector> getPrecomputedField(Space<DVector> space) {
         DPoint point = new DPoint(space.getDimensions());
         DVector velocity = new DVector(space.getDimensions());
@@ -142,6 +155,9 @@ public class PathFinder implements Navigator {
         return new Controller(this);
     }
 
+    /**
+     * An interface for things that can provide navigation
+     */
     public class Controller extends Navigator.Controller {
 
         /**

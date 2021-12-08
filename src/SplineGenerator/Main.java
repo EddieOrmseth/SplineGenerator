@@ -49,7 +49,6 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 5)));
         spline.addControlPoint(new DControlPoint(new DVector(-7, 9)));
         spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)), new DDirection(Math.cos(0), Math.sin(0))));
-//        spline.addControlPoint(new DControlPoint(new DVector(-8, -11), new DDirection(0, 0), new DDirection(Math.cos(0), Math.sin(0))));
         // */
 
          /* Figure 8

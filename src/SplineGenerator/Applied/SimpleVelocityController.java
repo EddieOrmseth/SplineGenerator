@@ -1,8 +1,6 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.DDirection;
-import SplineGenerator.Util.DVector;
 
 public class SimpleVelocityController implements VelocityController {
 
@@ -11,26 +9,24 @@ public class SimpleVelocityController implements VelocityController {
 
     private double maximumVelocity;
     private double minimumVelocity;
-    private double maximumAcceleration;
     private double currentVelocity;
 
     private boolean accelerating = false;
 
-    private DVector lastDirection;
+    private double lastVelocity;
 
     private double maxDerivMag;
     private double minDerivMag;
 
     private double multiplier;
 
-    public SimpleVelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
+    public SimpleVelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double currentVelocity) {
         this.dimensions = dimensions;
         this.controller = controller;
         this.maximumVelocity = maximumVelocity;
         this.minimumVelocity = minimumVelocity;
-        this.maximumAcceleration = maximumAcceleration;
         this.currentVelocity = currentVelocity;
-        lastDirection = new DDirection(dimensions);
+        this.lastVelocity = currentVelocity;
 
         Spline spline = controller.getSpline();
 
@@ -57,20 +53,19 @@ public class SimpleVelocityController implements VelocityController {
 
     }
 
-    public void update(DVector currentDirection) {
-
-        if (currentDirection.equals(lastDirection)) {
-            return;
-        }
+    public void update() {
 
         double deriv = controller.getSpline().evaluateDerivative(controller.getTValue(),1).getMagnitude();
-        currentVelocity = minimumVelocity + (deriv - minDerivMag) * multiplier;
+        this.currentVelocity = minimumVelocity + (deriv - minDerivMag) * multiplier;
 
-        if (currentVelocity >= maximumVelocity) {
-            currentVelocity = maximumVelocity;
-        } else if (currentVelocity < minimumVelocity) {
-            currentVelocity = minimumVelocity;
+        if (this.currentVelocity >= maximumVelocity) {
+            this.currentVelocity = maximumVelocity;
+        } else if (this.currentVelocity < minimumVelocity) {
+            this.currentVelocity = minimumVelocity;
         }
+
+        accelerating = lastVelocity < this.currentVelocity;
+        lastVelocity = this.currentVelocity;
     }
 
     public double getVelocity() {

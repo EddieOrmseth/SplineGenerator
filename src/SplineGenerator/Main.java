@@ -121,15 +121,15 @@ public class Main {
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
         Segmenter.Controller ballController0 = resolver.getController();
-        SimpleVelocityController velocityController0 = new SimpleVelocityController(2, ballController0, .015,.005, .01, 0);
-        BallDirectionFollower ballFollower0 = new BallDirectionFollower(ballController0, new DPoint(0, 0));
+        SimpleVelocityController velocityController0 = new SimpleVelocityController(2, ballController0, .015,.005, .01);
+        BallVelocityDirectionController ballFollower0 = new BallVelocityDirectionController(ballController0, new DPoint(0, 0));
         ballFollower0.color = new Color(193, 98, 98);
         ballFollower0.velocityController = velocityController0;
         display.displayables.add(ballFollower0);
 
         Segmenter.Controller ballController1 = resolver.getController();
-        ComplexVelocityController velocityController1 = new ComplexVelocityController(2, ballController1, .015,.005, .01, 0);
-        BallDirectionFollower ballFollower1 = new BallDirectionFollower(ballController1, new DPoint(0, 0));
+        ComplexVelocityController velocityController1 = new ComplexVelocityController(2, ballController1, .015,.005, .01);
+        BallVelocityDirectionController ballFollower1 = new BallVelocityDirectionController(ballController1, new DPoint(0, 0));
         ballFollower1.color = new Color(105, 105, 239);
         ballFollower1.velocityController = velocityController1;
         display.displayables.add(ballFollower1);

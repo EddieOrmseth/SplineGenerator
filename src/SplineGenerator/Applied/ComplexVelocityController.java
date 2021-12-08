@@ -1,8 +1,6 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.DDirection;
-import SplineGenerator.Util.DVector;
 
 public class ComplexVelocityController implements VelocityController {
 
@@ -11,12 +9,11 @@ public class ComplexVelocityController implements VelocityController {
 
     private double maximumVelocity;
     private double minimumVelocity;
-    private double maximumAcceleration;
     private double currentVelocity;
 
     private boolean accelerating = false;
 
-    private DVector lastDirection;
+    double lastVelocity;
 
     private double maxDerivMag;
     private double minDerivMag;
@@ -29,14 +26,12 @@ public class ComplexVelocityController implements VelocityController {
     private double percentMaxDerivMag;
     private double percentMinDerivMag;
 
-    public ComplexVelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double maximumAcceleration, double currentVelocity) {
+    public ComplexVelocityController(int dimensions, Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double currentVelocity) {
         this.dimensions = dimensions;
         this.controller = controller;
         this.maximumVelocity = maximumVelocity;
         this.minimumVelocity = minimumVelocity;
-        this.maximumAcceleration = maximumAcceleration;
         this.currentVelocity = currentVelocity;
-        lastDirection = new DDirection(dimensions);
 
         Spline spline = controller.getSpline();
 
@@ -70,11 +65,7 @@ public class ComplexVelocityController implements VelocityController {
 
     }
 
-    public void update(DVector currentDirection) {
-
-        if (currentDirection.equals(lastDirection)) {
-            return;
-        }
+    public void update() {
 
         double deriv = controller.getSpline().evaluateDerivative(controller.getTValue(),1).getMagnitude();
         currentVelocity = minimumVelocity + (deriv - percentMinDerivMag) * multiplier;
@@ -84,6 +75,9 @@ public class ComplexVelocityController implements VelocityController {
         } else if (currentVelocity < minimumVelocity) {
             currentVelocity = minimumVelocity;
         }
+
+        accelerating = lastVelocity < this.currentVelocity;
+        lastVelocity = this.currentVelocity;
     }
 
     public double getVelocity() {

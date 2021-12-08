@@ -98,6 +98,15 @@ public class Main {
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
         display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
+
+        display.onSplineDisplayables.add(tValue -> {
+            return new DPosVector(spline.get(tValue), spline.evaluateDerivative(tValue, 1));
+        });
+
+        display.onSplineDisplayables.add(tValue -> {
+            return new DPosVector(spline.get(tValue), spline.evaluateDerivative(tValue, 2));
+        });
+
         // */
 
         // /* Segmenter
@@ -120,12 +129,12 @@ public class Main {
 
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
-        Segmenter.Controller ballController0 = resolver.getController();
-        SimpleVelocityController velocityController0 = new SimpleVelocityController(2, ballController0, .015,.005, .01);
-        BallVelocityDirectionController ballFollower0 = new BallVelocityDirectionController(ballController0, new DPoint(0, 0));
-        ballFollower0.color = new Color(193, 98, 98);
-        ballFollower0.velocityController = velocityController0;
-        display.displayables.add(ballFollower0);
+//        Segmenter.Controller ballController0 = resolver.getController();
+//        SimpleVelocityController velocityController0 = new SimpleVelocityController(2, ballController0, .015,.005, .01);
+//        BallVelocityDirectionController ballFollower0 = new BallVelocityDirectionController(ballController0, new DPoint(0, 0));
+//        ballFollower0.color = new Color(193, 98, 98);
+//        ballFollower0.velocityController = velocityController0;
+//        display.displayables.add(ballFollower0);
 
         Segmenter.Controller ballController1 = resolver.getController();
         ComplexVelocityController velocityController1 = new ComplexVelocityController(2, ballController1, .015,.005, .01);
@@ -134,31 +143,31 @@ public class Main {
         ballFollower1.velocityController = velocityController1;
         display.displayables.add(ballFollower1);
 
-        display.onGridDisplayables.add(gridPoint -> {
-            int segment = ballController0.segment;
-            if (segment != -1) {
-                DVector vector = resolver.get(gridPoint.clone()).get(segment);
-                if (vector != null) {
-                    return new DPosVector(gridPoint.clone(), vector);
-                } else {
-                    return new DVector(gridPoint.getDimensions());
-                }
-            }
-            return new DVector(gridPoint.getDimensions());
-        });
-
-        display.onGridDisplayables.add(gridPoint -> {
-            int segment = ballController1.segment;
-            if (segment != -1) {
-                DVector vector = resolver.get(gridPoint.clone()).get(segment);
-                if (vector != null) {
-                    return new DPosVector(gridPoint.clone(), vector);
-                } else {
-                    return new DVector(gridPoint.getDimensions());
-                }
-            }
-            return new DVector(gridPoint.getDimensions());
-        });
+//        display.onGridDisplayables.add(gridPoint -> {
+//            int segment = ballController0.segment;
+//            if (segment != -1) {
+//                DVector vector = resolver.get(gridPoint.clone()).get(segment);
+//                if (vector != null) {
+//                    return new DPosVector(gridPoint.clone(), vector);
+//                } else {
+//                    return new DVector(gridPoint.getDimensions());
+//                }
+//            }
+//            return new DVector(gridPoint.getDimensions());
+//        });
+//
+//        display.onGridDisplayables.add(gridPoint -> {
+//            int segment = ballController1.segment;
+//            if (segment != -1) {
+//                DVector vector = resolver.get(gridPoint.clone()).get(segment);
+//                if (vector != null) {
+//                    return new DPosVector(gridPoint.clone(), vector);
+//                } else {
+//                    return new DVector(gridPoint.getDimensions());
+//                }
+//            }
+//            return new DVector(gridPoint.getDimensions());
+//        });
 
         // */
 
@@ -368,7 +377,7 @@ public class Main {
         // */ // End Display Of PathFinder
 
 //        lines.start();
-        ballFollower0.start();
+//        ballFollower0.start();
         ballFollower1.start();
 
         display.display();

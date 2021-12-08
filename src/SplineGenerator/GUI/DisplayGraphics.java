@@ -165,12 +165,6 @@ public class DisplayGraphics {
      * @param yDim  The index to be used as teh y-dimension
      */
     public void paintPoint(DPoint point, int xDim, int yDim) {
-//        graphics.setColor(Color.WHITE);
-//        graphics.setStroke(new BasicStroke(3));
-//
-//        point = translate.get(point);
-//
-//        graphics.fillOval((int) (point.get(xDim) - pointRadius), (int) (point.get(yDim) - pointRadius), (int) (2 * pointRadius), (int) (2 * pointRadius));
         paintPoint(point, xDim, yDim, Color.WHITE);
     }
 
@@ -190,8 +184,6 @@ public class DisplayGraphics {
 
         graphics.fillOval((int) (point.get(xDim) - pointRadius), (int) (point.get(yDim) - pointRadius), (int) (2 * pointRadius), (int) (2 * pointRadius));
     }
-
-
 
     /**
      * A method for painting a point

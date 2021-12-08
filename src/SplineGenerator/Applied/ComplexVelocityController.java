@@ -76,7 +76,7 @@ public class ComplexVelocityController implements VelocityController {
             currentVelocity = minimumVelocity;
         }
 
-        accelerating = lastVelocity < this.currentVelocity;
+        accelerating = lastVelocity != currentVelocity ? lastVelocity <= this.currentVelocity : accelerating;
         lastVelocity = this.currentVelocity;
     }
 

@@ -3,6 +3,7 @@ package SplineGenerator.Applied;
 import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
+import SplineGenerator.Util.Extrema;
 import SplineGenerator.Util.PathAugments.PathAugment;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class PathFinder implements Navigator {
      * @param velocity The velocity of the object
      * @return The DVector caused by the position, velocity, and PathAugments
      */
-    public DDirection getDirection(DPoint position, DVector velocity) {
+    public DVector getDirection(DPoint position, DVector velocity) {
         DVector finalEffect = new DVector(position.getDimensions());
         DVector toTarget = target.getVectorBetween(position);
         toTarget.multiplyAll(-1);
@@ -104,7 +105,7 @@ public class PathFinder implements Navigator {
             }
         }
 
-        return finalEffect.toDirection();
+        return finalEffect;
     }
 
     /**
@@ -114,6 +115,21 @@ public class PathFinder implements Navigator {
      */
     public int getDimensions() {
         return dimensions;
+    }
+
+    public Space<DVector> getPrecomputedField(Extrema bounds, double spaceStep) {
+        return getPrecomputedField(new Space<>(bounds, spaceStep));
+    }
+
+    public Space<DVector> getPrecomputedField(Space<DVector> space) {
+        DPoint point = new DPoint(space.getDimensions());
+        DVector velocity = new DVector(space.getDimensions());
+        for (int i = 0; i < space.size(); i++) {
+            point = space.indexToPoint(i, point);
+            space.set(i, getDirection(point, velocity));
+        }
+
+        return space;
     }
 
     /**
@@ -178,7 +194,7 @@ public class PathFinder implements Navigator {
          * @return The direction to be followed
          */
         @Override
-        public DDirection getDirection() {
+        public DVector getDirection() {
             return pathFinder.getDirection(position, velocity);
         }
     }

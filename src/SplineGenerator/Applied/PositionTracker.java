@@ -25,6 +25,7 @@ public class PositionTracker {
      */
     public PositionTracker(DPoint initialPoint) {
         position = initialPoint;
+        previousVelocity = new DVector(initialPoint.getDimensions());
     }
 
     /**

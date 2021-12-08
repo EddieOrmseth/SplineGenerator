@@ -2,11 +2,13 @@ package SplineGenerator;
 
 import SplineGenerator.Applied.PathFinder;
 import SplineGenerator.Applied.Segmenter;
+import SplineGenerator.Applied.Segmenter;
+import SplineGenerator.Applied.SimpleVelocityController;
+import SplineGenerator.Applied.ComplexVelocityController;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
-import SplineGenerator.Util.PathAugments.*;
 
 import java.awt.*;
 
@@ -15,6 +17,25 @@ public class Main {
     public static void main(String[] args) {
 
         KeyBoardListener.initialize();
+
+        DVector translation = new DVector(3, -2);
+        System.out.println("Initial Translation: " + translation);
+
+        DVector TLRotation = new DVector(-1, -1);
+        DVector TRRotation = new DVector(-1, 1);
+        DVector BRRotation = new DVector(1, 1);
+        DVector BLRotation = new DVector(1, -1);
+
+        TLRotation.add(translation);
+        TRRotation.add(translation);
+        BRRotation.add(translation);
+        BLRotation.add(translation);
+
+        DVector result = new DVector(0, 0);
+        result.add(TLRotation).add(TRRotation).add(BRRotation).add(BLRotation).multiplyAll(.25);
+        System.out.println("Result: " + result);
+
+        int cat = 120;
 
         PolynomicSpline spline = new PolynomicSpline(2);
 
@@ -43,6 +64,7 @@ public class Main {
         spline.addControlPoint(new DControlPoint(new DVector(-10, 10), new DDirection(Math.cos(0), Math.sin(0)), new DDirection(0, 0)));
         // */
 
+        // /* Spline Stuff
         spline.setPolynomicOrder(5);
         spline.closed = true;
 
@@ -77,6 +99,14 @@ public class Main {
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
         display.onGridBoundaries = new Extrema(new DPoint(-25, -20), new DPoint(25, 20));
+
+        display.onSplineDisplayables.add(tValue -> {
+            return new DPosVector(spline.get(tValue), spline.evaluateDerivative(tValue, 1));
+        });
+
+        display.onSplineDisplayables.add(tValue -> {
+            return new DPosVector(spline.get(tValue), spline.evaluateDerivative(tValue, 2));
+        });
         // */
 
         // /* Segmenter
@@ -99,24 +129,46 @@ public class Main {
 
         System.out.println("Time to Compute: " + ((endTimeCompute - startTimeCompute) / 1000.0) + " seconds");
 
-        Segmenter.Controller ballController = resolver.getController();
-        BallDirectionFollower ball = new BallDirectionFollower(ballController, new DPoint(0, 0));
-        display.displayables.add(ball);
+//        Segmenter.Controller ballController0 = resolver.getController();
+//        SimpleVelocityController velocityController0 = new SimpleVelocityController(2, ballController0, .015,.005, .01);
+//        BallVelocityDirectionController ballFollower0 = new BallVelocityDirectionController(ballController0, new DPoint(0, 0));
+//        ballFollower0.color = new Color(193, 98, 98);
+//        ballFollower0.velocityController = velocityController0;
+//        display.displayables.add(ballFollower0);
 
-        display.onGridDisplayables.add(gridPoint -> {
-            int segment = ballController.segment;
-            if (segment != -1) {
-                DVector vector = resolver.get(gridPoint.clone()).get(segment);
-                if (vector != null) {
-                    return new DPosVector(gridPoint.clone(), vector);
-                } else {
-                    return new DVector(gridPoint.getDimensions());
-                }
-            }
-            return new DVector(gridPoint.getDimensions());
-        });
+        Segmenter.Controller ballController1 = resolver.getController();
+        ComplexVelocityController velocityController1 = new ComplexVelocityController(2, ballController1, .015,.005, .01);
+        BallVelocityDirectionController ballFollower1 = new BallVelocityDirectionController(ballController1, new DPoint(0, 0));
+        ballFollower1.color = new Color(105, 105, 239);
+        ballFollower1.velocityController = velocityController1;
+        display.displayables.add(ballFollower1);
 
-        ball.start();
+//        display.onGridDisplayables.add(gridPoint -> {
+//            int segment = ballController0.segment;
+//            if (segment != -1) {
+//                DVector vector = resolver.get(gridPoint.clone()).get(segment);
+//                if (vector != null) {
+//                    return new DPosVector(gridPoint.clone(), vector);
+//                } else {
+//                    return new DVector(gridPoint.getDimensions());
+//                }
+//            }
+//            return new DVector(gridPoint.getDimensions());
+//        });
+//
+//        display.onGridDisplayables.add(gridPoint -> {
+//            int segment = ballController1.segment;
+//            if (segment != -1) {
+//                DVector vector = resolver.get(gridPoint.clone()).get(segment);
+//                if (vector != null) {
+//                    return new DPosVector(gridPoint.clone(), vector);
+//                } else {
+//                    return new DVector(gridPoint.getDimensions());
+//                }
+//            }
+//            return new DVector(gridPoint.getDimensions());
+//        });
+
         // */
 
          /* Display the derivative on the spline
@@ -182,11 +234,10 @@ public class Main {
 //        lines.start();
 //        linesLots.start();
 
-
-
          /* Big Path PathFinder
         Extrema extrema = new Extrema(new DPoint(-40, -20), new DPoint(35, 20));
         Display display = new Display(2, extrema, 0, 1, 1600, 700);
+        display.onGridBoundaries = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
 
         PathFinder pathFinder = new PathFinder(2);
 
@@ -194,6 +245,9 @@ public class Main {
         pathFinder.setTarget(target);
         display.displayables.add(target);
         display.addMouseListener(target);
+        // */
+
+        // X: (-55, 35) Y: (-18, 18)
 
 //        StreamPointObstacle obstacle0 = new StreamPointObstacle(2, new DPoint(0, 0), 200, -3, -400, -1.5);
 //        pathFinder.addAugment(obstacle0);
@@ -205,7 +259,7 @@ public class Main {
         double circleStreamCoefficient = -500;
         double circleStreamPower = -1.5;
 
-        double lineStreamCoefficient = -1500;
+        double lineStreamCoefficient = -800;
         double lineStreamPower = -1.5;
 
          /* Big Mess 1
@@ -319,11 +373,6 @@ public class Main {
         display.displayables.add(box);
 
         // Center Thing
-
-//        StreamCircleObstacle c0 = new StreamCircleObstacle(2, new DPoint(-11, 0), .75,200, -3, circleStreamCoefficient, circleStreamPower);
-//        pathFinder.addAugment(c0);
-//        display.displayables.add(c0);
-
         StreamCircleObstacle c1 = new StreamCircleObstacle(2, new DPoint(-19, -8), .75,200, -3, circleStreamCoefficient, circleStreamPower);
         pathFinder.addAugment(c1);
         display.displayables.add(c1);
@@ -331,10 +380,6 @@ public class Main {
         StreamCircleObstacle c2 = new StreamCircleObstacle(2, new DPoint(-22, 3), .75,200, -3, circleStreamCoefficient, circleStreamPower);
         pathFinder.addAugment(c2);
         display.displayables.add(c2);
-
-//        StreamCircleObstacle c3 = new StreamCircleObstacle(2, new DPoint(-3, 8), .75,200, -3, circleStreamCoefficient, circleStreamPower);
-//        pathFinder.addAugment(c3);
-//        display.displayables.add(c3);
 
         StreamCircleObstacle c4 = new StreamCircleObstacle(2, new DPoint(0, -3), .75,200, -3, circleStreamCoefficient, circleStreamPower);
         pathFinder.addAugment(c4);
@@ -344,31 +389,61 @@ public class Main {
         StreamPolygonObstacle triangleThing = new StreamPolygonObstacle(2, 200, -3, lineStreamCoefficient, lineStreamPower, new DPoint(8, 18), new DPoint(-3, 8), new DPoint(-14, 18));
         pathFinder.addAugment(triangleThing);
         display.displayables.add(triangleThing);
+        // */ // End Field 1
 
-        // /* End Field 1
+         /* LineOfLineDirectionFollowers
+        int numLines = 50;
+        Function<Integer, Color> colorFunction = i -> {
+            double kB = i / (double) numLines;
+            double kR = 1 - kB;
+            return new Color((int) (kR * 255), 0, (int) (kB * 255));
+        };
+        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(35, 20), new DPoint(35, -20), numLines, colorFunction, 3, .1, 0, 1);
+        display.displayables.add(lines);
+        // */ // End LineOfLineDirectionFollowers
 
-//        int numLines = 50;
-//        Function<Integer, Color> colorFunction = i -> {
-//            double kB = i / (double) numLines;
-//            double kR = 1 - kB;
-//            return new Color((int) (kR * 255), 0, (int) (kB * 255));
-//        };
-//        LineOfLineDirectionFollowers lines = new LineOfLineDirectionFollowers(pathFinder, new DPoint(35, 20), new DPoint(35, -20), numLines, colorFunction, 3, .1, 0, 1);
-//        display.displayables.add(lines);
-//
-//        lines.start();
+         /* Line Motion Testing
+        StreamLineObstacle basicLine = new StreamLineObstacle(new DPoint(-20, 8), new DPoint(-2, -8),200, -3, lineStreamCoefficient, lineStreamPower);
+        pathFinder.addAugment(basicLine);
+        display.displayables.add(basicLine);
+        // */ //
 
+         /* // BallDirectionFollower
+        VelocityController velocityController = new VelocityController(2, null, .3,.05, .01, 0);
         BallDirectionFollower ballFollower = new BallDirectionFollower(pathFinder.getController(), new DPoint(20, 1));
+        ballFollower.velocityController = velocityController;
         display.displayables.add(ballFollower);
+        // */ // End BallDirectionFollower
 
-        ballFollower.start();
+        // /* Display Of PathFinder
+        // X: (-55, 35) Y: (-18, 18)
+//        Extrema preCompExtrema = new Extrema(new DPoint(-55, -20), new DPoint(35, 20));
+//        Space<DVector> space = pathFinder.getPrecomputedField(preCompExtrema, .1);
 
-         // */
+//        DVector velocity = new DVector(2);
+//        display.onGridDisplayables.add(gridPoint -> {
+//           if (!space.isOutOfBounds(gridPoint)) {
+//               return new DPosVector(gridPoint.clone(), space.get(gridPoint.clone()).clone());
+//           } else {
+//               return new DPosVector(gridPoint.clone(), new DVector(space.getDimensions()));
+//           }
+//            return new DPosVector(gridPoint.clone(), pathFinder.getDirection(gridPoint.clone(), velocity));
+//        });
+        // */ // End Display Of PathFinder
+
+//        lines.start();
+//        ballFollower0.start();
+        ballFollower1.start();
 
         display.display();
 
         while (true) {
             display.repaint();
+            try {
+                Thread.sleep(5);
+            } catch (Exception e) {
+
+            }
         }
     }
 

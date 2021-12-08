@@ -280,7 +280,7 @@ public class FollowerGradient implements Navigator {
          * @return The DDirection at the specified point
          */
         @Override
-        public DDirection getDirection() {
+        public DVector getDirection() {
             return followerGradient.getDirection(point.clone());
         }
 

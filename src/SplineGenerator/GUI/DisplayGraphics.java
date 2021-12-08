@@ -50,7 +50,7 @@ public class DisplayGraphics {
     /**
      * The length to draw each vector
      */
-    private double vectorLength = 25;
+    private double vectorLength = 20;
 
     /**
      * The ration from vectorLength to the desired arrow length
@@ -65,7 +65,7 @@ public class DisplayGraphics {
     /**
      * The width of the vector
      */
-    private int lineWidth = 3;
+    private int lineWidth = 2;
 
     /**
      * A simple constructor requiring the object to be painted on
@@ -165,7 +165,19 @@ public class DisplayGraphics {
      * @param yDim  The index to be used as teh y-dimension
      */
     public void paintPoint(DPoint point, int xDim, int yDim) {
-        graphics.setColor(Color.WHITE);
+        paintPoint(point, xDim, yDim, Color.WHITE);
+    }
+
+    /**
+     * A method for painting a point
+     *
+     * @param point The point to be painted
+     * @param xDim  The index to be used as the x-dimension
+     * @param yDim  The index to be used as teh y-dimension
+     * @param color The color to paint the point
+     */
+    public void paintPoint(DPoint point, int xDim, int yDim, Color color) {
+        graphics.setColor(color);
         graphics.setStroke(new BasicStroke(3));
 
         point = translate.get(point);

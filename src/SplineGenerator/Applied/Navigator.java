@@ -2,6 +2,7 @@ package SplineGenerator.Applied;
 
 import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.DVector;
 
 /**
  * An interface for things that can provide navigation
@@ -32,7 +33,7 @@ public interface Navigator {
          *
          * @return The direction in the form a unit vector
          */
-        public abstract DDirection getDirection();
+        public abstract DVector getDirection();
 
         /**
          * The velocity at that specified point

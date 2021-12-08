@@ -73,10 +73,9 @@ public class StreamPolygonObstacle extends PathAugment implements Displayable {
 
     @Override
     public DVector getVectorBetween(DPoint point) {
-//        return PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(p1, p2, lineSegment, point, vectorBetween);
-//        return vectorBetween;
+
         for (int i = 1; i < points.length; i++) {
-            PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(points[i - 1], points[i], lineSegments[i - 1], point, vectorsBetween[i - 1]);
+            useDot = PathAugmentFunctions.GetVectorBetween.getVectorBetweenLineSegmentAndObject(points[i - 1], points[i], lineSegments[i - 1], point, vectorsBetween[i - 1], useDot);
         }
 
         int minIndex = 0;
@@ -101,6 +100,7 @@ public class StreamPolygonObstacle extends PathAugment implements Displayable {
         toTarget.multiplyAll(-1);
 
         if (vectorBetween.getAngleBetween(toTarget) >= Math.PI / 2.0) {
+//            System.out.println("useDot: " + useDot);
             PathAugmentFunctions.Util.getOrthogonalVectorAccentuation(vectorBetween, toTarget, orthVector);
             if (useDot) {
                 orthVector.setMagnitude((Math.pow(vectorBetween.getMagnitude(), streamPower)) * (vectorBetween.dot(toTarget) / (vectorBetween.getMagnitude() * toTarget.getMagnitude())) * streamCoefficient);

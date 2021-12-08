@@ -86,7 +86,7 @@ public class LineDirectionFollower extends BallDirectionFollower {
             if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
 
                 controller.update(position.clone());
-                DDirection direction = controller.getDirection();
+                DVector direction = controller.getDirection();
                 DVector movement = direction.toVector();
                 movement.setMagnitude(movementLength * delta);
                 position.add(movement);

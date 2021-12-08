@@ -410,6 +410,15 @@ public class Segmenter implements Navigator {
         }
 
         /**
+         * A method for getting the position of the controller object
+         *
+         * @return The position of the controlled object
+         */
+        public DPoint getPosition() {
+            return point;
+        }
+
+        /**
          * A method for getting the tValue of the controller
          *
          * @return The tValue of the controller

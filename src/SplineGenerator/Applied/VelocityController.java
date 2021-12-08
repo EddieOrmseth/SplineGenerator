@@ -1,5 +1,8 @@
 package SplineGenerator.Applied;
 
+import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.DVector;
+
 /**
  * An interface for objects that control velocity
  */
@@ -20,7 +23,7 @@ public interface VelocityController {
     boolean isAccelerating();
 
     /**
-     * A method used to update the controller
+     * A method that can be called to update the velocity controller
      */
     void update();
 

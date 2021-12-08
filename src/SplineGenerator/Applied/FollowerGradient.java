@@ -284,6 +284,15 @@ public class FollowerGradient implements Navigator {
             return followerGradient.getDirection(point.clone());
         }
 
+        /**
+         * A method for getting the position of the controller object
+         *
+         * @return The position of the controlled object
+         */
+        public DPoint getPosition() {
+            return point;
+        }
+
     }
 
 }

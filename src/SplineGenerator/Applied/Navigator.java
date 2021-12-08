@@ -35,13 +35,11 @@ public interface Navigator {
         public abstract DVector getDirection();
 
         /**
-         * The velocity at that specified point
+         * A method for getting the position of the controller object
          *
-         * @return The specified velocity
+         * @return The position of the controlled object
          */
-        public double getVelocity() {
-            return 0;
-        }
+        public abstract DPoint getPosition();
 
     }
 

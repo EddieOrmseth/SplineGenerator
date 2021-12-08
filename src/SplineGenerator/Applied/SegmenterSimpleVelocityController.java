@@ -1,6 +1,8 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Splines.Spline;
+import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.DVector;
 
 /**
  * A simplified controller for velocity
@@ -95,6 +97,7 @@ public class SegmenterSimpleVelocityController implements VelocityController {
     /**
      * A method that can be called to update the current velocity
      */
+    @Override
     public void update() {
 
         double deriv = controller.getSpline().evaluateDerivative(controller.getTValue(), 1).getMagnitude();
@@ -115,6 +118,7 @@ public class SegmenterSimpleVelocityController implements VelocityController {
      *
      * @return The current velocity
      */
+    @Override
     public double getVelocity() {
         return currentVelocity;
     }
@@ -124,6 +128,7 @@ public class SegmenterSimpleVelocityController implements VelocityController {
      *
      * @return Whether controller is accelerating or not
      */
+    @Override
     public boolean isAccelerating() {
         return accelerating;
     }

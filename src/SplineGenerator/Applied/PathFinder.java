@@ -213,6 +213,15 @@ public class PathFinder implements Navigator {
         public DVector getDirection() {
             return pathFinder.getDirection(position, velocity);
         }
+
+        /**
+         * A method for getting the position of the controller object
+         *
+         * @return The position of the controlled object
+         */
+        public DPoint getPosition() {
+            return position;
+        }
     }
 
 }

@@ -1,8 +1,5 @@
 package SplineGenerator.Applied;
 
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.DVector;
-
 /**
  * An interface for objects that control velocity
  */

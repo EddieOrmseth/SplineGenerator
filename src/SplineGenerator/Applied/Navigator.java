@@ -41,6 +41,11 @@ public interface Navigator {
          */
         public abstract DPoint getPosition();
 
+        /**
+         * A method that can be used to determine if the object has reached its destination
+         */
+        public abstract boolean isFinished();
+
     }
 
 }

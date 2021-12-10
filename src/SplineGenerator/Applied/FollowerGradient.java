@@ -293,6 +293,14 @@ public class FollowerGradient implements Navigator {
             return point;
         }
 
+        /**
+         * A method that can be used to determine if the object has reached its destination
+         */
+        @Override
+        public boolean isFinished() {
+            return false;
+        }
+
     }
 
 }

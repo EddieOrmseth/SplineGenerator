@@ -366,6 +366,16 @@ public class Segmenter implements Navigator {
         public int segment;
 
         /**
+         * The distance that the t value must be from the end of the spline to be considered finished
+         */
+        private double tFinishedThresh = .1;
+
+        /**
+         * The distance that the object must be from the final point to be considered finished
+         */
+        private double distFinishedThresh = .1;
+
+        /**
          * A constructor, all the Controller needs is the Segmenter to follow
          *
          * @param segmenter The Segmenter to follow
@@ -407,6 +417,19 @@ public class Segmenter implements Navigator {
             direction.removeDimension(direction.getDimensions() - 1);
 
             return direction;
+        }
+
+        /**
+         * A method that can be used to determine if the object has reached its destination
+         */
+        @Override
+        public boolean isFinished() {
+            boolean tValFinished = segmenter.spline.getNumPieces() - getTValue() < tFinishedThresh;
+
+            DPoint lastPoint = spline.isClosed() ? spline.getFirst().values.get(0) : spline.controlPoints.get(spline.controlPoints.size()).values.get(0);
+            boolean distFinished = getPosition().getDistance(lastPoint) < distFinishedThresh;
+
+            return tValFinished && distFinished;
         }
 
         /**

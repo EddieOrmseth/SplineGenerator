@@ -18,8 +18,18 @@ public class MotionController {
         this.positionSupplier = positionSupplier;
     }
 
+    public MotionController(Navigator.Controller navigationController, VelocityController velocityController) {
+        this.navigationController = navigationController;
+        this.velocityController = velocityController;
+    }
+
     public void update() {
         navigationController.update(positionSupplier.get());
+        velocityController.update();
+    }
+
+    public void update(DPoint position) {
+        navigationController.update(position);
         velocityController.update();
     }
 
@@ -27,5 +37,9 @@ public class MotionController {
         DVector motion = navigationController.getDirection();
         motion.setMagnitude(velocityController.getVelocity());
         return motion;
+    }
+
+    public boolean isFinished() {
+        return navigationController.isFinished();
     }
 }

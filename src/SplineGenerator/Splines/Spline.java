@@ -353,6 +353,13 @@ public abstract class Spline {
     }
 
     /**
+     * A method for adding to the interpolationTypes ArrayList in accordance with a specific preset
+     *
+     * @param preset The desired preset
+     */
+    public abstract void setInterpolationPreset(InterpolationTypePreset preset);
+
+    /**
      * A method for getting the number of dimensions the spline is constructed in
      *
      * @return The number of dimensions in the spline is constructed in
@@ -377,13 +384,11 @@ public abstract class Spline {
     }
 
     /**
-     * A method for getting the parametric equations to put into desmos
+     * A method for getting the parametric equations to put into Desmos
      *
-     * @return The parametric equations to put into desmos
+     * @return The parametric equations to put into Desmos
      */
-    public String getDesmosEquations() {
-        return "";
-    }
+    public abstract String getDesmosEquations();
 
     /**
      * An enumeration for the type of spline to be created
@@ -463,6 +468,20 @@ public abstract class Spline {
          * The EndBehavior should be applied only at the end of the spline
          */
         Ending
+    }
+
+    /**
+     * An enumeration for preconfigured settings regarding interpolation type, the default order is quintic
+     */
+    public enum InterpolationTypePreset {
+        /**
+         * A setting for a natural spline, the beginning and ending must be supplied by the user
+         */
+        NaturalHermite,
+        /**
+         * A setting for a natural spline, the beginning and end are supplied for the user
+         */
+        NaturalCatmulRom,
     }
 
 }

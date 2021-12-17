@@ -20,7 +20,7 @@ public class InterpolationInfo {
     public EndBehavior endBehavior = EndBehavior.None;
 
     /**
-     *
+     * The effect of the EndBehavior, it may effect just one side, both, or neither
      */
     public EndBehaviorEffect endEffect = EndBehaviorEffect.Both;
 

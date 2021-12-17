@@ -447,6 +447,49 @@ public class PolynomicSpline extends Spline {
     }
 
     /**
+     * A method for setting the interpolationTypes ArrayList in accordance with the given preset
+     *
+     * @param preset The desired preset
+     */
+    @Override
+    public void setInterpolationPreset(InterpolationTypePreset preset) {
+        interpolationTypes.clear();
+        if (polynomicOrder <= 0) {
+            polynomicOrder = 5;
+        }
+        switch (preset) {
+            case NaturalHermite:
+                InterpolationInfo her1 = new InterpolationInfo();
+                her1.interpolationType = InterpolationType.Linked;
+                her1.endBehavior = EndBehavior.Hermite;
+                interpolationTypes.add(her1);
+                for (int i = 1; i < polynomicOrder - 1; i++) {
+                    InterpolationInfo intType = new InterpolationInfo();
+                    intType.interpolationType = InterpolationType.Linked;
+                    intType.endBehavior = EndBehavior.Hermite;
+                    intType.endEffect = EndBehaviorEffect.Both;
+                    interpolationTypes.add(intType);
+                }
+                break;
+            case NaturalCatmulRom:
+                InterpolationInfo cat1 = new InterpolationInfo();
+                cat1.interpolationType = InterpolationType.Linked;
+                cat1.endBehavior = EndBehavior.CatmulRom;
+                interpolationTypes.add(cat1);
+                for (int i = 1; i < polynomicOrder - 1; i++) {
+                    InterpolationInfo intType = new InterpolationInfo();
+                    intType.interpolationType = InterpolationType.Linked;
+                    intType.endBehavior = EndBehavior.Hermite;
+                    intType.endEffect = EndBehaviorEffect.Both;
+                    interpolationTypes.add(intType);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("The " + preset + " preset is not currently supported!");
+        }
+    }
+
+    /**
      * A method for getting a String representation of the spline
      *
      * @return The String representation of the spline

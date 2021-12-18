@@ -393,9 +393,6 @@ public class Segmenter implements Navigator {
         @Override
         public void update(DPoint point) {
             this.point = point;
-            if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
-                tValue = 0;
-            }
         }
 
         /**

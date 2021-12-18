@@ -99,10 +99,6 @@ public final class PathAugmentFunctions {
                 return result;
             }
 
-            if (KeyBoardListener.get(KeyEvent.VK_F)) {
-                int cat = 12;
-            }
-
             result.projectOnto(line);
             result.set(line, result);
 

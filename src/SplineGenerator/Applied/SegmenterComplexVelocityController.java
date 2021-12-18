@@ -1,8 +1,6 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.DVector;
 
 /**
  * A slightly more complex velocity controller

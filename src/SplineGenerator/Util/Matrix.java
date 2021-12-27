@@ -160,8 +160,21 @@ public class Matrix {
      *
      * @param matrix The matrix to be multiplied by
      */
-    public void multiplyMatrix(Matrix matrix) {
+    public Matrix multiplyMatrix(Matrix matrix) {
 
+        if (getWidth() != matrix.getHeight()) {
+            throw new IllegalArgumentException("The two matrices cannot be multiplied");
+        }
+
+        double[][] newMatrix = new double[getHeight()][matrix.getWidth()];
+
+        for (int rows = 0; rows < newMatrix.length; rows++) {
+            for (int cols = 0; cols < newMatrix[rows].length; cols++) {
+                
+            }
+        }
+
+        return new Matrix(newMatrix);
     }
 
     /**

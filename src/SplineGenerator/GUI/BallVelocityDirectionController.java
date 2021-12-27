@@ -1,7 +1,7 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Applied.Navigator;
-import SplineGenerator.Applied.VelocityController;
+import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -15,7 +15,7 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
     /**
      * The velocity controller for velocity
      */
-    public VelocityController velocityController;
+    public OldVelocityController velocityController;
 
     /**
      * The previous movement of the object
@@ -42,7 +42,7 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
     public void display(DisplayGraphics graphics) {
 
         long now = System.currentTimeMillis();
-        long delta = now - lastTime;
+        double delta = (now - lastTime) / 1000.0;
 
         if (!arrowPressed()) {
             if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {

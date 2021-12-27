@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class DPosVector extends DVector {
 
     /**
-     *
+     * The point at the tail of the vector
      */
     private DPoint startPoint;
 

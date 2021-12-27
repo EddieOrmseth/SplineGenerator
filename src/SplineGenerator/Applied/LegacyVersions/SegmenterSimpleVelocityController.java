@@ -1,13 +1,12 @@
-package SplineGenerator.Applied;
+package SplineGenerator.Applied.LegacyVersions;
 
+import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.DPoint;
-import SplineGenerator.Util.DVector;
 
 /**
  * A simplified controller for velocity
  */
-public class SegmenterSimpleVelocityController implements VelocityController {
+public class SegmenterSimpleVelocityController implements OldVelocityController {
 
     /**
      * The controller that provides the tValue

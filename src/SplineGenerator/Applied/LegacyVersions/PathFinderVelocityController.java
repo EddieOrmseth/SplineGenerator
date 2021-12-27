@@ -1,9 +1,10 @@
-package SplineGenerator.Applied;
+package SplineGenerator.Applied.LegacyVersions;
 
+import SplineGenerator.Applied.Navigator;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
-public class PathFinderVelocityController implements VelocityController {
+public class PathFinderVelocityController implements OldVelocityController {
 
     private double maxVelocity;
     private double minVelocity;

@@ -1,46 +1,27 @@
 package SplineGenerator.GUI;
 
+import SplineGenerator.Applied.GeneralVelocityController;
 import SplineGenerator.Applied.Navigator;
+import SplineGenerator.Applied.VelocityController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
- * A class that follows the path given to it by a Controller at a constant speed
+ * A class representing a Follower that can be configured to move at a specific velocity
  */
-public class BallDirectionFollower implements Displayable {
+public class NewBallVelocityDirectionController extends BallDirectionFollower {
 
     /**
-     * The controller that provides the direction
+     * The velocity controller for velocity
      */
-    protected Navigator.Controller controller;
+    public GeneralVelocityController velocityController;
 
     /**
-     * The position of the ball
+     * The previous movement of the object
      */
-    protected DPoint position;
-
-    /**
-     * The initial point of the follower
-     */
-    protected DPoint initialPosition;
-
-    /**
-     * The distance to move the ball per millisecond
-     */
-    protected double movementLength = 20;
-
-    /**
-     * The timestamp, in milliseconds, of the last update
-     */
-    protected long lastTime = -1;
-
-    /**
-     * The color to paint the ball
-     */
-    public Color color = new Color(255, 255, 255);
+    private DVector lastMovement;
 
     /**
      * A simple constructor requiring the necessary components
@@ -48,18 +29,9 @@ public class BallDirectionFollower implements Displayable {
      * @param controller The controller that will provide directions
      * @param position   The initial position of the ball
      */
-    public BallDirectionFollower(Navigator.Controller controller, DPoint position) {
-        this.controller = controller;
-        this.position = position;
-        initialPosition = new DPoint(position.getDimensions());
-        initialPosition.set(position);
-    }
-
-    /**
-     * A method for notifying the ball follower that it has started
-     */
-    public void start() {
-        lastTime = System.currentTimeMillis();
+    public NewBallVelocityDirectionController(Navigator.Controller controller, DPoint position) {
+        super(controller, position);
+        lastMovement = new DVector(0, 0);
     }
 
     /**
@@ -78,9 +50,15 @@ public class BallDirectionFollower implements Displayable {
 
                 controller.update(position.clone());
                 DVector direction = controller.getDirection();
+                lastMovement.set(direction);
 
+                velocityController.update(direction);
+                if (Double.isNaN(velocityController.getVelocity())) {
+                    int cat = 12;
+                }
+                velocityController.update(direction);
                 DVector movement = direction.clone();
-                movement.setMagnitude(movementLength * delta);
+                movement.setMagnitude(velocityController.getVelocity() * delta);
                 position.add(movement);
 
             } else {
@@ -120,16 +98,10 @@ public class BallDirectionFollower implements Displayable {
      */
     public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone(), 0, 1, color);
+        graphics.paintVector(position.clone(), lastMovement);
+        graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
+        graphics.getGraphics().drawString("Summed Change:  " + velocityController.getSummedDirectionChange(), 100, 200);
 //        graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
-    }
-
-    /**
-     * A method for getting if an arrow key is currently pressed
-     *
-     * @return Whether or not an arrow key is pressed
-     */
-    public boolean arrowPressed() {
-        return KeyBoardListener.get(KeyEvent.VK_LEFT) || KeyBoardListener.get(KeyEvent.VK_RIGHT) || KeyBoardListener.get(KeyEvent.VK_UP) || KeyBoardListener.get(KeyEvent.VK_DOWN);
     }
 
 }

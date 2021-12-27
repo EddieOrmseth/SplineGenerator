@@ -1,6 +1,6 @@
 package SplineGenerator.GUI;
 
-import SplineGenerator.Applied.FollowerGradient;
+import SplineGenerator.Applied.LegacyVersions.FollowerGradient;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 

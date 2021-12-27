@@ -1,7 +1,7 @@
 package SplineGenerator;
 
+import SplineGenerator.Applied.LegacyVersions.SegmenterComplexVelocityController;
 import SplineGenerator.Applied.Segmenter;
-import SplineGenerator.Applied.SegmenterComplexVelocityController;
 import SplineGenerator.GUI.BallVelocityDirectionController;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
@@ -138,7 +138,7 @@ public class Main {
 //        display.displayables.add(ballFollower0);
 
         Segmenter.Controller ballController1 = resolver.getController();
-        SegmenterComplexVelocityController velocityController1 = new SegmenterComplexVelocityController(ballController1, .015, .005, .01, .4, .1);
+        SegmenterComplexVelocityController velocityController1 = new SegmenterComplexVelocityController(ballController1, 01500, 00500, 01000, .4, .1);
         BallVelocityDirectionController ballFollower1 = new BallVelocityDirectionController(ballController1, new DPoint(0, 0));
         ballFollower1.color = new Color(105, 105, 239);
         ballFollower1.velocityController = velocityController1;

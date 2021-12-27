@@ -1,5 +1,6 @@
 package SplineGenerator.Applied;
 
+import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -18,7 +19,7 @@ public class MotionController {
     /**
      * The velocity controller
      */
-    private VelocityController velocityController;
+    private OldVelocityController velocityController;
 
     /**
      * Optional: the object that supplies the current position;
@@ -32,7 +33,7 @@ public class MotionController {
      * @param velocityController The velocity controller to be followed
      * @param positionSupplier The position supplier
      */
-    public MotionController(Navigator.Controller navigationController, VelocityController velocityController, Supplier<DPoint> positionSupplier) {
+    public MotionController(Navigator.Controller navigationController, OldVelocityController velocityController, Supplier<DPoint> positionSupplier) {
         this.navigationController = navigationController;
         this.velocityController = velocityController;
         this.positionSupplier = positionSupplier;
@@ -44,7 +45,7 @@ public class MotionController {
      * @param navigationController The direction controller to be followed
      * @param velocityController The velocity controller to be followed
      */
-    public MotionController(Navigator.Controller navigationController, VelocityController velocityController) {
+    public MotionController(Navigator.Controller navigationController, OldVelocityController velocityController) {
         this.navigationController = navigationController;
         this.velocityController = velocityController;
     }

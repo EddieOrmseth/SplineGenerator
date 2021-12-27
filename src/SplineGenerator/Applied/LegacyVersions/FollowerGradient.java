@@ -1,5 +1,6 @@
-package SplineGenerator.Applied;
+package SplineGenerator.Applied.LegacyVersions;
 
+import SplineGenerator.Applied.Navigator;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 

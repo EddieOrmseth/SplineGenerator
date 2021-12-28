@@ -65,12 +65,12 @@ public class Segmenter implements Navigator {
     /**
      * The number to step by when finding the smallest values on the spline
      */
-    private double onSplineSegmentSize = .25;
+    public double onSplineSegmentSize = .25;
 
     /**
      * The radius that each value must be within
      */
-    private double onPathRadius = 4;
+    public double onPathRadius = 4;
 
     /**
      * A constructor for the FollowerGradient including all the necessary parts
@@ -307,6 +307,15 @@ public class Segmenter implements Navigator {
     }
 
     /**
+     * A method for retrieving the number of dimensions the Segmenter is in
+     *
+     * @return The number of dimensions the Segmenter is in
+     */
+    public int getDimensions() {
+        return spline.getDimensions();
+    }
+
+    /**
      * A method for checking to see if a given point is within the bounds of the FollowerGradient
      *
      * @param point The point to check
@@ -373,7 +382,7 @@ public class Segmenter implements Navigator {
         /**
          * The distance that the object must be from the final point to be considered finished
          */
-        private double distFinishedThresh = .1;
+        public double distFinishedThresh = .1;
 
         /**
          * A constructor, all the Controller needs is the Segmenter to follow
@@ -383,6 +392,7 @@ public class Segmenter implements Navigator {
         private Controller(Segmenter segmenter) {
             this.segmenter = segmenter;
             segmentGetter = segmenter.getTimeDirection();
+            point = new DPoint(segmenter.getDimensions());
         }
 
         /**
@@ -392,7 +402,7 @@ public class Segmenter implements Navigator {
          */
         @Override
         public void update(DPoint point) {
-            this.point = point;
+            this.point.set(point);
         }
 
         /**
@@ -423,7 +433,7 @@ public class Segmenter implements Navigator {
         public boolean isFinished() {
             boolean tValFinished = segmenter.spline.getNumPieces() - getTValue() < tFinishedThresh;
 
-            DPoint lastPoint = spline.isClosed() ? spline.getFirst().values.get(0) : spline.controlPoints.get(spline.controlPoints.size()).values.get(0);
+            DPoint lastPoint = spline.isClosed() ? spline.controlPoints.get(0).values.get(0) : spline.controlPoints.get(spline.controlPoints.size() - 1).values.get(0);
             boolean distFinished = getPosition().getDistance(lastPoint) < distFinishedThresh;
 
             return tValFinished && distFinished;

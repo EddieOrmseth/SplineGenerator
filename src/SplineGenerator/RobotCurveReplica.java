@@ -4,7 +4,6 @@ import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
 import SplineGenerator.Applied.LegacyVersions.SegmenterComplexVelocityController;
 import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.GUI.BallVelocityDirectionController;
-import SplineGenerator.GUI.Display;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
@@ -15,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class RobotFigure8Replica {
+public class RobotCurveReplica {
 
     public static void main(String... args) {
 
@@ -23,15 +22,9 @@ public class RobotFigure8Replica {
 
         PolynomicSpline spline = new PolynomicSpline(2);
 
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 1), new DDirection(0, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, 1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(2, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, 1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-2, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(0, 0), new DDirection(0, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DVector(5, 0), new DDirection(0, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(4, 2)));
+        spline.addControlPoint(new DControlPoint(new DVector(8, 0), new DDirection(1, 0), new DDirection(0, 0)));
 
         spline.setPolynomicOrder(5);
         spline.closed = false;
@@ -70,9 +63,9 @@ public class RobotFigure8Replica {
         };
 
         Segmenter segmenter = new Segmenter(spline, derivativeModifier, distanceModifier);
-        segmenter.bounds = new Extrema(new DPoint(-5, -5), new DPoint(5, 5));
+        segmenter.bounds = new Extrema(new DPoint(-2, -2), new DPoint(13, 5));
         segmenter.followerStep = .1;
-        segmenter.onPathRadius = .1;
+        segmenter.onPathRadius = .4;
 
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         Runnable[] runnables = segmenter.getRunnablePieces(4);

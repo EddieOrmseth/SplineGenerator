@@ -210,6 +210,37 @@ public class Segmenter implements Navigator {
     }
 
     /**
+     * A method for getting an array of runnables that compute the gradient
+     *
+     * @param numPieces The number of runnables
+     * @return The runnables
+     */
+    public Runnable[] getRunnablePieces(int numPieces) {
+        initializeSpace();
+        Runnable[] runnables = new Runnable[numPieces];
+        int step = followerGradient.length / numPieces;
+
+        int s = 0;
+        int e = step;
+        for (int r = 0; r < runnables.length; r++) {
+            int finalS = s;
+            int finalE = e;
+            runnables[r] = () -> {
+                for (int i = finalS; i < finalE; i++) {
+                    followerGradient[i] = evaluateAt(indexToPoint(i));
+                }
+            };
+            s = e;
+            e += step;
+            if (e > followerGradient.length) {
+                e = followerGradient.length;
+            }
+        }
+
+        return runnables;
+    }
+
+    /**
      * A method for getting the correct index of a given point in the followerGradient
      *
      * @param point The point to find the index of

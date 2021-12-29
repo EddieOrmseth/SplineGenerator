@@ -1,7 +1,7 @@
 package SplineGenerator;
 
 import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
-import SplineGenerator.Applied.LegacyVersions.SegmenterComplexVelocityController;
+import SplineGenerator.Applied.SegmenterComplexVelocityController;
 import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.GUI.BallVelocityDirectionController;
 import SplineGenerator.GUI.KeyBoardListener;
@@ -97,6 +97,10 @@ public class RobotCurveReplica {
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
         display.displayables.add(ball);
+
+        display.onGridDisplayables.add((point) ->  {
+            return new DPosVector(point.clone(), segmenter.get(point.clone()).get(0));
+        });
 
         ball.start();
 

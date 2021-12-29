@@ -1,10 +1,9 @@
 package SplineGenerator;
 
 import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
-import SplineGenerator.Applied.LegacyVersions.SegmenterComplexVelocityController;
+import SplineGenerator.Applied.SegmenterComplexVelocityController;
 import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.GUI.BallVelocityDirectionController;
-import SplineGenerator.GUI.Display;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;

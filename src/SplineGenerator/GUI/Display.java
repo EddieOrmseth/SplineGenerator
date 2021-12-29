@@ -59,7 +59,7 @@ public class Display extends JFrame {
     /**
      * The amount to step by when drawing on the grid, in the scale of the spline
      */
-    protected double onGridStep = 1.2;
+    protected double onGridStep = 1.0;
 
     /**
      * The displayables that are dependant on the location in the plane
@@ -159,6 +159,7 @@ public class Display extends JFrame {
                     point.set(yDim, y);
                     point.set(xDim, x);
                     onGridDisplayables.get(d).get(point).display(graphics);
+                    System.out.println("Here");
                 }
             }
         }

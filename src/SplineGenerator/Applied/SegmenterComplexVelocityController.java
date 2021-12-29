@@ -1,5 +1,6 @@
-package SplineGenerator.Applied.LegacyVersions;
+package SplineGenerator.Applied;
 
+import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
 import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.Splines.Spline;
 

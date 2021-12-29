@@ -55,7 +55,7 @@ public class DPosVector extends DVector {
      * A constructor for a vector between the two given points.
      *
      * @param startPoint The first point
-     * @param vector The second point
+     * @param vector The vector to the second point
      */
     public DPosVector(DPoint startPoint, DVector vector) {
         this(Arrays.copyOf(vector.getValues(), vector.getValues().length));

@@ -110,7 +110,8 @@ public class ArcLengthConverter implements Navigator {
 
         @Override
         public void update(DPoint point) {
-            double arcLength = pointGetter.get();
+//            double arcLength = pointGetter.get();
+            double arcLength = point.get(0);
 
             int i = index;
             for (; i < arcLengthConverter.arcLengths.length; i++) {
@@ -122,11 +123,6 @@ public class ArcLengthConverter implements Navigator {
 
             index = i >= arcLengthConverter.arcLengths.length ? arcLengthConverter.arcLengths.length - 1 : i;
         }
-
-//        @Override
-//        public void update(DPoint point) {
-//
-//        }
 
         @Override
         public DVector getDirection() {

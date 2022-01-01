@@ -52,7 +52,6 @@ public class TestArcLengthControl {
         ArcLengthConverter.Controller controller = arcLengthConverter.getController();
 
         AtomicReference<Double> arcLength = new AtomicReference(0.0);
-        controller.pointGetter = () -> arcLength.get();
 
         SplineDisplay splineDisplay = new SplineDisplay(spline, 0, 1, 1600, 700);
 

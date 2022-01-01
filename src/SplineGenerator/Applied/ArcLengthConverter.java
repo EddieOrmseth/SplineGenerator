@@ -110,6 +110,7 @@ public class ArcLengthConverter implements Navigator {
         public void update(DPoint point) {
 //            double arcLength = pointGetter.get();
             double arcLength = point.get(0);
+            System.out.println("ArcLength: " + arcLength);
 
             int i = index;
             for (; i < arcLengthConverter.arcLengths.length; i++) {

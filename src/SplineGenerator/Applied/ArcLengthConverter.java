@@ -106,8 +106,6 @@ public class ArcLengthConverter implements Navigator {
             this.arcLengthConverter = arcLengthConverter;
         }
 
-        public Supplier<Double> pointGetter;
-
         @Override
         public void update(DPoint point) {
 //            double arcLength = pointGetter.get();
@@ -156,17 +154,6 @@ public class ArcLengthConverter implements Navigator {
 
         @Override
         public void update() {
-            double arcLength = pointGetter.get();
-
-            int i = index;
-            for (; i < arcLengthConverter.arcLengths.length; i++) {
-                if (arcLengthConverter.arcLengths[i] > arcLength) {
-                    i--;
-                    break;
-                }
-            }
-
-            index = i >= arcLengthConverter.arcLengths.length ? arcLengthConverter.arcLengths.length - 1 : i;
 
         }
     }

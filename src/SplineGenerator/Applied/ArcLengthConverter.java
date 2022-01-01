@@ -5,6 +5,7 @@ import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class ArcLengthConverter implements Navigator {
@@ -68,7 +69,7 @@ public class ArcLengthConverter implements Navigator {
             previousPoint.set(point);
             arcLengths[i] = arc;
 
-            System.out.println(data[i]);
+//            System.out.println(data[i]);
 
             t += onSplineStep;
         }
@@ -78,7 +79,7 @@ public class ArcLengthConverter implements Navigator {
     public void addEndVelocity(double finalVelocity, double acceleration){
         int bobertito = 0;
         double maxVelocity = 0;
-        for(int i = data.length - 2; i >= 0 ; i--){
+        for(int i = data.length - 1; i >= 0 ; i--){
             maxVelocity = finalVelocity + acceleration * bobertito;
             bobertito ++;
             if(data[i].getMagnitude() > maxVelocity){
@@ -87,6 +88,15 @@ public class ArcLengthConverter implements Navigator {
                 break;
             }
         }
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Data: \n");
+        for (int i = 0; i < data.length; i++) {
+            builder.append(i + ": " + data[i] + "\n");
+        }
+        return builder.toString();
     }
 
     @Override

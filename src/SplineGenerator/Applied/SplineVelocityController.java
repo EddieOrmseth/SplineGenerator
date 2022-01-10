@@ -3,15 +3,27 @@ package SplineGenerator.Applied;
 import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
 import SplineGenerator.Splines.Spline;
 
+import java.util.function.Supplier;
+
 /**
  * A slightly more complex velocity controller
  */
-public class SplineVelocityController {
+public class SplineVelocityController implements OldVelocityController {
 
     /**
      * The controller that provides the tValue
      */
     private Spline spline;
+
+    /**
+     * Teh supplier that causes
+     */
+    private Supplier<Double> derivSupplier;
+
+    /**
+     * Teh supplier that causes
+     */
+    private Supplier<Double> tSupplier;
 
     /**
      * The maximum velocity of the controller
@@ -73,6 +85,9 @@ public class SplineVelocityController {
      */
     private double percentMinDerivMag;
 
+    double tStartSlow;
+    double maxAccelPerT;
+
     /**
      * A constructor requiring the basic components of the controller
      *
@@ -113,9 +128,47 @@ public class SplineVelocityController {
 
         multiplier = velDiff / percentDerivDiff;
 
+        tStartSlow = spline.getNumPieces();
+
         System.out.println("Max Deriv Mag: " + maxDerivMag);
         System.out.println("Min Deriv Mag: " + minDerivMag);
         System.out.println("Multiplier: " + multiplier);
+
+    }
+
+    /**
+     * A constructor requiring the basic components of the controller
+     *
+     * @param spline          The spline to be followed
+     * @param derivSupplier   the Supplier for the update of the derivative
+     * @param maximumVelocity The maximum velocity
+     * @param minimumVelocity The minimum velocity
+     * @param currentVelocity The initial velocity
+     */
+    public SplineVelocityController(Spline spline, Supplier<Double> derivSupplier, double maximumVelocity, double minimumVelocity, double currentVelocity, double maxPercentBound, double minPercentBound) {
+        this(spline, maximumVelocity, minimumVelocity, currentVelocity, maxPercentBound, minPercentBound);
+        this.tSupplier = derivSupplier;
+    }
+
+    /**
+     * A method for adding a stop at the end of the path
+     *
+     * @param maxAccelPerT The maximum acceleration at the end of the path
+     * @param increment The amount to jump by when searching for the tStartSlow barrier
+     */
+    public void addStopToEnd(double maxAccelPerT, double increment) {
+        this.maxAccelPerT = maxAccelPerT;
+
+        for (double t = spline.getNumPieces() - increment; t >= 0; t -= increment) {
+            double tDiff = spline.getNumPieces() - t;
+            double minVelocity = tDiff * maxAccelPerT;
+
+            updateWithT(t);
+            if (getVelocity() < minVelocity) {
+                tStartSlow = t;
+                return;
+            }
+        }
 
     }
 
@@ -132,8 +185,22 @@ public class SplineVelocityController {
             currentVelocity = minimumVelocity;
         }
 
-        accelerating = lastVelocity != currentVelocity ? lastVelocity <= this.currentVelocity : accelerating;
-        lastVelocity = this.currentVelocity;
+        accelerating = lastVelocity != currentVelocity ? lastVelocity <= currentVelocity : accelerating;
+        lastVelocity = currentVelocity;
+    }
+
+    /**
+     * A method for updating with a t value instead of the derivative
+     *
+     * @param t The t value of the controlled object
+     */
+    public void updateWithT(double t) {
+        if (t < tStartSlow) {
+            update(spline.evaluateDerivative(t, 1).getMagnitude());
+        } else {
+            accelerating = false;
+            currentVelocity = (spline.getNumPieces() - t) * maxAccelPerT;
+        }
     }
 
     /**
@@ -152,6 +219,12 @@ public class SplineVelocityController {
      */
     public boolean isAccelerating() {
         return accelerating;
+    }
+
+    @Override
+    public void update() {
+//        update(derivSupplier.get());
+        updateWithT(tSupplier.get());
     }
 
     /**

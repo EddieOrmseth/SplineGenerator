@@ -1,22 +1,22 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.ArcLengthConverter;
-import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
-import SplineGenerator.Applied.Segmenter;
-import SplineGenerator.Applied.SegmenterComplexVelocityController;
 import SplineGenerator.Applied.SplineVelocityController;
+import SplineGenerator.Applied.StepController;
 import SplineGenerator.GUI.BallVelocityDirectionController;
+import SplineGenerator.GUI.KeyBoardListener;
+import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
-public class Tet {
+public class StepTest {
 
     public static void main(String... args) {
+
+        KeyBoardListener.initialize();
+
         PolynomicSpline spline = new PolynomicSpline(2);
 
         spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 1), new DDirection(0, 0)));
@@ -65,39 +65,29 @@ public class Tet {
             return variable;
         };
 
-        Segmenter segmenter = new Segmenter(spline, derivativeModifier, distanceModifier);
-        segmenter.bounds = new Extrema(new DPoint(-5, -5), new DPoint(5, 5));
-        segmenter.followerStep = .05;
-        segmenter.onPathRadius = .2;
+        StepController navigator = new StepController(spline, derivativeModifier, distanceModifier, .02, .1);
+        StepController.Controller navigationController = navigator.getController();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        Runnable[] runnables = segmenter.getRunnablePieces(4);
-        Future<?>[] futures = new Future[runnables.length];
+        Supplier<Double> supplier = () -> navigationController.getTValue();
 
-        for (int i = 0; i < runnables.length; i++) {
-            futures[i] = executorService.submit(runnables[i]);
-        }
+        SplineVelocityController velocityController = new SplineVelocityController(spline, supplier, 1.7, 1.0, 0.0, 0.2, 0.2);
+        velocityController.addStopToEnd(2, .05);
 
-        executorService.shutdown();
+        SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
 
-        boolean completed = false;
-        while (!completed) {
-            boolean allDone = true;
-            for (int i = 0; i < futures.length; i++) {
-                if (!futures[i].isDone()) {
-                    allDone = false;
-                }
-            }
-            completed = allDone;
-        }
-
-
-        Segmenter.Controller navigatorController = segmenter.getController();
-        navigatorController.distFinishedThresh = .1;
-        OldVelocityController velocityController = new SegmenterComplexVelocityController(navigatorController, 1.7, 1, 0, .2, .2);
-
-        BallVelocityDirectionController ball = new BallVelocityDirectionController(navigatorController, new DPoint(0, 0));
+        BallVelocityDirectionController ball = new BallVelocityDirectionController(navigationController, new DPoint(0, 0));
         ball.velocityController = velocityController;
 
+        display.displayables.add(ball);
+
+        ball.start();
+
+        display.display();
+
+        while (true) {
+            display.repaint();
+        }
+
     }
+
 }

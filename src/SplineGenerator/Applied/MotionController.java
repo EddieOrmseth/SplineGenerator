@@ -88,4 +88,12 @@ public class MotionController {
         return navigationController.isFinished();
     }
 
+    public Navigator.Controller getPositionController() {
+        return navigationController;
+    }
+
+    public OldVelocityController getVelocityController() {
+        return velocityController;
+    }
+
 }

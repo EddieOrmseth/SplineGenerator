@@ -235,4 +235,12 @@ public class SplineVelocityController implements OldVelocityController {
     public void setVelocity(double velocity) {
         this.currentVelocity = velocity;
     }
+
+    /**
+     * A method for resetting the controller
+     */
+    public void reset() {
+
+    }
+
 }

@@ -68,10 +68,10 @@ public class StepTest {
         StepController navigator = new StepController(spline, derivativeModifier, distanceModifier, .02, .1);
         StepController.Controller navigationController = navigator.getController();
 
-        Supplier<Double> supplier = () -> navigationController.getTValue();
+        Supplier<Double> supplier = navigationController::getTValue;
 
         SplineVelocityController velocityController = new SplineVelocityController(spline, supplier, 1.7, 1.0, 0.0, 0.2, 0.2);
-        velocityController.addStopToEnd(2, .05);
+        velocityController.addStopToEnd(2.5, .05);
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
 

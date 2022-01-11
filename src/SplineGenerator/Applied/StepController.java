@@ -1,7 +1,6 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Splines.Spline;
-import SplineGenerator.Util.DDirection;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.Function;
@@ -72,7 +71,7 @@ public class StepController implements Navigator {
         }
 
         double bestT = minT;
-        double bestDist = position.getDistance(spline.get(minT));;
+        double bestDist = position.getDistance(spline.get(minT));
 
         double dist;
         for (double t = minT + increment; t < maxT; t += increment) {
@@ -155,6 +154,13 @@ public class StepController implements Navigator {
 
         public double getTValue() {
             return tValue;
+        }
+
+        /**
+         * A method for resetting the controller
+         */
+        public void reset() {
+            tValue = 0;
         }
 
     }

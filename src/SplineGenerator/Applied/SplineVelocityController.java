@@ -166,6 +166,7 @@ public class SplineVelocityController implements OldVelocityController {
             updateWithT(t);
             if (getVelocity() < minVelocity) {
                 tStartSlow = t;
+                System.out.println("T Start Slow: " + tStartSlow);
                 return;
             }
         }

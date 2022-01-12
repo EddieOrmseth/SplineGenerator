@@ -71,7 +71,7 @@ public class StepTest {
         Supplier<Double> supplier = navigationController::getTValue;
 
         SplineVelocityController velocityController = new SplineVelocityController(spline, supplier, 1.7, 1.0, 0.0, 0.2, 0.2);
-        velocityController.addStopToEnd(2.5, .05);
+        velocityController.addStopToEnd(2.5, .01);
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
 

@@ -27,6 +27,10 @@ public class UltimatePositionTracker {
     }
 
     public void update(DVector velocity, double time) {
+        if (time == 0) {
+            return;
+        }
+
         // Row 1
         xData[0][0] = 0;
         yData[0][0] = 0;

@@ -19,15 +19,27 @@ public class StepTest {
 
         PolynomicSpline spline = new PolynomicSpline(2);
 
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 1), new DDirection(0, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, 1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(2, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, 1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-2, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
         spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(0, 0), new DDirection(0, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0), new DDirection(0, 0)));
 
         spline.setPolynomicOrder(5);
         spline.closed = false;

@@ -44,7 +44,7 @@ public class PositionTracker {
      *
      * @param point The new position
      */
-    public void setPosition(DPoint point ) {
+    public void setPosition(DPoint point) {
         position = point;
     }
 

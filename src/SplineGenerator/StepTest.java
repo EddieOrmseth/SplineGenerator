@@ -3,12 +3,19 @@ package SplineGenerator;
 import SplineGenerator.Applied.SplineVelocityController;
 import SplineGenerator.Applied.StepController;
 import SplineGenerator.GUI.BallVelocityDirectionController;
+import SplineGenerator.GUI.DisplayGraphics;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.function.Supplier;
 
 public class StepTest {
@@ -20,26 +27,15 @@ public class StepTest {
         PolynomicSpline spline = new PolynomicSpline(2);
 
         spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0), new DDirection(0, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, -2), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0), new DDirection(0, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.2429 + 1.0795619459264)));
+
+//        spline.addControlPoint(new DControlPoint(new DVector(-1.22526973306752 + 2.8123550200082, -2.2429 + 1.0795619459264+.1), new DDirection(1,-1)));
+        spline.addControlPoint(new DControlPoint(new DVector(-1.22526973306752 + 2.8123550200082, -2.2429 + 1.0795619459264)));
+//        spline.addControlPoint(new DControlPoint(new DVector(-1.22526973306752 + 2.8123550200082, -2.2429 + 1.0795619459264-.1), new DDirection(-1,-1)));
+
+        spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.7520008784104 + 1.0795619459264)));
+        spline.addControlPoint(new DControlPoint(new DVector(-.6587 + 2.8123550200082, -3.83007 + 1.0795619459264)));
+        spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.7520008784104 + 1.0795619459264), new DDirection(1, 0), new DDirection(0, 0)));
 
         spline.setPolynomicOrder(5);
         spline.closed = false;
@@ -77,6 +73,7 @@ public class StepTest {
             return variable;
         };
 
+
         StepController navigator = new StepController(spline, derivativeModifier, distanceModifier, .02, .1);
         StepController.Controller navigationController = navigator.getController();
 
@@ -92,6 +89,46 @@ public class StepTest {
 
         display.displayables.add(ball);
 
+
+        JFrame editorFrame = new JFrame("Image Demo");
+        editorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        BufferedImage image = null;
+        try
+        {
+             image = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        ImageIcon imageIcon = new ImageIcon(image);
+        JLabel jLabel = new JLabel();
+        jLabel.setIcon(imageIcon);
+
+        display.displayables.add((DisplayGraphics displays) -> {
+            display.getContentPane().add(jLabel,BorderLayout.CENTER);
+        });
+
+//        editorFrame.getContentPane().add(jLabel, BorderLayout.CENTER);
+
+//        editorFrame.pack();
+//        editorFrame.setLocationRelativeTo(null);
+//        editorFrame.setVisible(true);
+
+/*        try {
+            Image picture = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
+//            ImageIcon imageIcon = new ImageIcon(picture);
+//            JLabel jLabel = new JLabel();
+            display.setIconImage(picture);
+//            display.getContentPane().add(jLabel,BorderLayout.CENTER);
+            System.out.println("hi");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
+//        display.getContentPane().add(jLabel,BorderLayout.CENTER);
         ball.start();
 
         display.display();

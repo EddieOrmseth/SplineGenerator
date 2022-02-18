@@ -4,9 +4,11 @@ import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.Extrema;
 import SplineGenerator.Util.Function;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Display extends JFrame {
@@ -30,6 +32,8 @@ public class Display extends JFrame {
      * The image object that is painted on to screen
      */
     protected BufferedImage image;
+
+    protected BufferedImage image2;
 
     /**
      * A BoundingBox that the unscaled objects will be painted in
@@ -109,6 +113,11 @@ public class Display extends JFrame {
         graphics.setTranslation(this::translate);
         setTitle("Display");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        try {
+            image2 = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -128,13 +137,21 @@ public class Display extends JFrame {
      */
     @Override
     public void paint(Graphics graphics) {
-        image.getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
+//         paintField(graphics).getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
         drawAxis();
 
         paintOnGrid();
         paintDisplayables();
 
-        graphics.drawImage(image, windowWidthOffset, windowHeightOffset, this);
+//        graphics.drawImage(paintField(graphics), windowWidthOffset, windowHeightOffset, this);
+    }
+
+    public void paintField(){
+        ImageIcon imageIcon = new ImageIcon(image2);
+        JLabel jLabel = new JLabel();
+        jLabel.setIcon(imageIcon);
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.drawImage(image2,windowWidthOffset, windowHeightOffset, this);
     }
 
     /**
@@ -142,10 +159,11 @@ public class Display extends JFrame {
      */
     public void drawAxis() {
         Graphics2D graphics = (Graphics2D) image.getGraphics();
-        graphics.setColor(new Color(255, 255, 255));
+        graphics.setColor(new Color(0, 255, 255));
         graphics.setStroke(new BasicStroke(1));
         graphics.drawLine(xOffset, 0, xOffset, image.getHeight());
         graphics.drawLine(0, image.getHeight() - yOffset, image.getWidth(), image.getHeight() - yOffset);
+//        paintField();
     }
 
     /**

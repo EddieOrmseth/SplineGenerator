@@ -64,14 +64,19 @@ public class PositionTracker {
      * @param time The time since the last update
      */
     public void update(DVector currentVelocity, double time) {
-        double previousSpeed = previousVelocity.getMagnitude();
-        double currentSpeed = currentVelocity.getMagnitude();
-        DVector avgVel = previousVelocity.add(currentVelocity);
-        avgVel.multiplyAll(.5);
-//        double distance = .5 * ((currentSpeed - previousSpeed) / time) * (time * time) + (previousSpeed) * time;
-        double distance = .5 * ((currentSpeed - previousSpeed)) * (time) + (previousSpeed) * time;
-        avgVel.setMagnitude(distance);
-        update(avgVel);
+//        double previousSpeed = previousVelocity.getMagnitude();
+//        double currentSpeed = currentVelocity.getMagnitude();
+//        DVector avgVel = previousVelocity.add(currentVelocity);
+//        avgVel.multiplyAll(.5);
+////        double distance = .5 * ((currentSpeed - previousSpeed) / time) * (time * time) + (previousSpeed) * time;
+//        double distance = .5 * ((currentSpeed - previousSpeed)) * (time) + (previousSpeed) * time;
+//        avgVel.setMagnitude(distance);
+//        update(avgVel);
+//        previousVelocity.set(currentVelocity);
+
+        previousVelocity.add(currentVelocity);
+        previousVelocity.multiplyAll(.5);
+        position.add(previousVelocity);
         previousVelocity.set(currentVelocity);
     }
 

@@ -67,7 +67,7 @@ public class SplineDisplay extends Display {
     @Override
     public void paint(Graphics graphics) {
         image.getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
-        paintField();
+        paintBackground();
         drawAxis();
         drawSpline();
 

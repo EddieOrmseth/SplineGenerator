@@ -33,7 +33,10 @@ public class Display extends JFrame {
      */
     protected BufferedImage image;
 
-    protected BufferedImage image2;
+    /**
+     * Background Image
+     */
+    protected BufferedImage backgroundImage;
 
     /**
      * A BoundingBox that the unscaled objects will be painted in
@@ -114,8 +117,9 @@ public class Display extends JFrame {
         setTitle("Display");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try {
-            image2 = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
-        } catch (Exception e){
+//            backgroundImage = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
+            throw new IllegalCallerException("Ibrahim Change this to a relative path!");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -146,12 +150,12 @@ public class Display extends JFrame {
 //        graphics.drawImage(paintField(graphics), windowWidthOffset, windowHeightOffset, this);
     }
 
-    public void paintField(){
-        ImageIcon imageIcon = new ImageIcon(image2);
+    public void paintBackground() {
+        ImageIcon imageIcon = new ImageIcon(backgroundImage);
         JLabel jLabel = new JLabel();
         jLabel.setIcon(imageIcon);
         Graphics2D graphics = (Graphics2D) image.getGraphics();
-        graphics.drawImage(image2,windowWidthOffset, windowHeightOffset, this);
+        graphics.drawImage(backgroundImage, windowWidthOffset, windowHeightOffset, this);
     }
 
     /**
@@ -159,7 +163,7 @@ public class Display extends JFrame {
      */
     public void drawAxis() {
         Graphics2D graphics = (Graphics2D) image.getGraphics();
-        graphics.setColor(new Color(0, 255, 255));
+        graphics.setColor(new Color(255, 255, 255));
         graphics.setStroke(new BasicStroke(1));
         graphics.drawLine(xOffset, 0, xOffset, image.getHeight());
         graphics.drawLine(0, image.getHeight() - yOffset, image.getWidth(), image.getHeight() - yOffset);

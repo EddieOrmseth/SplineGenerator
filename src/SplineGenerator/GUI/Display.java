@@ -116,12 +116,10 @@ public class Display extends JFrame {
         graphics.setTranslation(this::translate);
         setTitle("Display");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        try {
-//            backgroundImage = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
-            throw new IllegalCallerException("Ibrahim Change this to a relative path!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    }
+
+    public void setBackgroundImage(BufferedImage image) {
+        backgroundImage = image;
     }
 
     /**
@@ -151,6 +149,9 @@ public class Display extends JFrame {
     }
 
     public void paintBackground() {
+        if (backgroundImage == null) {
+            return;
+        }
         ImageIcon imageIcon = new ImageIcon(backgroundImage);
         JLabel jLabel = new JLabel();
         jLabel.setIcon(imageIcon);

@@ -89,27 +89,33 @@ public class StepTest {
 
         display.displayables.add(ball);
 
-
-        JFrame editorFrame = new JFrame("Image Demo");
-        editorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        BufferedImage image = null;
-        try
-        {
-             image = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
+        try {
+            BufferedImage backgroundImage = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
+            throw new IllegalCallerException("Ibrahim Change This To A Relative Path");
+        } catch (IOException e) {
+            System.out.println("Unable to read background Image");
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        ImageIcon imageIcon = new ImageIcon(image);
-        JLabel jLabel = new JLabel();
-        jLabel.setIcon(imageIcon);
 
-        display.displayables.add((DisplayGraphics displays) -> {
-            display.getContentPane().add(jLabel,BorderLayout.CENTER);
-        });
+//        JFrame editorFrame = new JFrame("Image Demo");
+//        editorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//
+//        BufferedImage image = null;
+//        try
+//        {
+//             image = ImageIO.read(new File("C:\\Users\\Tators 03\\Desktop\\code\\SplineGenerator\\Capture.PNG"));
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//            System.exit(1);
+//        }
+//        ImageIcon imageIcon = new ImageIcon(image);
+//        JLabel jLabel = new JLabel();
+//        jLabel.setIcon(imageIcon);
+//
+//        display.displayables.add((DisplayGraphics displays) -> {
+//            display.getContentPane().add(jLabel,BorderLayout.CENTER);
+//        });
 
 //        editorFrame.getContentPane().add(jLabel, BorderLayout.CENTER);
 

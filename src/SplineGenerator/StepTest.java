@@ -27,21 +27,19 @@ public class StepTest {
         PolynomicSpline spline = new PolynomicSpline(2);
 
         spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0), new DDirection(0, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.2429 + 1.0795619459264)));
+        spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.2429 + 1.0795619459264), new DDirection(1, 1)));
 
-//        spline.addControlPoint(new DControlPoint(new DVector(-1.22526973306752 + 2.8123550200082, -2.2429 + 1.0795619459264+.1), new DDirection(1,-1)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1.22526973306752 + 2.8123550200082, -2.2429 + 1.0795619459264)));
-//        spline.addControlPoint(new DControlPoint(new DVector(-1.22526973306752 + 2.8123550200082, -2.2429 + 1.0795619459264-.1), new DDirection(-1,-1)));
+        spline.addControlPoint(new DControlPoint(new DVector(-1.22526973306752 + 2.8123550200082, -2.2429 + 1.0795619459264), new DDirection(1, 1)));
 
-        spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.7520008784104 + 1.0795619459264)));
-        spline.addControlPoint(new DControlPoint(new DVector(-.6587 + 2.8123550200082, -3.83007 + 1.0795619459264)));
+        spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.7520008784104 + 1.0795619459264), new DDirection(1, 1)));
+        spline.addControlPoint(new DControlPoint(new DVector(-.6587 + 2.8123550200082, -3.83007 + 1.0795619459264), new DDirection(1, 1)));
         spline.addControlPoint(new DControlPoint(new DVector(-3.79037 + 2.8123550200082, -2.7520008784104 + 1.0795619459264), new DDirection(1, 0), new DDirection(0, 0)));
 
         spline.setPolynomicOrder(5);
         spline.closed = false;
 
         InterpolationInfo c1 = new InterpolationInfo();
-        c1.interpolationType = Spline.InterpolationType.Linked;
+        c1.interpolationType = Spline.InterpolationType.Hermite;
         c1.endBehavior = Spline.EndBehavior.Hermite;
         spline.interpolationTypes.add(c1);
 
@@ -54,11 +52,6 @@ public class StepTest {
         c3.interpolationType = Spline.InterpolationType.Linked;
         c3.endBehavior = Spline.EndBehavior.None;
         spline.interpolationTypes.add(c3);
-
-        InterpolationInfo c4 = new InterpolationInfo();
-        c4.interpolationType = Spline.InterpolationType.Linked;
-        c4.endBehavior = Spline.EndBehavior.None;
-        spline.interpolationTypes.add(c4);
 
         spline.generate();
         spline.takeNextDerivative();

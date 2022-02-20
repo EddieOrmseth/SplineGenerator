@@ -1,6 +1,7 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.Extrema;
 import SplineGenerator.Util.Function;
 
@@ -37,6 +38,16 @@ public class Display extends JFrame {
      * Background Image
      */
     protected BufferedImage backgroundImage;
+
+    /**
+     * The dimensions of the image
+     */
+    protected DVector backgroundImageDimensions;
+
+    /**
+     * The location of the origin on the image
+     */
+    private DVector backgroundImageOriginOffset;
 
     /**
      * A BoundingBox that the unscaled objects will be painted in
@@ -118,8 +129,14 @@ public class Display extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public void setBackgroundImage(BufferedImage image) {
+    public void setBackgroundImage(BufferedImage image, DVector imageSize) {
+        setBackgroundImage(image, imageSize, new DVector(0, 0));
+    }
+
+    public void setBackgroundImage(BufferedImage image, DVector imageDimensions, DVector originOffset) {
         backgroundImage = image;
+        backgroundImageDimensions = imageDimensions;
+        backgroundImageOriginOffset = originOffset;
     }
 
     /**
@@ -201,15 +218,19 @@ public class Display extends JFrame {
      * A method for setting the translation values, namely xOffset, yOffset and scalar
      */
     public void setTranslationValues() {
-        double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(xDim) - boundingBox.lesserPoint.get(xDim));
-        double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(yDim) - boundingBox.lesserPoint.get(yDim));
+        if (backgroundImage == null) {
+            double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(xDim) - boundingBox.lesserPoint.get(xDim));
+            double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(yDim) - boundingBox.lesserPoint.get(yDim));
 
-        scalar = Math.min(xScalar, yScalar);
-        scaledBoundingBox = boundingBox.clone();
-        scaledBoundingBox.multiplyAll(scalar);
+            scalar = Math.min(xScalar, yScalar);
+            scaledBoundingBox = boundingBox.clone();
+            scaledBoundingBox.multiplyAll(scalar);
 
-        xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
-        yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
+            xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
+            yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
+        } else {
+
+        }
     }
 
     /**

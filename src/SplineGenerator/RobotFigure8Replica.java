@@ -1,18 +1,13 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
-import SplineGenerator.Applied.SegmenterComplexVelocityController;
-import SplineGenerator.Applied.Segmenter;
+import SplineGenerator.Applied.SplineVelocityController;
+import SplineGenerator.Applied.StepController;
 import SplineGenerator.GUI.BallVelocityDirectionController;
 import SplineGenerator.GUI.KeyBoardListener;
 import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class RobotFigure8Replica {
 
@@ -21,20 +16,22 @@ public class RobotFigure8Replica {
         KeyBoardListener.initialize();
 
         PolynomicSpline spline = new PolynomicSpline(2);
-
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 1), new DDirection(0, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, 1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(2, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, 1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-2, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-1, -1), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(0, 0), new DDirection(0, 0)));
-
         spline.setPolynomicOrder(5);
         spline.closed = false;
+        double i = 1;
 
+        // Define Path
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 1), new DDirection(0, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(i, i), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(2 * i, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(i, -i), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-i, i), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-2 * i, 0), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(-i, -i), new DDirection(1, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(0, 0), new DDirection(0, 0)));
+
+        // Set Interpolation Info
         InterpolationInfo c1 = new InterpolationInfo();
         c1.interpolationType = Spline.InterpolationType.Linked;
         c1.endBehavior = Spline.EndBehavior.Hermite;
@@ -55,65 +52,47 @@ public class RobotFigure8Replica {
         c4.endBehavior = Spline.EndBehavior.None;
         spline.interpolationTypes.add(c4);
 
+        // Create Necessary Equations
         spline.generate();
         spline.takeNextDerivative();
 
+        // Define How We Move on the Spline
         Function<DVector, DVector> derivativeModifier = variable -> {
             variable.setMagnitude(10);
             return variable;
         };
 
         Function<DVector, DVector> distanceModifier = variable -> {
-            variable.multiplyAll(35.001);
+            variable.multiplyAll(35);
             return variable;
         };
 
-        Segmenter segmenter = new Segmenter(spline, derivativeModifier, distanceModifier);
-        segmenter.bounds = new Extrema(new DPoint(-5, -5), new DPoint(5, 5));
-        segmenter.followerStep = .1;
-        segmenter.onPathRadius = .1;
+        // Create the Position Controller
+        StepController navigator = new StepController(spline, derivativeModifier, distanceModifier, .02, .1);
+        StepController.Controller stepController = navigator.getController();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        Runnable[] runnables = segmenter.getRunnablePieces(4);
-        Future<?>[] futures = new Future[runnables.length];
+        // Create the Velocity Controller
+//        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 2, 1, 0, .2, .2);
+        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 1, .5, 0, .2, .2);
+        velocityController.addStopToEnd(2.5, .01);
 
-        for (int i = 0; i < runnables.length; i++) {
-            futures[i] = executorService.submit(runnables[i]);
-        }
-
-        executorService.shutdown();
-
-        boolean completed = false;
-        while (!completed) {
-            boolean allDone = true;
-            for (int i = 0; i < futures.length; i++) {
-                if (!futures[i].isDone()) {
-                    allDone = false;
-                }
-            }
-            completed = allDone;
-        }
-
-        Segmenter.Controller navigatorController = segmenter.getController();
-        navigatorController.distFinishedThresh = .1;
-        OldVelocityController velocityController = new SegmenterComplexVelocityController(navigatorController, 1.7, 1, 0, .2, .2);
-
-        BallVelocityDirectionController ball = new BallVelocityDirectionController(navigatorController, new DPoint(0, 0));
-        ball.velocityController = velocityController;
+        // Create the Motion Controller
+//        MotionController motionController = new MotionController(stepController, velocityController, subsystems.getSwerveDrive()::getPoint);
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
+
+        BallVelocityDirectionController ball = new BallVelocityDirectionController(stepController, new DPoint(0, 0));
+        ball.velocityController = velocityController;
+
         display.displayables.add(ball);
 
         ball.start();
-
         display.display();
 
         while (true) {
             display.repaint();
-            if (navigatorController.isFinished()) {
-                int cat = 12;
-            }
         }
+
     }
 
 }

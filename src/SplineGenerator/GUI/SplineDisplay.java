@@ -126,16 +126,20 @@ public class SplineDisplay extends Display {
      */
     @Override
     public void setTranslationValues() {
-        boundingBox = etBoundingBox();
-        double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(xDim) - boundingBox.lesserPoint.get(xDim));
-        double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(yDim) - boundingBox.lesserPoint.get(yDim));
+        if (backgroundImage == null) {
+            boundingBox = etBoundingBox();
+            double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(xDim) - boundingBox.lesserPoint.get(xDim));
+            double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(yDim) - boundingBox.lesserPoint.get(yDim));
 
-        scalar = Math.min(xScalar, yScalar);
-        scaledBoundingBox = boundingBox.clone();
-        scaledBoundingBox.multiplyAll(scalar);
+            scalar = Math.min(xScalar, yScalar);
+            scaledBoundingBox = boundingBox.clone();
+            scaledBoundingBox.multiplyAll(scalar);
 
-        xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
-        yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
+            xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
+            yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
+        } else {
+            super.setTranslationValues();
+        }
     }
 
     /**

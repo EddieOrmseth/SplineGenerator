@@ -229,7 +229,17 @@ public class Display extends JFrame {
             xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
             yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
         } else {
+            double xRatio = backgroundImageDimensions.get(xDim) / getWidth();
+            double yRatio = backgroundImageDimensions.get(yDim) / getHeight();
 
+            if (xRatio > yRatio) {
+                scalar = 1 / xRatio;
+            } else {
+                scalar = 1 / yRatio;
+            }
+
+            xOffset = (int) (scalar * backgroundImageOriginOffset.get(xDim));
+            yOffset = (int) (scalar * backgroundImageOriginOffset.get(yDim));
         }
     }
 

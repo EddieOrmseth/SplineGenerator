@@ -2,6 +2,7 @@ package SplineGenerator.GUI;
 
 import SplineGenerator.Applied.Navigator;
 import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
+import SplineGenerator.Applied.StepController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -82,6 +83,7 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
 
         if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
             position.set(initialPosition);
+            ((StepController.Controller) controller).reset();
         }
 
         paint(graphics);

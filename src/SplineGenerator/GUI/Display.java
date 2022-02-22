@@ -5,11 +5,9 @@ import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.Extrema;
 import SplineGenerator.Util.Function;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 
 public class Display extends JFrame {
@@ -157,6 +155,7 @@ public class Display extends JFrame {
     @Override
     public void paint(Graphics graphics) {
 //         paintField(graphics).getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
+        paintBackground();
         drawAxis();
 
         paintOnGrid();

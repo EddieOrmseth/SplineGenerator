@@ -73,7 +73,7 @@ public class RobotFigure8Replica {
 
         // Create the Velocity Controller
 //        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 2, 1, 0, .2, .2);
-        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 1, .5, 0, .2, .2);
+        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 4.96824, 4.96824, 0, .2, .2);
         velocityController.addStopToEnd(2.5, .01);
 
         // Create the Motion Controller

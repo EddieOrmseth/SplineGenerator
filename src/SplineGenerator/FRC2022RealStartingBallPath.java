@@ -9,7 +9,7 @@ import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 
-public class RobotFigure8Replica {
+public class FRC2022RealStartingBallPath {
 
     public static void main(String... args) {
 
@@ -18,18 +18,13 @@ public class RobotFigure8Replica {
         PolynomicSpline spline = new PolynomicSpline(2);
         spline.setPolynomicOrder(5);
         spline.closed = false;
-        double i = 1;
 
-        // Define Path
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 1), new DDirection(0, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(i, i), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(2 * i, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(i, -i), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-i, i), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-2 * i, 0), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(-i, -i), new DDirection(1, 0)));
-        spline.addControlPoint(new DControlPoint(new DVector(0, 0), new DDirection(0, 0), new DDirection(0, 0)));
+        DVector initialPosition = new DVector(-0.11, -2.17);
+
+        spline.addControlPoint(new DControlPoint(initialPosition, new DDirection(-1, -1), new DDirection(0, 0)));
+        spline.addControlPoint(new DControlPoint(new DVector( -0.65, -3.77)/*, new DDirection(-1, 1)*/));
+        spline.addControlPoint(new DControlPoint(new DVector(-3.192, -2.188)/*, new DDirection(1.5, 1.5)*/));
+        spline.addControlPoint(new DControlPoint(new DVector(-2.65, -1.58), new DDirection(1, 1), new DDirection(0, 0)));
 
         // Set Interpolation Info
         InterpolationInfo c1 = new InterpolationInfo();
@@ -56,6 +51,8 @@ public class RobotFigure8Replica {
         spline.generate();
         spline.takeNextDerivative();
 
+        System.out.println("Spline: \n" + spline.getDesmosEquations());
+
         // Define How We Move on the Spline
         Function<DVector, DVector> derivativeModifier = variable -> {
             variable.setMagnitude(10);
@@ -63,18 +60,17 @@ public class RobotFigure8Replica {
         };
 
         Function<DVector, DVector> distanceModifier = variable -> {
-            variable.multiplyAll(35);
+            variable.multiplyAll(40);
             return variable;
         };
 
         // Create the Position Controller
-        StepController navigator = new StepController(spline, derivativeModifier, distanceModifier, .02, .1);
+        StepController navigator = new StepController(spline, derivativeModifier, distanceModifier, .02, .05);
         StepController.Controller stepController = navigator.getController();
 
         // Create the Velocity Controller
 //        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 2, 1, 0, .2, .2);
-//        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 4.96824, 4.96824, 0, .2, .2);
-        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 1, .5, 0, .2, .2);
+        SplineVelocityController velocityController = new SplineVelocityController(spline, stepController::getTValue, 4, 2, 0, .6, 0);
         velocityController.addStopToEnd(2.5, .01);
 
         // Create the Motion Controller
@@ -84,8 +80,14 @@ public class RobotFigure8Replica {
 
         BallVelocityDirectionController ball = new BallVelocityDirectionController(stepController, new DPoint(0, 0));
         ball.velocityController = velocityController;
+        ball.setPosition(initialPosition);
 
         display.displayables.add(ball);
+
+//        DPoint point = spline.get(1.75);
+//        System.out.println("Derivative Angle: " + spline.evaluateDerivative(1.75, 1).getAngleBetween(new DVector(1, 0)));
+//        display.displayables.add(stepController);
+//        display.displayables.add(point);
 
         ball.start();
         display.display();

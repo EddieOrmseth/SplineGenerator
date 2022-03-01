@@ -48,12 +48,21 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
         if (!arrowPressed()) {
             if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
 
+                if (KeyBoardListener.get(KeyEvent.VK_H)) {
+                    int cat = 12;
+                }
+
                 controller.update(position.clone());
                 DVector direction = controller.getDirection();
                 lastMovement.set(direction);
 
                 velocityController.update();
                 DVector movement = direction.clone();
+
+                if (KeyBoardListener.get(KeyEvent.VK_S) && movement.getMagnitude() != 0) {
+                    int cat = 12;
+                }
+
 //                movement.setMagnitude(movementLength * delta);
                 movement.setMagnitude(velocityController.getVelocity() * delta);
                 position.add(movement);
@@ -96,7 +105,7 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
      */
     public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone(), 0, 1, color);
-        graphics.paintVector(position.clone(), lastMovement);
+        graphics.paintVector(position.clone(), lastMovement.clone());
         graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
         graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
     }

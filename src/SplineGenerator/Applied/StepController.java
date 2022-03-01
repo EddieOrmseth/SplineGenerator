@@ -1,9 +1,13 @@
 package SplineGenerator.Applied;
 
+import SplineGenerator.GUI.DisplayGraphics;
+import SplineGenerator.GUI.Displayable;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.Function;
+
+import java.awt.*;
 
 /**
  * A class for calculating the direction without precalculating any values
@@ -70,6 +74,10 @@ public class StepController implements Navigator {
             maxT = spline.getNumPieces();
         }
 
+//        if (previousT + increment > spline.getNumPieces()) {
+//            return spline.getNumPieces();
+//        }
+
         double bestT = minT;
         double bestDist = position.getDistance(spline.get(minT));
 
@@ -106,7 +114,7 @@ public class StepController implements Navigator {
     /**
      * The Controller that navigates the spline
      */
-    public class Controller extends Navigator.Controller {
+    public class Controller extends Navigator.Controller implements Displayable {
 
         private double tValue = 0;
         private DPoint position;
@@ -114,6 +122,7 @@ public class StepController implements Navigator {
         private StepController stepController;
 
         private DVector direction;
+        private boolean pathCompleted = false;
 
         public Controller(int dimensions, StepController stepController) {
             position = new DPoint(dimensions);
@@ -125,6 +134,13 @@ public class StepController implements Navigator {
         public void update(DPoint point) {
             position.set(point);
             tValue = stepController.findClosestTValue(position, tValue);
+
+            if (tValue > 2.9800) {
+                pathCompleted = true;
+                direction.set(0, 0, 0);
+                System.out.println("Here");
+                return;
+            }
 
             DPoint splinePos = spline.get(tValue);
             DVector distance = new DVector(position, splinePos);
@@ -147,9 +163,13 @@ public class StepController implements Navigator {
             return position;
         }
 
+        public DVector getHeading() {
+            return spline.evaluateDerivative(tValue, 1);
+        }
+
         @Override
         public boolean isFinished() {
-            return false;
+            return pathCompleted;
         }
 
         public double getTValue() {
@@ -161,8 +181,13 @@ public class StepController implements Navigator {
          */
         public void reset() {
             tValue = 0;
+            pathCompleted = false;
         }
 
+        @Override
+        public void display(DisplayGraphics graphics) {
+            graphics.paintPoint(position.clone(), 0, 1, new Color(0, 13, 158));
+        }
     }
 
 }

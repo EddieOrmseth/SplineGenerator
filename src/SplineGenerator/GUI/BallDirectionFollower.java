@@ -56,6 +56,16 @@ public class BallDirectionFollower implements Displayable {
     }
 
     /**
+     * A method for setting the new position of the ball
+     *
+     * @param position The new position of the ball
+     */
+    public void setPosition(DPoint position) {
+        initialPosition.set(position);
+        this.position.set(position);
+    }
+
+    /**
      * A method for notifying the ball follower that it has started
      */
     public void start() {

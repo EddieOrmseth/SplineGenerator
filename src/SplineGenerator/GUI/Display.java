@@ -260,6 +260,10 @@ public class Display extends JFrame {
         return point;
     }
 
+    public DisplayGraphics getDisplayGraphics() {
+        return graphics;
+    }
+
     /**
      * A method for getting The number of dimensions that the point given to the onGridDisplayables will be have
      *

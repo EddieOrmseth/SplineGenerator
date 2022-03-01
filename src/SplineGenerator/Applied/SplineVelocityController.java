@@ -201,6 +201,7 @@ public class SplineVelocityController implements OldVelocityController {
         } else {
             accelerating = false;
             currentVelocity = (spline.getNumPieces() - t) * maxAccelPerT;
+//            System.out.println("Current T: " + (t));
         }
     }
 

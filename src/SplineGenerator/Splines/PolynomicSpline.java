@@ -53,6 +53,10 @@ public class PolynomicSpline extends Spline {
      */
     @Override
     public DPoint get(double t) {
+        if (t == getNumPieces()) {
+            return controlPoints.get(controlPoints.size() - 1).values.get(0);
+        }
+
         DPoint point = new DPoint(matrices.length);
 
         double tValue = t - ((int) t);
@@ -77,6 +81,10 @@ public class PolynomicSpline extends Spline {
      */
     @Override
     public DVector evaluateDerivative(double t, int derivative) {
+        if (t == getNumPieces()) {
+            return controlPoints.get(controlPoints.size() - 1).values.get(derivative);
+        }
+
         DVector point = new DVector(matrices.length);
         double[][][] function = derivatives.get(derivative);
 

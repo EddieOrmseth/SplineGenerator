@@ -87,6 +87,18 @@ public class RobotFigure8Replica {
 
         display.displayables.add(ball);
 
+        DVector theta0Vector = new DVector(1, 0);
+        DVector currentVector = new DVector(2);
+        display.displayables.add((input) -> {
+            DVector deriv = spline.evaluateDerivative(stepController.getTValue(), 1);
+
+            double theta = deriv.getAngleBetween(theta0Vector);
+            currentVector.set(0, Math.cos(theta), Math.sin(theta));
+
+//            input.paintVector(stepController.getPosition().clone(), deriv);
+            input.paintVector(stepController.getPosition().clone(), currentVector);
+        });
+
         ball.start();
         display.display();
 

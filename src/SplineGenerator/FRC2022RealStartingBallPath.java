@@ -19,7 +19,7 @@ public class FRC2022RealStartingBallPath {
         spline.setPolynomicOrder(5);
         spline.closed = false;
 
-        DVector initialPosition = new DVector(-0.11, -2.17);
+        DVector initialPosition = new DVector(0.42, -2.405);
 
         spline.addControlPoint(new DControlPoint(initialPosition, new DDirection(-1, -1), new DDirection(0, 0)));
         spline.addControlPoint(new DControlPoint(new DVector( -0.65, -3.77)/*, new DDirection(-1, 1)*/));

@@ -135,12 +135,12 @@ public class StepController implements Navigator {
             position.set(point);
             tValue = stepController.findClosestTValue(position, tValue);
 
-            if (tValue > 2.9800) {
-                pathCompleted = true;
-                direction.set(0, 0, 0);
-                System.out.println("Here");
-                return;
-            }
+//            if (tValue > 2.9800) {
+//                pathCompleted = true;
+//                direction.set(0, 0, 0);
+//                System.out.println("Here");
+//                return;
+//            }
 
             DPoint splinePos = spline.get(tValue);
             DVector distance = new DVector(position, splinePos);

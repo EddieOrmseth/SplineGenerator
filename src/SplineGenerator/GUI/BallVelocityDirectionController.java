@@ -94,7 +94,7 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
      */
     public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone(), 0, 1, color);
-        graphics.paintVector(position.clone(), lastMovement);
+        graphics.paintVector(position.clone(), lastMovement.clone());
         graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
         graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
     }

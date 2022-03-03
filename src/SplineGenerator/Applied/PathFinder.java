@@ -235,6 +235,15 @@ public class PathFinder implements Navigator {
         public boolean isFinished() {
             return Math.abs(pathFinder.getTarget().getVectorBetween(getPosition()).getMagnitude()) < finishedThreshold;
         }
+
+        public void setFinishedThreshold(double finishedThreshold) {
+            this.finishedThreshold = finishedThreshold;
+        }
+
+        public double getFinishedThreshold() {
+            return finishedThreshold;
+        }
+
     }
 
 }

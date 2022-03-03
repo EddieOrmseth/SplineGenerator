@@ -155,6 +155,7 @@ public class Display extends JFrame {
     @Override
     public void paint(Graphics graphics) {
 //         paintField(graphics).getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
+        image.getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
         paintBackground();
         drawAxis();
 
@@ -162,6 +163,7 @@ public class Display extends JFrame {
         paintDisplayables();
 
 //        graphics.drawImage(paintField(graphics), windowWidthOffset, windowHeightOffset, this);
+        graphics.drawImage(image, windowWidthOffset, windowHeightOffset, this);
     }
 
     public void paintBackground() {

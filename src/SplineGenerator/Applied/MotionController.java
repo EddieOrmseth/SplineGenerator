@@ -24,7 +24,7 @@ public class MotionController {
     /**
      * Optional: the object that supplies the current position;
      */
-    private Supplier<DPoint> positionSupplier;
+    protected Supplier<DPoint> positionSupplier;
 
     /**
      * A constructor that requires a position supplier
@@ -56,6 +56,7 @@ public class MotionController {
     public void update() {
         navigationController.update(positionSupplier.get());
         velocityController.update();
+//        update(positionSupplier.get()); // DO NOT DO THIS
     }
 
     /**

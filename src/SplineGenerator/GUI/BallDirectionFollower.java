@@ -123,6 +123,10 @@ public class BallDirectionFollower implements Displayable {
         paint(graphics);
     }
 
+    public void setPositionController(Navigator.Controller controller) {
+        this.controller = controller;
+    }
+
     /**
      * A method for painting the follower
      *

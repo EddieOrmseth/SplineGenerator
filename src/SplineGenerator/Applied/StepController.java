@@ -142,6 +142,10 @@ public class StepController implements Navigator {
 //                return;
 //            }
 
+            if (tValue + increment > spline.getNumPieces()) {
+                pathCompleted = true;
+            }
+
             DPoint splinePos = spline.get(tValue);
             DVector distance = new DVector(position, splinePos);
             DVector deriv = spline.evaluateDerivative(tValue, 1);

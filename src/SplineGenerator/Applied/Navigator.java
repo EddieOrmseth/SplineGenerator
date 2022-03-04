@@ -54,6 +54,10 @@ public interface Navigator {
 
         }
 
+        public double getTValue() {
+            return 0;
+        }
+
     }
 
 }

@@ -181,6 +181,7 @@ public class StepController implements Navigator {
             return pathCompleted;
         }
 
+        @Override
         public double getTValue() {
             return tValue;
         }

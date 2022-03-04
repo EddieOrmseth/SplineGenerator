@@ -80,6 +80,11 @@ public class MotionController {
         return motion;
     }
 
+    public void reset() {
+        navigationController.reset();
+        velocityController.reset();
+    }
+
     /**
      * A method to determine of the navigator has finished its path
      *
@@ -95,6 +100,10 @@ public class MotionController {
 
     public OldVelocityController getVelocityController() {
         return velocityController;
+    }
+
+    public Supplier<DPoint> getPositionSupplier() {
+        return positionSupplier;
     }
 
 }

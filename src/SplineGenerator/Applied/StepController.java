@@ -167,6 +167,11 @@ public class StepController implements Navigator {
             return position;
         }
 
+        @Override
+        public void setPosition(DPoint point) {
+            position.set(point);
+        }
+
         public DVector getHeading() {
             return spline.evaluateDerivative(tValue, 1);
         }
@@ -183,6 +188,7 @@ public class StepController implements Navigator {
         /**
          * A method for resetting the controller
          */
+        @Override
         public void reset() {
             tValue = 0;
             pathCompleted = false;

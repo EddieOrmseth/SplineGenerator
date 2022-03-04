@@ -1,9 +1,6 @@
 package SplineGenerator;
 
-import SplineGenerator.Applied.MotionController;
-import SplineGenerator.Applied.SequentialMCMotionController;
-import SplineGenerator.Applied.SplineVelocityController;
-import SplineGenerator.Applied.StepController;
+import SplineGenerator.Applied.*;
 import SplineGenerator.GUI.*;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
@@ -23,8 +20,8 @@ public class FRC2022RealStartingBallPath {
 
         DVector initialPositionP1 = new DVector(0.42, -2.405);
 
-        firstPieceSpline.addControlPoint(new DControlPoint(initialPositionP1, new DVector(0, 1)));
-        firstPieceSpline.addControlPoint(new DControlPoint(new DVector(.42, -2.98), new DVector(0, 1)));
+        firstPieceSpline.addControlPoint(new DControlPoint(initialPositionP1, new DVector(0, -1)));
+        firstPieceSpline.addControlPoint(new DControlPoint(new DVector(.42, -2.98), new DVector(0, -1)));
 
         // Set Interpolation Info
         InterpolationInfo c1P1 = new InterpolationInfo();

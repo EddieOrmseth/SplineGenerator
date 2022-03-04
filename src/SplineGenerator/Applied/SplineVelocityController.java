@@ -241,6 +241,7 @@ public class SplineVelocityController implements OldVelocityController {
     /**
      * A method for resetting the controller
      */
+    @Override
     public void reset() {
 
     }

@@ -224,8 +224,19 @@ public class PathFinder implements Navigator {
          *
          * @return The position of the controlled object
          */
+        @Override
         public DPoint getPosition() {
             return position;
+        }
+
+        @Override
+        public void setPosition(DPoint point) {
+            position.set(point);
+        }
+
+        @Override
+        public void reset() {
+
         }
 
         /**

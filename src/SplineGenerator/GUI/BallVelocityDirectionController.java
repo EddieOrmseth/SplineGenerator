@@ -48,20 +48,12 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
         if (!arrowPressed()) {
             if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
 
-                if (KeyBoardListener.get(KeyEvent.VK_H)) {
-                    int cat = 12;
-                }
-
                 controller.update(position.clone());
                 DVector direction = controller.getDirection();
                 lastMovement.set(direction);
 
                 velocityController.update();
                 DVector movement = direction.clone();
-
-                if (KeyBoardListener.get(KeyEvent.VK_S) && movement.getMagnitude() != 0) {
-                    int cat = 12;
-                }
 
 //                movement.setMagnitude(movementLength * delta);
                 movement.setMagnitude(velocityController.getVelocity() * delta);
@@ -91,11 +83,15 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
         lastTime = now;
 
         if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
-            position.set(initialPosition);
-            ((StepController.Controller) controller).reset();
+            reset();
         }
 
         paint(graphics);
+    }
+
+    public void reset() {
+        position.set(initialPosition);
+        controller.reset();
     }
 
     /**

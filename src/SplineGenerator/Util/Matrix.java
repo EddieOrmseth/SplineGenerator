@@ -14,7 +14,7 @@ public class Matrix {
     /**
      * A double[] for holding the actual values for the matrix
      */
-    public final double[][] matrix; // Format: [rows][columns]
+    public double[][] matrix; // Format: [rows][columns]
 
     /**
      * The threshold for setting number that are almost 1 or 0 to 1 or 0

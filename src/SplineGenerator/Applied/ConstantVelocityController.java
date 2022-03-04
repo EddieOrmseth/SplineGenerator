@@ -1,4 +1,4 @@
-package SplineGenerator;
+package SplineGenerator.Applied;
 
 import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
 

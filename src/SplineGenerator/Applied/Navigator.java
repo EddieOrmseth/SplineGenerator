@@ -46,6 +46,14 @@ public interface Navigator {
          */
         public abstract boolean isFinished();
 
+        public void reset() {
+
+        }
+
+        public void setPosition(DPoint point) {
+
+        }
+
     }
 
 }

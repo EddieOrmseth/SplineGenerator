@@ -24,7 +24,7 @@ public class FRCPathFinderAutoPick {
         DPoint greaterPoint = new DPoint(5, 5);
         Display display = new Display(2, new Extrema(lesserPoint, greaterPoint), 0, 1, 1600, 700);
 
-        DVector targetPosition = new DVector(-6.66, -2.58);
+        DVector targetPosition = new DVector(-6.7, -2.5);
         DVector pickPosition = new DVector(-7.106, -2.874);
         display.displayables.add((graphics) -> graphics.paintPoint(targetPosition.clone(), 0, 1, new Color(0, 0, 255)));
 
@@ -32,43 +32,27 @@ public class FRCPathFinderAutoPick {
         toStartingPoint.setTarget(new StandardPointTarget(2, targetPosition, 1, 1));
 
         DPoint hubPosition = new DPoint(0, 0);
-        StandardCircleObstacle hub = new StandardCircleObstacle(2, hubPosition, 3.5, 1, -.5);
+        StandardCircleObstacle hub = new StandardCircleObstacle(2, hubPosition, 1.87082869339, 1, -.5);
         toStartingPoint.addAugment(hub);
         display.displayables.add(hub);
 
         PathFinder.Controller positionController = toStartingPoint.getController();
         positionController.setFinishedThreshold(.25);
 
-        OldVelocityController basicVelocityController = new OldVelocityController() {
+        ConstantVelocityController basicVelocityController = new ConstantVelocityController(3);
 
-            private double distanceToTarget = 0;
-            private double minVel = 0;
-            private double maxVel = 0;
+        MotionController firstPart = new MotionController(positionController, basicVelocityController, positionController::getPosition);
 
-            @Override
-            public boolean isAccelerating() {
-                return false;
-            }
 
-            @Override
-            public void update() {
 
-            }
-
-            @Override
-            public double getVelocity() {
-                return 4;
-            }
-
-        };
 
         PolynomicSpline pickSpline = new PolynomicSpline(2);
 
         pickSpline.setPolynomicOrder(3);
         pickSpline.closed = false;
 
-        pickSpline.addControlPoint(new DControlPoint(targetPosition, new DVector(0, 0)));
-        pickSpline.addControlPoint(new DControlPoint(pickPosition, new DVector(0, 0)));
+        pickSpline.addControlPoint(new DControlPoint(targetPosition, new DVector(-1, -1)));
+        pickSpline.addControlPoint(new DControlPoint(pickPosition, new DVector(-1, -1)));
 
         InterpolationInfo c1 = new InterpolationInfo();
         c1.interpolationType = Spline.InterpolationType.Hermite;
@@ -91,7 +75,7 @@ public class FRCPathFinderAutoPick {
         };
 
         Function<DVector, DVector> distanceModifier = variable -> {
-            variable.multiplyAll(35.001);
+            variable.multiplyAll(35);
             return variable;
         };
 
@@ -101,7 +85,44 @@ public class FRCPathFinderAutoPick {
         SplineVelocityController pickController = new SplineVelocityController(pickSpline, pickSplineController::getTValue, 1, 1, 0, 0, 0);
         pickController.addStopToEnd(10, .01);
 
-        SequentialMCMotionController superController = new SequentialMCMotionController(new MotionController(positionController, basicVelocityController, positionController::getPosition), new MotionController(pickSplineController, pickController, pickSplineController::getPosition));
+        MotionController secondPart = new MotionController(pickSplineController, pickController, pickSplineController::getPosition);
+
+
+
+        PolynomicSpline returnSpline = new PolynomicSpline(2);
+
+        returnSpline.setPolynomicOrder(3);
+        returnSpline.closed = false;
+
+        returnSpline.addControlPoint(new DControlPoint(pickPosition, new DVector(1, 1)));
+        returnSpline.addControlPoint(new DControlPoint(new DVector(-2.65, -1.58), new DVector(1, 1)));
+
+        InterpolationInfo c1r = new InterpolationInfo();
+        c1r.interpolationType = Spline.InterpolationType.Hermite;
+        c1r.endBehavior = Spline.EndBehavior.Hermite;
+        returnSpline.interpolationTypes.add(c1r);
+
+        InterpolationInfo c2r = new InterpolationInfo();
+        c2r.interpolationType = Spline.InterpolationType.Linked;
+        c2r.endBehavior = Spline.EndBehavior.None;
+        returnSpline.interpolationTypes.add(c2r);
+
+        returnSpline.generate();
+        returnSpline.takeNextDerivative();
+
+        display.displayables.add((graphics) -> graphics.drawSpline(returnSpline, .001));
+
+        StepController returnNavigator = new StepController(returnSpline, derivativeModifier, distanceModifier, .02, .1);
+        StepController.Controller returnSplineController = returnNavigator.getController();
+
+        SplineVelocityController returnVelocityController = new SplineVelocityController(returnSpline, returnSplineController::getTValue, 3, 1.5, 0, .2, .2);
+        returnVelocityController.addStopToEnd(10, .01);
+
+        MotionController thirdPart = new MotionController(returnSplineController, returnVelocityController, returnSplineController::getPosition);
+
+
+
+        SequentialMCMotionController superController = new SequentialMCMotionController(firstPart, secondPart, thirdPart);
 
 //        DPoint initialBallPosition = new DPoint(0, 0);
 //        BallVelocityDirectionController ball = new BallVelocityDirectionController(positionController, initialBallPosition);

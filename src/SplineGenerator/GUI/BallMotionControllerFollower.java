@@ -26,5 +26,10 @@ public class BallMotionControllerFollower extends BallVelocityDirectionControlle
         super.display(graphics);
     }
 
+    @Override
+    public void reset() {
+        motionController.reset();
+        super.reset();
+    }
 
 }

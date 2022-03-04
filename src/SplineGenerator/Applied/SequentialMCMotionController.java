@@ -7,7 +7,8 @@ import SplineGenerator.Util.DVector;
 public class SequentialMCMotionController extends MotionController {
 
     private final MotionController[] motionControllers;
-    int index = 0;
+    private int index = 0;
+    private boolean reset = false;
 
     public SequentialMCMotionController(MotionController... motionControllers) {
         super(null, null, motionControllers[0].positionSupplier);
@@ -22,9 +23,16 @@ public class SequentialMCMotionController extends MotionController {
     @Override
     public void update(DPoint point) {
         motionControllers[index].update(point);
-        if (motionControllers[index].isFinished()) {
+        if (reset) {
+            reset = false;
+            index = 0;
+        }
+        if (motionControllers[index].isFinished() && index < motionControllers.length - 1) {
             index++;
             System.out.println("Changing Motion Controller");
+            positionSupplier = motionControllers[index].getPositionSupplier();
+            motionControllers[index].getPositionController().setPosition(motionControllers[index - 1].getPositionController().getPosition());
+            motionControllers[index].getPositionController().reset();
         }
     }
 
@@ -51,8 +59,13 @@ public class SequentialMCMotionController extends MotionController {
         return motionControllers[index].getVelocityController();
     }
 
+    @Override
     public void reset() {
-        index = 0;
+        for (int i = 0; i < motionControllers.length; i++) {
+            motionControllers[i].reset();
+        }
+        reset = true;
+        positionSupplier = motionControllers[index].getPositionSupplier();
     }
 
 }

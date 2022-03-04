@@ -26,4 +26,8 @@ public interface OldVelocityController extends BasicVelocityController {
      */
     void update();
 
+    default void reset() {
+
+    }
+
 }

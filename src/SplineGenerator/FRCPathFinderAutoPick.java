@@ -20,12 +20,13 @@ public class FRCPathFinderAutoPick {
 
         KeyBoardListener.initialize();
 
-        DPoint lesserPoint = new DPoint(-10, -10);
-        DPoint greaterPoint = new DPoint(5, 5);
+        DPoint lesserPoint = new DPoint(-8, -8);
+        DPoint greaterPoint = new DPoint(1, 1);
         Display display = new Display(2, new Extrema(lesserPoint, greaterPoint), 0, 1, 1600, 700);
 
-        DVector targetPosition = new DVector(-6.7, -2.5);
-        DVector pickPosition = new DVector(-7.106, -2.874);
+//        DVector targetPosition = new DVector(-6.634, -2.606); // Actual
+        DVector targetPosition = new DVector(-5.96, -2.2); // Test
+        DVector pickPosition = new DVector(-7.061, -2.8);
         display.displayables.add((graphics) -> graphics.paintPoint(targetPosition.clone(), 0, 1, new Color(0, 0, 255)));
 
         PathFinder toStartingPoint = new PathFinder(2);
@@ -51,8 +52,8 @@ public class FRCPathFinderAutoPick {
         pickSpline.setPolynomicOrder(3);
         pickSpline.closed = false;
 
-        pickSpline.addControlPoint(new DControlPoint(targetPosition, new DVector(-1, -1)));
-        pickSpline.addControlPoint(new DControlPoint(pickPosition, new DVector(-1, -1)));
+        pickSpline.addControlPoint(new DControlPoint(targetPosition, new DVector(-1, -.4)));
+        pickSpline.addControlPoint(new DControlPoint(pickPosition, new DVector(-1, -.4)));
 
         InterpolationInfo c1 = new InterpolationInfo();
         c1.interpolationType = Spline.InterpolationType.Hermite;

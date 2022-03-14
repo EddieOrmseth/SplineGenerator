@@ -35,11 +35,26 @@ public interface Navigator {
         public abstract DVector getDirection();
 
         /**
-         * The velocity at that specified point
+         * A method for getting the position of the controller object
          *
-         * @return The specified velocity
+         * @return The position of the controlled object
          */
-        public double getVelocity() {
+        public abstract DPoint getPosition();
+
+        /**
+         * A method that can be used to determine if the object has reached its destination
+         */
+        public abstract boolean isFinished();
+
+        public void reset() {
+
+        }
+
+        public void setPosition(DPoint point) {
+
+        }
+
+        public double getTValue() {
             return 0;
         }
 

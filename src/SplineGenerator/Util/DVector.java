@@ -144,6 +144,9 @@ public class DVector extends DPoint {
      * @return The angle, in radians, between the vectors
      */
     public double getAngleBetween(DVector vector) {
+        if (getMagnitude() == 0 || vector.getMagnitude() == 0) {
+            return 0;
+        }
         return Math.acos((dot(vector)) / (getMagnitude() * vector.getMagnitude()));
     }
 

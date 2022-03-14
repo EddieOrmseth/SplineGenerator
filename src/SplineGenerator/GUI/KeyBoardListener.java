@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * A class for reading values from the keyboard
  */
-public class KeyBoardListener implements KeyEventDispatcher {
+public final class KeyBoardListener implements KeyEventDispatcher {
 
     /**
      * The list of key codes, this corresponds to the keyValues ArrayList

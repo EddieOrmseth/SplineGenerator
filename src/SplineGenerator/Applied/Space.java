@@ -38,7 +38,7 @@ public class Space<T> {
     /**
      * An array representing the space
      */
-    Object[] space;
+    private Object[] space;
 
     /**
      * A simple constructor that contains arguments needed to find the total amount of data

@@ -1,18 +1,29 @@
 package SplineGenerator.Applied;
 
 import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
-import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.Splines.Spline;
+
+import java.util.function.Supplier;
 
 /**
  * A slightly more complex velocity controller
  */
-public class SegmenterComplexVelocityController implements OldVelocityController {
+public class SplineVelocityController implements OldVelocityController {
 
     /**
      * The controller that provides the tValue
      */
-    private Segmenter.Controller controller;
+    private Spline spline;
+
+    /**
+     * Teh supplier that causes
+     */
+    private Supplier<Double> derivSupplier;
+
+    /**
+     * Teh supplier that causes
+     */
+    private Supplier<Double> tSupplier;
 
     /**
      * The maximum velocity of the controller
@@ -74,23 +85,24 @@ public class SegmenterComplexVelocityController implements OldVelocityController
      */
     private double percentMinDerivMag;
 
+    double tStartSlow;
+    double maxAccelPerT;
+
     /**
      * A constructor requiring the basic components of the controller
      *
-     * @param controller      The Segmenter.Controller for getting the spline tValue
+     * @param spline          The spline to be followed
      * @param maximumVelocity The maximum velocity
      * @param minimumVelocity The minimum velocity
      * @param currentVelocity The initial velocity
      */
-    public SegmenterComplexVelocityController(Segmenter.Controller controller, double maximumVelocity, double minimumVelocity, double currentVelocity, double maxPercentBound, double minPercentBound) {
-        this.controller = controller;
+    public SplineVelocityController(Spline spline, double maximumVelocity, double minimumVelocity, double currentVelocity, double maxPercentBound, double minPercentBound) {
+        this.spline = spline;
         this.maximumVelocity = maximumVelocity;
         this.minimumVelocity = minimumVelocity;
         this.currentVelocity = currentVelocity;
         this.maxPercentBound = maxPercentBound;
         this.minPercentBound = minPercentBound;
-
-        Spline spline = controller.getSpline();
 
         maxDerivMag = Double.MIN_VALUE;
         minDerivMag = Double.MAX_VALUE;
@@ -116,6 +128,8 @@ public class SegmenterComplexVelocityController implements OldVelocityController
 
         multiplier = velDiff / percentDerivDiff;
 
+        tStartSlow = spline.getNumPieces();
+
         System.out.println("Max Deriv Mag: " + maxDerivMag);
         System.out.println("Min Deriv Mag: " + minDerivMag);
         System.out.println("Multiplier: " + multiplier);
@@ -123,12 +137,47 @@ public class SegmenterComplexVelocityController implements OldVelocityController
     }
 
     /**
+     * A constructor requiring the basic components of the controller
+     *
+     * @param spline          The spline to be followed
+     * @param derivSupplier   the Supplier for the update of the derivative
+     * @param maximumVelocity The maximum velocity
+     * @param minimumVelocity The minimum velocity
+     * @param currentVelocity The initial velocity
+     */
+    public SplineVelocityController(Spline spline, Supplier<Double> derivSupplier, double maximumVelocity, double minimumVelocity, double currentVelocity, double maxPercentBound, double minPercentBound) {
+        this(spline, maximumVelocity, minimumVelocity, currentVelocity, maxPercentBound, minPercentBound);
+        this.tSupplier = derivSupplier;
+    }
+
+    /**
+     * A method for adding a stop at the end of the path
+     *
+     * @param maxAccelPerT The maximum acceleration at the end of the path
+     * @param increment The amount to jump by when searching for the tStartSlow barrier
+     */
+    public void addStopToEnd(double maxAccelPerT, double increment) {
+        this.maxAccelPerT = maxAccelPerT;
+
+        for (double t = spline.getNumPieces() - increment; t >= 0; t -= increment) {
+            double tDiff = spline.getNumPieces() - t;
+            double minVelocity = tDiff * maxAccelPerT;
+
+            updateWithT(t);
+            if (getVelocity() < minVelocity) {
+                tStartSlow = t;
+                System.out.println("T Start Slow: " + tStartSlow);
+                return;
+            }
+        }
+
+    }
+
+    /**
      * A method that can be called to update the current velocity
      */
-    @Override
-    public void update() {
+    public void update(double deriv) {
 
-        double deriv = controller.getSpline().evaluateDerivative(controller.getTValue(), 1).getMagnitude();
         currentVelocity = minimumVelocity + (deriv - percentMinDerivMag) * multiplier;
 
         if (currentVelocity >= maximumVelocity) {
@@ -137,8 +186,23 @@ public class SegmenterComplexVelocityController implements OldVelocityController
             currentVelocity = minimumVelocity;
         }
 
-        accelerating = lastVelocity != currentVelocity ? lastVelocity <= this.currentVelocity : accelerating;
-        lastVelocity = this.currentVelocity;
+        accelerating = lastVelocity != currentVelocity ? lastVelocity <= currentVelocity : accelerating;
+        lastVelocity = currentVelocity;
+    }
+
+    /**
+     * A method for updating with a t value instead of the derivative
+     *
+     * @param t The t value of the controlled object
+     */
+    public void updateWithT(double t) {
+        if (t < tStartSlow) {
+            update(spline.evaluateDerivative(t, 1).getMagnitude());
+        } else {
+            accelerating = false;
+            currentVelocity = (spline.getNumPieces() - t) * maxAccelPerT;
+//            System.out.println("Current T: " + (t));
+        }
     }
 
     /**
@@ -146,7 +210,6 @@ public class SegmenterComplexVelocityController implements OldVelocityController
      *
      * @return The current velocity
      */
-    @Override
     public double getVelocity() {
         return currentVelocity;
     }
@@ -156,9 +219,14 @@ public class SegmenterComplexVelocityController implements OldVelocityController
      *
      * @return Whether controller is accelerating or not
      */
-    @Override
     public boolean isAccelerating() {
         return accelerating;
+    }
+
+    @Override
+    public void update() {
+//        update(derivSupplier.get());
+        updateWithT(tSupplier.get());
     }
 
     /**
@@ -169,4 +237,13 @@ public class SegmenterComplexVelocityController implements OldVelocityController
     public void setVelocity(double velocity) {
         this.currentVelocity = velocity;
     }
+
+    /**
+     * A method for resetting the controller
+     */
+    @Override
+    public void reset() {
+
+    }
+
 }

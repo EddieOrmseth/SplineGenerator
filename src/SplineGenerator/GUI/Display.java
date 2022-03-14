@@ -1,6 +1,7 @@
 package SplineGenerator.GUI;
 
 import SplineGenerator.Util.DPoint;
+import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.Extrema;
 import SplineGenerator.Util.Function;
 
@@ -32,6 +33,21 @@ public class Display extends JFrame {
     protected BufferedImage image;
 
     /**
+     * Background Image
+     */
+    protected BufferedImage backgroundImage;
+
+    /**
+     * The dimensions of the image
+     */
+    protected DVector backgroundImageDimensions;
+
+    /**
+     * The location of the origin on the image
+     */
+    private DVector backgroundImageOriginOffset;
+
+    /**
      * A BoundingBox that the unscaled objects will be painted in
      */
     protected Extrema boundingBox;
@@ -59,7 +75,7 @@ public class Display extends JFrame {
     /**
      * The amount to step by when drawing on the grid, in the scale of the spline
      */
-    protected double onGridStep = 1.2;
+    protected double onGridStep = 1.0;
 
     /**
      * The displayables that are dependant on the location in the plane
@@ -111,6 +127,16 @@ public class Display extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
+    public void setBackgroundImage(BufferedImage image, DVector imageSize) {
+        setBackgroundImage(image, imageSize, new DVector(0, 0));
+    }
+
+    public void setBackgroundImage(BufferedImage image, DVector imageDimensions, DVector originOffset) {
+        backgroundImage = image;
+        backgroundImageDimensions = imageDimensions;
+        backgroundImageOriginOffset = originOffset;
+    }
+
     /**
      * A method for creating the window and displaying the spline
      */
@@ -128,13 +154,27 @@ public class Display extends JFrame {
      */
     @Override
     public void paint(Graphics graphics) {
+//         paintField(graphics).getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
         image.getGraphics().clearRect(0, 0, image.getWidth(), image.getHeight());
+        paintBackground();
         drawAxis();
 
         paintOnGrid();
         paintDisplayables();
 
+//        graphics.drawImage(paintField(graphics), windowWidthOffset, windowHeightOffset, this);
         graphics.drawImage(image, windowWidthOffset, windowHeightOffset, this);
+    }
+
+    public void paintBackground() {
+        if (backgroundImage == null) {
+            return;
+        }
+        ImageIcon imageIcon = new ImageIcon(backgroundImage);
+        JLabel jLabel = new JLabel();
+        jLabel.setIcon(imageIcon);
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.drawImage(backgroundImage, windowWidthOffset, windowHeightOffset, this);
     }
 
     /**
@@ -146,6 +186,7 @@ public class Display extends JFrame {
         graphics.setStroke(new BasicStroke(1));
         graphics.drawLine(xOffset, 0, xOffset, image.getHeight());
         graphics.drawLine(0, image.getHeight() - yOffset, image.getWidth(), image.getHeight() - yOffset);
+//        paintField();
     }
 
     /**
@@ -159,6 +200,7 @@ public class Display extends JFrame {
                     point.set(yDim, y);
                     point.set(xDim, x);
                     onGridDisplayables.get(d).get(point).display(graphics);
+                    System.out.println("Here");
                 }
             }
         }
@@ -177,15 +219,29 @@ public class Display extends JFrame {
      * A method for setting the translation values, namely xOffset, yOffset and scalar
      */
     public void setTranslationValues() {
-        double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(xDim) - boundingBox.lesserPoint.get(xDim));
-        double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(yDim) - boundingBox.lesserPoint.get(yDim));
+        if (backgroundImage == null) {
+            double xScalar = (image.getWidth() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(xDim) - boundingBox.lesserPoint.get(xDim));
+            double yScalar = (image.getHeight() * (1 - 2 * percentBorder)) / (boundingBox.greaterPoint.get(yDim) - boundingBox.lesserPoint.get(yDim));
 
-        scalar = Math.min(xScalar, yScalar);
-        scaledBoundingBox = boundingBox.clone();
-        scaledBoundingBox.multiplyAll(scalar);
+            scalar = Math.min(xScalar, yScalar);
+            scaledBoundingBox = boundingBox.clone();
+            scaledBoundingBox.multiplyAll(scalar);
 
-        xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
-        yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
+            xOffset = (int) ((image.getWidth() / 2) - ((scaledBoundingBox.greaterPoint.get(xDim) + scaledBoundingBox.lesserPoint.get(xDim)) / 2));
+            yOffset = (int) ((image.getHeight() / 2) - ((scaledBoundingBox.greaterPoint.get(yDim) + scaledBoundingBox.lesserPoint.get(yDim)) / 2));
+        } else {
+            double xRatio = backgroundImageDimensions.get(xDim) / getWidth();
+            double yRatio = backgroundImageDimensions.get(yDim) / getHeight();
+
+            if (xRatio > yRatio) {
+                scalar = 1 / xRatio;
+            } else {
+                scalar = 1 / yRatio;
+            }
+
+            xOffset = (int) (scalar * backgroundImageOriginOffset.get(xDim));
+            yOffset = (int) (scalar * backgroundImageOriginOffset.get(yDim));
+        }
     }
 
     /**
@@ -204,6 +260,10 @@ public class Display extends JFrame {
         point.set(yDim, image.getHeight() - point.get(yDim));
 
         return point;
+    }
+
+    public DisplayGraphics getDisplayGraphics() {
+        return graphics;
     }
 
     /**

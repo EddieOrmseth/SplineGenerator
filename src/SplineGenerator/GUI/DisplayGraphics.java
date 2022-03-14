@@ -1,5 +1,6 @@
 package SplineGenerator.GUI;
 
+import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DPosVector;
 import SplineGenerator.Util.DVector;
@@ -262,6 +263,44 @@ public class DisplayGraphics {
      */
     public Graphics2D getGraphics() {
         return graphics;
+    }
+
+    /**
+     * A method for drawing the spline on the image object
+     */
+    public void drawSpline(Spline spline, double pointOnSplineStep, Color c1, Color c2, Color c3) {
+        graphics.setStroke(new BasicStroke(2));
+        boolean setP2 = true;
+        DPoint p1 = translate(spline.get(0)), p2 = spline.get(0);
+        int tVal;
+
+        for (double t = pointOnSplineStep; t < spline.pieces; t += pointOnSplineStep) {
+            tVal = (int) t % 3;
+            if (tVal == 0) {
+                graphics.setColor(c1);
+            } else if (tVal == 1) {
+                graphics.setColor(c2);
+            } else {
+                graphics.setColor(c3);
+            }
+
+            if (setP2) {
+                p2 = translate(spline.get(t));
+                graphics.drawLine((int) p1.get(xDim), (int) p1.get(yDim), (int) p2.get(xDim), (int) p2.get(yDim));
+            } else {
+                p1 = translate(spline.get(t));
+                graphics.drawLine((int) p2.get(xDim), (int) p2.get(yDim), (int) p1.get(xDim), (int) p1.get(yDim));
+            }
+
+            setP2 = !setP2;
+        }
+    }
+
+    /**
+     * A method for drawing the spline on the image object
+     */
+    public void drawSpline(Spline spline, double pointOnSplineStep) {
+        drawSpline(spline, pointOnSplineStep, new Color(255, 0, 0), new Color(0, 0, 255), new Color(0, 255, 0));
     }
 
 

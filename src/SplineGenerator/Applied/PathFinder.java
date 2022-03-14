@@ -178,7 +178,12 @@ public class PathFinder implements Navigator {
         /**
          * The velocity of the controlled object
          */
-        public DVector velocity;
+        private DVector velocity;
+
+        /**
+         * The distance that the controlled object must be from the target to be considered finished
+         */
+        private double finishedThreshold = .5;
 
         /**
          * A simple constructor for a controller that follows the pathfinder
@@ -213,6 +218,43 @@ public class PathFinder implements Navigator {
         public DVector getDirection() {
             return pathFinder.getDirection(position, velocity);
         }
+
+        /**
+         * A method for getting the position of the controller object
+         *
+         * @return The position of the controlled object
+         */
+        @Override
+        public DPoint getPosition() {
+            return position;
+        }
+
+        @Override
+        public void setPosition(DPoint point) {
+            position.set(point);
+        }
+
+        @Override
+        public void reset() {
+
+        }
+
+        /**
+         * A method that can be used to determine if the object has reached its destination
+         */
+        @Override
+        public boolean isFinished() {
+            return Math.abs(pathFinder.getTarget().getVectorBetween(getPosition()).getMagnitude()) < finishedThreshold;
+        }
+
+        public void setFinishedThreshold(double finishedThreshold) {
+            this.finishedThreshold = finishedThreshold;
+        }
+
+        public double getFinishedThreshold() {
+            return finishedThreshold;
+        }
+
     }
 
 }

@@ -1,8 +1,8 @@
 package SplineGenerator.GUI;
 
+import SplineGenerator.Applied.GeneralVelocityController;
 import SplineGenerator.Applied.Navigator;
-import SplineGenerator.Applied.LegacyVersions.OldVelocityController;
-import SplineGenerator.Applied.StepController;
+import SplineGenerator.Applied.VelocityController;
 import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 
@@ -11,12 +11,12 @@ import java.awt.event.KeyEvent;
 /**
  * A class representing a Follower that can be configured to move at a specific velocity
  */
-public class BallVelocityDirectionController extends BallDirectionFollower {
+public class NewBallVelocityDirectionController extends BallDirectionFollower {
 
     /**
      * The velocity controller for velocity
      */
-    public OldVelocityController velocityController;
+    public GeneralVelocityController velocityController;
 
     /**
      * The previous movement of the object
@@ -29,7 +29,7 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
      * @param controller The controller that will provide directions
      * @param position   The initial position of the ball
      */
-    public BallVelocityDirectionController(Navigator.Controller controller, DPoint position) {
+    public NewBallVelocityDirectionController(Navigator.Controller controller, DPoint position) {
         super(controller, position);
         lastMovement = new DVector(0, 0);
     }
@@ -52,10 +52,12 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
                 DVector direction = controller.getDirection();
                 lastMovement.set(direction);
 
-                velocityController.update();
+                velocityController.update(direction);
+                if (Double.isNaN(velocityController.getVelocity())) {
+                    int cat = 12;
+                }
+                velocityController.update(direction);
                 DVector movement = direction.clone();
-
-//                movement.setMagnitude(movementLength * delta);
                 movement.setMagnitude(velocityController.getVelocity() * delta);
                 position.add(movement);
 
@@ -83,15 +85,10 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
         lastTime = now;
 
         if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
-            reset();
+            position.set(initialPosition);
         }
 
         paint(graphics);
-    }
-
-    public void reset() {
-        position.set(initialPosition);
-        controller.reset();
     }
 
     /**
@@ -101,9 +98,10 @@ public class BallVelocityDirectionController extends BallDirectionFollower {
      */
     public void paint(DisplayGraphics graphics) {
         graphics.paintPoint(position.clone(), 0, 1, color);
-        graphics.paintVector(position.clone(), lastMovement.clone());
+        graphics.paintVector(position.clone(), lastMovement);
         graphics.getGraphics().drawString("Velocity: " + velocityController.getVelocity(), 100, 100);
-        graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
+        graphics.getGraphics().drawString("Summed Change:  " + velocityController.getSummedDirectionChange(), 100, 200);
+//        graphics.getGraphics().drawString("Accelerating: " + velocityController.isAccelerating(), 100, 150);
     }
 
 }

@@ -1,11 +1,12 @@
-package SplineGenerator.Applied;
+package SplineGenerator.Applied.LegacyVersions;
 
+import SplineGenerator.Applied.Segmenter;
 import SplineGenerator.Splines.Spline;
 
 /**
  * A simplified controller for velocity
  */
-public class SegmenterSimpleVelocityController implements VelocityController {
+public class SegmenterSimpleVelocityController implements OldVelocityController {
 
     /**
      * The controller that provides the tValue
@@ -95,6 +96,7 @@ public class SegmenterSimpleVelocityController implements VelocityController {
     /**
      * A method that can be called to update the current velocity
      */
+    @Override
     public void update() {
 
         double deriv = controller.getSpline().evaluateDerivative(controller.getTValue(), 1).getMagnitude();
@@ -115,6 +117,7 @@ public class SegmenterSimpleVelocityController implements VelocityController {
      *
      * @return The current velocity
      */
+    @Override
     public double getVelocity() {
         return currentVelocity;
     }
@@ -124,6 +127,7 @@ public class SegmenterSimpleVelocityController implements VelocityController {
      *
      * @return Whether controller is accelerating or not
      */
+    @Override
     public boolean isAccelerating() {
         return accelerating;
     }

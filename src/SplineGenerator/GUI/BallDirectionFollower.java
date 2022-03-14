@@ -30,7 +30,7 @@ public class BallDirectionFollower implements Displayable {
     /**
      * The distance to move the ball per millisecond
      */
-    protected double movementLength = .02;
+    protected double movementLength = 2;
 
     /**
      * The timestamp, in milliseconds, of the last update
@@ -56,6 +56,16 @@ public class BallDirectionFollower implements Displayable {
     }
 
     /**
+     * A method for setting the new position of the ball
+     *
+     * @param position The new position of the ball
+     */
+    public void setPosition(DPoint position) {
+        initialPosition.set(position);
+        this.position.set(position);
+    }
+
+    /**
      * A method for notifying the ball follower that it has started
      */
     public void start() {
@@ -71,7 +81,7 @@ public class BallDirectionFollower implements Displayable {
     public void display(DisplayGraphics graphics) {
 
         long now = System.currentTimeMillis();
-        long delta = now - lastTime;
+        double delta = (now - lastTime) / 1000.0;
 
         if (!arrowPressed()) {
             if (!KeyBoardListener.get(KeyEvent.VK_SHIFT) && delta != 0) {
@@ -111,6 +121,10 @@ public class BallDirectionFollower implements Displayable {
         }
 
         paint(graphics);
+    }
+
+    public void setPositionController(Navigator.Controller controller) {
+        this.controller = controller;
     }
 
     /**

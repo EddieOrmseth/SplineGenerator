@@ -65,12 +65,12 @@ public class Segmenter implements Navigator {
     /**
      * The number to step by when finding the smallest values on the spline
      */
-    private double onSplineSegmentSize = .25;
+    public double onSplineSegmentSize = .25;
 
     /**
      * The radius that each value must be within
      */
-    private double onPathRadius = 4;
+    public double onPathRadius = 4;
 
     /**
      * A constructor for the FollowerGradient including all the necessary parts
@@ -210,6 +210,37 @@ public class Segmenter implements Navigator {
     }
 
     /**
+     * A method for getting an array of runnables that compute the gradient
+     *
+     * @param numPieces The number of runnables
+     * @return The runnables
+     */
+    public Runnable[] getRunnablePieces(int numPieces) {
+        initializeSpace();
+        Runnable[] runnables = new Runnable[numPieces];
+        int step = followerGradient.length / numPieces;
+
+        int s = 0;
+        int e = step;
+        for (int r = 0; r < runnables.length; r++) {
+            int finalS = s;
+            int finalE = e;
+            runnables[r] = () -> {
+                for (int i = finalS; i < finalE; i++) {
+                    followerGradient[i] = evaluateAt(indexToPoint(i));
+                }
+            };
+            s = e;
+            e += step;
+            if (e > followerGradient.length) {
+                e = followerGradient.length;
+            }
+        }
+
+        return runnables;
+    }
+
+    /**
      * A method for getting the correct index of a given point in the followerGradient
      *
      * @param point The point to find the index of
@@ -307,6 +338,15 @@ public class Segmenter implements Navigator {
     }
 
     /**
+     * A method for retrieving the number of dimensions the Segmenter is in
+     *
+     * @return The number of dimensions the Segmenter is in
+     */
+    public int getDimensions() {
+        return spline.getDimensions();
+    }
+
+    /**
      * A method for checking to see if a given point is within the bounds of the FollowerGradient
      *
      * @param point The point to check
@@ -366,6 +406,16 @@ public class Segmenter implements Navigator {
         public int segment;
 
         /**
+         * The distance that the t value must be from the end of the spline to be considered finished
+         */
+        private double tFinishedThresh = .1;
+
+        /**
+         * The distance that the object must be from the final point to be considered finished
+         */
+        public double distFinishedThresh = .1;
+
+        /**
          * A constructor, all the Controller needs is the Segmenter to follow
          *
          * @param segmenter The Segmenter to follow
@@ -373,6 +423,7 @@ public class Segmenter implements Navigator {
         private Controller(Segmenter segmenter) {
             this.segmenter = segmenter;
             segmentGetter = segmenter.getTimeDirection();
+            point = new DPoint(segmenter.getDimensions());
         }
 
         /**
@@ -382,10 +433,7 @@ public class Segmenter implements Navigator {
          */
         @Override
         public void update(DPoint point) {
-            this.point = point;
-            if (KeyBoardListener.get(KeyEvent.VK_SPACE)) {
-                tValue = 0;
-            }
+            this.point.set(point);
         }
 
         /**
@@ -407,6 +455,28 @@ public class Segmenter implements Navigator {
             direction.removeDimension(direction.getDimensions() - 1);
 
             return direction;
+        }
+
+        /**
+         * A method that can be used to determine if the object has reached its destination
+         */
+        @Override
+        public boolean isFinished() {
+            boolean tValFinished = segmenter.spline.getNumPieces() - getTValue() < tFinishedThresh;
+
+            DPoint lastPoint = spline.isClosed() ? spline.controlPoints.get(0).values.get(0) : spline.controlPoints.get(spline.controlPoints.size() - 1).values.get(0);
+            boolean distFinished = getPosition().getDistance(lastPoint) < distFinishedThresh;
+
+            return tValFinished && distFinished;
+        }
+
+        /**
+         * A method for getting the position of the controller object
+         *
+         * @return The position of the controlled object
+         */
+        public DPoint getPosition() {
+            return point;
         }
 
         /**

@@ -14,7 +14,7 @@ public class Matrix {
     /**
      * A double[] for holding the actual values for the matrix
      */
-    public final double[][] matrix; // Format: [rows][columns]
+    public double[][] matrix; // Format: [rows][columns]
 
     /**
      * The threshold for setting number that are almost 1 or 0 to 1 or 0
@@ -126,6 +126,25 @@ public class Matrix {
     }
 
     /**
+     * A method that solves the matrix using the least squares method
+     *
+     * @param equations The matrix with the linear equations and values in it
+     * @param constants The matrix with the constants in it
+     * @return The resulting matrix
+     */
+    public static Matrix solveWithLeastSquares(Matrix equations, Matrix constants) {
+        Matrix transpose = equations.getTransposition();
+
+        Matrix eTe = transpose.multiply(equations);
+        Matrix cTe = transpose.multiply(constants);
+
+        Matrix finalMatrix = eTe.addMatrixOntoRightSide(cTe);
+        finalMatrix.solve();
+
+        return finalMatrix;
+    }
+
+    /**
      * A method for finding out if the matrix has been solved or not
      *
      * @return Whether or not the matrix is solved
@@ -160,8 +179,56 @@ public class Matrix {
      *
      * @param matrix The matrix to be multiplied by
      */
-    public void multiplyMatrix(Matrix matrix) {
+    public Matrix multiply(Matrix matrix) {
 
+        if (getWidth() != matrix.getHeight()) {
+            throw new IllegalArgumentException("The two matrices cannot be multiplied");
+        }
+
+        double[][] newMatrix = new double[getHeight()][matrix.getWidth()];
+
+        for (int row = 0; row < newMatrix.length; row++) {
+            for (int col = 0; col < newMatrix[row].length; col++) {
+                newMatrix[row][col] = multiplyRowAndColumn(this, matrix, row, col);
+            }
+        }
+
+        return new Matrix(newMatrix);
+    }
+
+    /**
+     * A helper method for multiplying the row of one matrix and the column of another
+     *
+     * @param leftMatrix The matrix from which to multiply the row
+     * @param rightMatrix The matrix from which to multiply the column
+     * @param row The row to be multiplied
+     * @param column The column to be multiplied
+     * @return The resulting value
+     */
+    public double multiplyRowAndColumn(Matrix leftMatrix, Matrix rightMatrix, int row, int column) {
+        double sum = 0;
+        for (int i = 0; i < leftMatrix.getWidth(); i++) {
+            sum += leftMatrix.get(row, i) * rightMatrix.get(i, column);
+        }
+
+        return sum;
+    }
+
+    /**
+     * A method for getting the transposition of the matrix
+     *
+     * @return The transposed matrix
+     */
+    public Matrix getTransposition() {
+        double[][] transposedMatrix = new double[getWidth()][getHeight()];
+
+        for (int row = 0; row < transposedMatrix.length; row++) {
+            for (int col = 0; col < transposedMatrix[row].length; col++) {
+                transposedMatrix[row][col] = get(col, row);
+            }
+        }
+
+        return new Matrix(transposedMatrix);
     }
 
     /**
@@ -199,6 +266,23 @@ public class Matrix {
         for (int column = 0; column < matrix[0].length; column++) {
             matrix[row][column] *= scalar;
         }
+    }
+
+    /**
+     * A method for adding a matrix onto the right side of another one
+     *
+     * @param matrix The matrix to be added
+     */
+    public Matrix addMatrixOntoRightSide(Matrix matrix) {
+        double[][] newMatrix = new double[getHeight()][getWidth() + matrix.getWidth()];
+
+        for (int row = 0; row < newMatrix.length; row++) {
+            for (int col = 0; col < newMatrix[row].length; col++) {
+                newMatrix[row][col] = col < getWidth() ? get(row, col) : matrix.get(row, col - getWidth());
+            }
+        }
+
+        return new Matrix(newMatrix);
     }
 
     /**
@@ -269,7 +353,7 @@ public class Matrix {
         try {
             rows = Files.readAllLines(path);
         } catch (Exception e) {
-            System.out.println("Failed to parse input");
+            System.out.println("Failed to read input");
         }
 
         double[] row0 = parseRow(rows.get(0));

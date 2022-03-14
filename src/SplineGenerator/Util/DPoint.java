@@ -218,7 +218,7 @@ public class DPoint implements Displayable {
 
     @Override
     public void display(DisplayGraphics graphics) {
-        graphics.paintPoint(this);
+        graphics.paintPoint(clone());
     }
 
     /**

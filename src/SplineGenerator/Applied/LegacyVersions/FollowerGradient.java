@@ -1,5 +1,6 @@
-package SplineGenerator.Applied;
+package SplineGenerator.Applied.LegacyVersions;
 
+import SplineGenerator.Applied.Navigator;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.*;
 
@@ -282,6 +283,23 @@ public class FollowerGradient implements Navigator {
         @Override
         public DVector getDirection() {
             return followerGradient.getDirection(point.clone());
+        }
+
+        /**
+         * A method for getting the position of the controller object
+         *
+         * @return The position of the controlled object
+         */
+        public DPoint getPosition() {
+            return point;
+        }
+
+        /**
+         * A method that can be used to determine if the object has reached its destination
+         */
+        @Override
+        public boolean isFinished() {
+            return false;
         }
 
     }

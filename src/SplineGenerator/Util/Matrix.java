@@ -22,6 +22,11 @@ public class Matrix {
     private final static double floatThresh = 1e-10;
 
     /**
+     * A boolean that controls how much information is printed out
+     */
+    public boolean debug = false;
+
+    /**
      * A constructor that uses the given double[] as the matrix, note this does not copy the data
      *
      * @param data The double[] to be used as the matrix
@@ -65,10 +70,21 @@ public class Matrix {
     private void solve(int row, int column) {
         if (row >= matrix.length || column >= matrix[0].length) {
             correctFloats();
+            if (debug) {
+                System.out.println(this);
+            }
             return;
+        }
+        if (debug) {
+            correctFloats();
+            System.out.println(this);
         }
         if (matrix[row][column] != 0) {
             multiplyRow(row, 1 / matrix[row][column]);
+            if (debug) {
+                correctFloats();
+                System.out.println(this);
+            }
             for (int i = 0; i < matrix.length; i++) {
                 if (i == row) {
                     continue;
@@ -78,7 +94,7 @@ public class Matrix {
             solve(row + 1, column + 1);
         } else {
             if (gaussianArrange(row, column)) {
-//                 System.out.println(this);
+//                System.out.println(this);
                 solve(row, column);
             } else {
                 System.out.println("Failed At This Point In Solving Matrix: \n" + this);
@@ -199,10 +215,10 @@ public class Matrix {
     /**
      * A helper method for multiplying the row of one matrix and the column of another
      *
-     * @param leftMatrix The matrix from which to multiply the row
+     * @param leftMatrix  The matrix from which to multiply the row
      * @param rightMatrix The matrix from which to multiply the column
-     * @param row The row to be multiplied
-     * @param column The column to be multiplied
+     * @param row         The row to be multiplied
+     * @param column      The column to be multiplied
      * @return The resulting value
      */
     public double multiplyRowAndColumn(Matrix leftMatrix, Matrix rightMatrix, int row, int column) {
@@ -342,13 +358,15 @@ public class Matrix {
     }
 
     /**
-     * A method for reading a Matrix from the input.txt file
+     * A method for reading a Matrix from the GESuccess.txt file
      *
      * @return The Matrix that was parsed from the file
      */
     public static Matrix readMatrix() {
-        Path path = Paths.get("C:\\Users\\eddie\\Downloads\\Programming\\GitHubRetry\\SplineGenerator\\input.txt");
+        return readMatrix(Paths.get("C:\\Users\\eddie\\Downloads\\Programming\\GitHubRetry\\SplineGenerator\\input.txt"));
+    }
 
+    public static Matrix readMatrix(Path path) {
         List<String> rows = null;
         try {
             rows = Files.readAllLines(path);

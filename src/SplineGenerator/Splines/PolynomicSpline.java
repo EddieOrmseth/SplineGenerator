@@ -146,7 +146,7 @@ public class PolynomicSpline extends Spline {
             }
         }
 
-//        System.out.println(printMatrices());
+        System.out.println(printMatrices());
 
         for (int n = 0; n < matrices.length; n++) {
             matrices[n].solve();

@@ -3,6 +3,8 @@ package SplineGenerator.Util;
 import SplineGenerator.GUI.Displayable;
 import SplineGenerator.GUI.DisplayGraphics;
 
+import java.util.ArrayList;
+
 /**
  * A class for holding a multidimensional point
  */
@@ -264,6 +266,27 @@ public class DPoint implements Displayable {
         builder.append(")");
 
         return builder.toString();
+    }
+
+    public static DPoint fromText(String input) {
+        ArrayList<Double> values = new ArrayList<>();
+
+        int previousIndex = 1;
+        int nextIndex = input.indexOf(',');
+        while (nextIndex != -1) {
+
+            values.add(Double.parseDouble(input.substring(previousIndex, nextIndex)));
+
+            input = input.substring(nextIndex);
+            nextIndex = input.indexOf(',');
+        }
+
+        DPoint point = new DPoint(values.size());
+        for (int i = 0; i < point.getDimensions(); i++) {
+            point.set(i, values.get(i));
+        }
+
+        return point;
     }
 
 }

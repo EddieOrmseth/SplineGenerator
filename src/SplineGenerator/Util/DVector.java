@@ -2,6 +2,8 @@ package SplineGenerator.Util;
 
 import SplineGenerator.GUI.DisplayGraphics;
 
+import java.util.ArrayList;
+
 /**
  * A class for holding a multidimensional vector
  */
@@ -185,6 +187,27 @@ public class DVector extends DPoint {
         }
 
         return vector;
+    }
+
+    public static DVector fromText(String input) {
+        ArrayList<Double> values = new ArrayList<>();
+
+        int previousIndex = 1;
+        int nextIndex = input.indexOf(',');
+        while (nextIndex != -1) {
+
+            values.add(Double.parseDouble(input.substring(previousIndex, nextIndex)));
+
+            input = input.substring(nextIndex);
+            nextIndex = input.indexOf(',');
+        }
+
+        DVector point = new DVector(values.size());
+        for (int i = 0; i < point.getDimensions(); i++) {
+            point.set(i, values.get(i));
+        }
+
+        return point;
     }
 
 }

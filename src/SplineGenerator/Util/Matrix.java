@@ -94,7 +94,7 @@ public class Matrix {
             solve(row + 1, column + 1);
         } else {
             if (gaussianArrange(row, column)) {
-//                System.out.println(this);
+                System.out.println(this);
                 solve(row, column);
             } else {
                 System.out.println("Failed At This Point In Solving Matrix: \n" + this);

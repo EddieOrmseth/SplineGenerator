@@ -98,6 +98,10 @@ public class DisplayGraphics {
         this.translate = translation;
     }
 
+    public void setVectorLength(double newLength) {
+        vectorLength = newLength;
+    }
+
     /**
      * A method for painting a DVector on the object
      *
@@ -122,10 +126,22 @@ public class DisplayGraphics {
      *
      * @param point  The point at which to put the vector
      * @param vector The vector to be painted
+     * @param vectorColor  The color of the vector
+     */
+    public void paintVector(DPoint point, DVector vector, Color vectorColor) {
+        paintVector(point, vector, xDim, yDim, vectorColor);
+    }
+
+    /**
+     * A method for painting a DVector on the object
+     *
+     * @param point  The point at which to put the vector
+     * @param vector The vector to be painted
      * @param xDim   The value to use as the x-dimension
      * @param yDim   The value to use as the y-dimension
+     * @param vectorColor  The color of the vector
      */
-    public void paintVector(DPoint point, DVector vector, int xDim, int yDim) {
+    public void paintVector(DPoint point, DVector vector, int xDim, int yDim, Color vectorColor) {
         graphics.setStroke(new BasicStroke(lineWidth));
         graphics.setColor(vectorColor);
 
@@ -147,6 +163,18 @@ public class DisplayGraphics {
 
         graphics.drawLine((int) endPoint.get(xDim), (int) endPoint.get(yDim), (int) (endPoint.get(xDim) + arrow1.get(xDim)), (int) (endPoint.get(yDim) + arrow1.get(yDim)));
         graphics.drawLine((int) endPoint.get(xDim), (int) endPoint.get(yDim), (int) (endPoint.get(xDim) + arrow2.get(xDim)), (int) (endPoint.get(yDim) + arrow2.get(yDim)));
+    }
+
+    /**
+     * A method for painting a DVector on the object
+     *
+     * @param point  The point at which to put the vector
+     * @param vector The vector to be painted
+     * @param xDim   The value to use as the x-dimension
+     * @param yDim   The value to use as the y-dimension
+     */
+    public void paintVector(DPoint point, DVector vector, int xDim, int yDim) {
+        paintVector(point, vector, xDim, yDim, vectorColor);
     }
 
     /**

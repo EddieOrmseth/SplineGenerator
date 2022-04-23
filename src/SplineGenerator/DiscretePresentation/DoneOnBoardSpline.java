@@ -4,6 +4,7 @@ import SplineGenerator.GUI.SplineDisplay;
 import SplineGenerator.Splines.PolynomicSpline;
 import SplineGenerator.Splines.Spline;
 import SplineGenerator.Util.DControlPoint;
+import SplineGenerator.Util.DPoint;
 import SplineGenerator.Util.DVector;
 import SplineGenerator.Util.InterpolationInfo;
 
@@ -32,6 +33,11 @@ public class DoneOnBoardSpline {
         spline.generate();
 
         SplineDisplay display = new SplineDisplay(spline, 0, 1, 1600, 700);
+
+        DPoint point = new DPoint(.5, 3);
+        display.displayables.add((graphics) -> {
+            graphics.paintPoint(point.clone());
+        });
 
         display.display();
 
